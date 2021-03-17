@@ -29,3 +29,13 @@ Adding to kubectl
 microk8s config -l > $HOME/.kube/microk8s.config
 chmod 0600 $HOME/.kube/config
 ```
+
+Access to microk8s containerd with microk8s group membership
+```
+# edit gid=0 -> gid=997 to add access to microk8s group
+sudo vim /var/snap/microk8s/current/args/containerd-template.toml
+microk8s stop
+microk8s start
+# this should work without sudo now
+microk8s.ctr c ls 
+```
