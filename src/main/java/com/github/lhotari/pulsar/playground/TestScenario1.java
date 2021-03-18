@@ -18,7 +18,7 @@ public class TestScenario1 {
                 .serviceHttpUrl("http://" + PULSAR_IP)
                 .build();
 
-        NamespaceName namespace = NamespaceName.get("pulsar", "test_ns" + System.currentTimeMillis());
+        NamespaceName namespace = NamespaceName.get("public", "test_ns" + System.currentTimeMillis());
         Policies policies = new Policies();
         policies.retention_policies = new RetentionPolicies(-1, -1);
         policies.autoTopicCreationOverride = new AutoTopicCreationOverride(false, null, null);
