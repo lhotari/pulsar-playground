@@ -11,7 +11,7 @@ import org.apache.pulsar.common.policies.data.RetentionPolicies;
 
 @Slf4j
 public class TestScenario1 {
-    private static final String PULSAR_IP = System.getenv().getOrDefault("PULSAR_IP", "10.64.140.45");
+    private static final String PULSAR_IP = System.getenv().getOrDefault("PULSAR_IP", "10.64.140.44");
 
     public void run() throws PulsarClientException, PulsarAdminException {
         PulsarAdmin pulsarAdmin = PulsarAdmin.builder()
