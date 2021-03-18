@@ -32,6 +32,11 @@ components:
 zookeeper:
   replicaCount: 1
   configData:
+    PULSAR_EXTRA_OPTS: >
+      -XX:+UnlockDiagnosticVMOptions
+      -XX:+DebugNonSafepoints
+      -XX:+FlightRecorder
+      -XX:FlightRecorderOptions=stackdepth=1024
     PULSAR_MEM: >
       -Xms64m -Xmx128m
     PULSAR_GC: >
@@ -47,36 +52,45 @@ zookeeper:
 
 bookkeeper:
   replicaCount: 1
-configData:
-  # we use `bin/pulsar` for starting bookie daemons
-  PULSAR_MEM: >
-    -Xms128m
-    -Xmx256m
-    -XX:MaxDirectMemorySize=256m
-  PULSAR_GC: >
-    -XX:+UseG1GC
-    -XX:MaxGCPauseMillis=10
-    -XX:+ParallelRefProcEnabled
-    -XX:+UnlockExperimentalVMOptions
-    -XX:+DoEscapeAnalysis
-    -XX:ParallelGCThreads=4
-    -XX:ConcGCThreads=4
-    -XX:G1NewSizePercent=50
-    -XX:+DisableExplicitGC
-    -XX:-ResizePLAB
-    -XX:+ExitOnOutOfMemoryError
-    -XX:+PerfDisableSharedMem
-    -XX:+PrintGCDetails
-    -XX:+PrintGCTimeStamps
-    -XX:+PrintGCApplicationStoppedTime
-    -XX:+PrintHeapAtGC
-    -verbosegc
-    -Xloggc:/var/log/bookie-gc.log
-    -XX:G1LogLevel=finest
+  configData:
+    BOOKIE_EXTRA_OPTS: >
+      -XX:+UnlockDiagnosticVMOptions
+      -XX:+DebugNonSafepoints
+      -XX:+FlightRecorder
+      -XX:FlightRecorderOptions=stackdepth=1024
+    PULSAR_MEM: >
+      -Xms128m
+      -Xmx256m
+      -XX:MaxDirectMemorySize=256m
+    PULSAR_GC: >
+      -XX:+UseG1GC
+      -XX:MaxGCPauseMillis=10
+      -XX:+ParallelRefProcEnabled
+      -XX:+UnlockExperimentalVMOptions
+      -XX:+DoEscapeAnalysis
+      -XX:ParallelGCThreads=4
+      -XX:ConcGCThreads=4
+      -XX:G1NewSizePercent=50
+      -XX:+DisableExplicitGC
+      -XX:-ResizePLAB
+      -XX:+ExitOnOutOfMemoryError
+      -XX:+PerfDisableSharedMem
+      -XX:+PrintGCDetails
+      -XX:+PrintGCTimeStamps
+      -XX:+PrintGCApplicationStoppedTime
+      -XX:+PrintHeapAtGC
+      -verbosegc
+      -Xloggc:/var/log/bookie-gc.log
+      -XX:G1LogLevel=finest
 
 broker:
   replicaCount: 1
   configData:
+    PULSAR_EXTRA_OPTS: >
+      -XX:+UnlockDiagnosticVMOptions
+      -XX:+DebugNonSafepoints
+      -XX:+FlightRecorder
+      -XX:FlightRecorderOptions=stackdepth=1024
     PULSAR_MEM: >
       -Xms128m -Xmx256m -XX:MaxDirectMemorySize=256m
     PULSAR_GC: >
@@ -105,6 +119,11 @@ broker:
 proxy:
   replicaCount: 1
   configData:
+    PULSAR_EXTRA_OPTS: >
+      -XX:+UnlockDiagnosticVMOptions
+      -XX:+DebugNonSafepoints
+      -XX:+FlightRecorder
+      -XX:FlightRecorderOptions=stackdepth=1024
     PULSAR_MEM: >
       -Xms64m -Xmx64m -XX:MaxDirectMemorySize=64m
     PULSAR_GC: >
