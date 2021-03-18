@@ -11,7 +11,7 @@ import org.apache.pulsar.common.policies.data.RetentionPolicies;
 
 @Slf4j
 public class TestScenario1 {
-    private static final String PULSAR_IP = System.getenv().getOrDefault("PULSAR_IP", "10.64.140.43");
+    private static final String PULSAR_IP = System.getenv().getOrDefault("PULSAR_IP", "10.64.140.45");
 
     public void run() throws PulsarClientException, PulsarAdminException {
         PulsarAdmin pulsarAdmin = PulsarAdmin.builder()
@@ -24,7 +24,7 @@ public class TestScenario1 {
         policies.autoTopicCreationOverride = new AutoTopicCreationOverride(false, null, null);
         pulsarAdmin.namespaces().createNamespace(namespace.toString(), policies);
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             String topicName = namespace.getPersistentTopicName("topic" + i);
             log.info("Creating {}", topicName);
             pulsarAdmin.topics().createNonPartitionedTopic(topicName);
