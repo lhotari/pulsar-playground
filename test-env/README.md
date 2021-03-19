@@ -48,3 +48,13 @@ configuration for crictl
 ```
 export CONTAINER_RUNTIME_ENDPOINT=unix:///var/snap/microk8s/common/run/containerd.sock
 ```
+
+### Enabling ingress with metallb
+
+See https://gist.github.com/djjudas21/ca27aab44231bdebb0e72d30e00553ff
+
+```
+wget https://gist.githubusercontent.com/djjudas21/ca27aab44231bdebb0e72d30e00553ff/raw/f73b748cdcdb704aee7acc8af61bdf222111b8e6/ingress-service.yaml
+microk8s kubectl apply -f ingress-service.yaml
+microk8s kubectl -n ingress get svc
+```
