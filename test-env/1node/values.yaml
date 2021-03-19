@@ -17,9 +17,10 @@
 # under the License.
 #
 
-## deployed withh emptyDir
+# enable persistence
+persistence: true
 volumes:
-  persistence: false
+  persistence: true
 
 # disabled AntiAffinity
 affinity:
