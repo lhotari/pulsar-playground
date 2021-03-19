@@ -39,7 +39,7 @@ zookeeper:
       -XX:+FlightRecorder
       -XX:FlightRecorderOptions=stackdepth=1024
     PULSAR_MEM: >
-      -Xms64m -Xmx128m
+      -Xms64m -Xmx256m
     PULSAR_GC: >
       -XX:+UseG1GC
       -XX:MaxGCPauseMillis=10
@@ -61,8 +61,8 @@ bookkeeper:
       -XX:FlightRecorderOptions=stackdepth=1024
     PULSAR_MEM: >
       -Xms128m
-      -Xmx256m
-      -XX:MaxDirectMemorySize=256m
+      -Xmx1G
+      -XX:MaxDirectMemorySize=1G
     PULSAR_GC: >
       -XX:+UseG1GC
       -XX:MaxGCPauseMillis=10
@@ -93,7 +93,7 @@ broker:
       -XX:+FlightRecorder
       -XX:FlightRecorderOptions=stackdepth=1024
     PULSAR_MEM: >
-      -Xms128m -Xmx256m -XX:MaxDirectMemorySize=256m
+      -Xms128m -Xmx1G -XX:MaxDirectMemorySize=1G
     PULSAR_GC: >
       -XX:+UseG1GC
       -XX:MaxGCPauseMillis=10
@@ -130,7 +130,7 @@ proxy:
       -XX:+FlightRecorder
       -XX:FlightRecorderOptions=stackdepth=1024
     PULSAR_MEM: >
-      -Xms64m -Xmx64m -XX:MaxDirectMemorySize=64m
+      -Xms64m -Xmx256m -XX:MaxDirectMemorySize=256m
     PULSAR_GC: >
       -XX:+UseG1GC
       -XX:MaxGCPauseMillis=10
