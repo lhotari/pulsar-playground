@@ -1,0 +1,19 @@
+images:
+  zookeeper:
+    repository: localhost:32000/apachepulsar/pulsar-all
+    tag: 2.8.0-SNAPSHOT-1f63238ce
+  bookie:
+    repository: localhost:32000/apachepulsar/pulsar-all
+    tag: 2.8.0-SNAPSHOT-1f63238ce
+  autorecovery:
+    repository: localhost:32000/apachepulsar/pulsar-all
+    tag: 2.8.0-SNAPSHOT-1f63238ce
+  broker:
+    repository: localhost:32000/apachepulsar/pulsar-all
+    tag: 2.8.0-SNAPSHOT-1f63238ce
+  proxy:
+    repository: localhost:32000/apachepulsar/pulsar-all
+    tag: 2.8.0-SNAPSHOT-1f63238ce
+  functions:
+    repository: localhost:32000/apachepulsar/pulsar-all
+    tag: 2.8.0-SNAPSHOT-1f63238ce
