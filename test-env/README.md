@@ -58,3 +58,19 @@ wget https://gist.githubusercontent.com/djjudas21/ca27aab44231bdebb0e72d30e00553
 microk8s kubectl apply -f ingress-service.yaml
 microk8s kubectl -n ingress get svc
 ```
+
+### Enabling DNS from local environment to k8s DNS
+
+Following instructions in 
+https://carlos-algms.medium.com/how-to-configure-a-linux-host-to-resolve-and-access-kubernetes-services-by-name-e1741e1247bd
+
+```
+sudo mkdir -p /etc/systemd/resolved.conf.d
+sudo tee /etc/systemd/resolved.conf.d/00-k8s-dns-resolver.conf <<EOF
+[Resolve]
+Cache=yes
+DNS=10.152.183.10
+Domains=default.svc.cluster.local svc.cluster.local cluster.local
+EOF
+sudo service systemd-resolved restart
+```
