@@ -119,6 +119,10 @@ broker:
 
 proxy:
   replicaCount: 1
+  ports:
+    http: 8080
+  ingress:
+    enabled: true
   configData:
     PULSAR_EXTRA_OPTS: >
       -XX:+UnlockDiagnosticVMOptions
