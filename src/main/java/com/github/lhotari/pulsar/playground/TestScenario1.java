@@ -24,7 +24,7 @@ public class TestScenario1 {
         policies.autoTopicCreationOverride = new AutoTopicCreationOverride(false, null, null);
         pulsarAdmin.namespaces().createNamespace(namespace.toString(), policies);
 
-        for (int i = 0; i < 4000; i++) {
+        for (int i = 0; i < 10000; i++) {
             String topicName = namespace.getPersistentTopicName("topic" + i);
             log.info("Creating {}", topicName);
             pulsarAdmin.topics().createNonPartitionedTopic(topicName);
