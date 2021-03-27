@@ -116,6 +116,8 @@ broker:
     managedLedgerDefaultEnsembleSize: "1"
     managedLedgerDefaultWriteQuorum: "1"
     managedLedgerDefaultAckQuorum: "1"
+    # configure deletion of inactive topics
+    brokerDeleteInactiveTopicsMaxInactiveDurationSeconds: "86400"
 
 proxy:
   replicaCount: 1
