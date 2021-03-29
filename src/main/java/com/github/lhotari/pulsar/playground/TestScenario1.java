@@ -7,7 +7,10 @@ import io.vavr.CheckedFunction1;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
+import org.apache.pulsar.client.api.Producer;
+import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.policies.data.AutoTopicCreationOverride;
 import org.apache.pulsar.common.policies.data.Policies;
@@ -16,8 +19,13 @@ import org.apache.pulsar.common.policies.data.RetentionPolicies;
 @Slf4j
 public class TestScenario1 {
     private static final String PULSAR_SERVICE_URL = System.getenv().getOrDefault("PULSAR_SERVICE_URL", "http://pulsar-proxy.pulsar.svc.cluster.local:8080");
+    private static final String PULSAR_BROKER_URL = System.getenv().getOrDefault("PULSAR_BROKER_URL", "pulsar://pulsar-proxy.pulsar.svc.cluster.local:6650");
 
     public void run() throws PulsarClientException, PulsarAdminException {
+        PulsarClient pulsarClient = PulsarClient.builder()
+                .serviceUrl(PULSAR_BROKER_URL)
+                .build();
+
         PulsarAdmin pulsarAdmin = PulsarAdmin.builder()
                 .serviceHttpUrl(PULSAR_SERVICE_URL)
                 .build();
@@ -34,6 +42,12 @@ public class TestScenario1 {
             String topicName = namespace.getPersistentTopicName("topic" + i);
             try {
                 createTopicFunction.apply(topicName);
+                // add a message to the topic
+                try (Producer<String> producer = pulsarClient.newProducer(Schema.STRING)
+                        .topic(topicName)
+                        .create()) {
+                    producer.send("Hello world!");
+                }
             } catch (Throwable throwable) {
                 log.error("Failed to create topic {} after retries", topicName, throwable);
             }
