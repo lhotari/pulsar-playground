@@ -81,7 +81,7 @@ bookkeeper:
       -XX:+PrintGCApplicationStoppedTime
       -XX:+PrintHeapAtGC
       -verbosegc
-      -Xloggc:/var/log/bookie-gc.log
+      -Xloggc:/pulsar/logs/bookie-gc.log
       -XX:G1LogLevel=finest
 
 broker:
