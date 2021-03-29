@@ -1,5 +1,9 @@
 package com.github.lhotari.pulsar.playground;
 
+import io.github.resilience4j.core.IntervalFunction;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryConfig;
+import io.vavr.CheckedFunction1;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
@@ -24,12 +28,32 @@ public class TestScenario1 {
         policies.autoTopicCreationOverride = new AutoTopicCreationOverride(false, null, null);
         pulsarAdmin.namespaces().createNamespace(namespace.toString(), policies);
 
+        CheckedFunction1<String, Void> createTopicFunction = createCreateTopicFunctionWithRetries(pulsarAdmin);
+
         for (int i = 0; i < 10000; i++) {
             String topicName = namespace.getPersistentTopicName("topic" + i);
-            log.info("Creating {}", topicName);
-            pulsarAdmin.topics().createNonPartitionedTopic(topicName);
+            try {
+                createTopicFunction.apply(topicName);
+            } catch (Throwable throwable) {
+                log.error("Failed to create topic {} after retries", topicName, throwable);
+            }
         }
 
+    }
+
+    private CheckedFunction1<String, Void> createCreateTopicFunctionWithRetries(PulsarAdmin pulsarAdmin) {
+        RetryConfig retryConfig = RetryConfig.custom()
+                .maxAttempts(5)
+                .intervalFunction(IntervalFunction.ofExponentialBackoff())
+                .build();
+        Retry retry = Retry.of("createNonPartitionedTopic", retryConfig);
+        CheckedFunction1<String, Void> createTopicFunction =
+                Retry.<String, Void>decorateCheckedFunction(retry, topicName -> {
+                    log.info("Creating {}", topicName);
+                    pulsarAdmin.topics().createNonPartitionedTopic(topicName);
+                    return null;
+                });
+        return createTopicFunction;
     }
 
     public static void main(String[] args) throws PulsarClientException, PulsarAdminException {

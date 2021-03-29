@@ -19,6 +19,8 @@ dependencies {
     implementation 'org.apache.pulsar:pulsar-client:2.7.0'
     implementation 'org.apache.pulsar:pulsar-client-admin:2.7.0'
     implementation 'org.slf4j:slf4j-simple:1.7.30'
+
+    implementation 'io.github.resilience4j:resilience4j-retry:1.7.0'
 }
 
 tasks.named('test') {
