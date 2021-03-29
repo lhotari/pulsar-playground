@@ -87,6 +87,7 @@ bookkeeper:
 broker:
   replicaCount: 1
   configData:
+    PULSAR_ROUTING_APPENDER_DEFAULT: RollingFile
     PULSAR_EXTRA_OPTS: >
       -XX:+UnlockDiagnosticVMOptions
       -XX:+DebugNonSafepoints
