@@ -29,6 +29,7 @@ affinity:
 # disable auto recovery
 components:
   autorecovery: false
+  toolset: false
 
 zookeeper:
   replicaCount: 1
