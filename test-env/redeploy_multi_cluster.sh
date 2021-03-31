@@ -56,7 +56,13 @@ until nslookup cluster-a-pulsar-broker.cluster-a.svc.cluster.local 2>&1 >/dev/nu
 done;
 echo
 install_pulsar_cluster cluster-b global-zk --set components.functions=false
-
+echo -n "Wait until cluster-b broker is available..."
+until nslookup cluster-b-pulsar-broker.cluster-b.svc.cluster.local 2>&1 >/dev/null; do
+  echo -n "."
+  sleep 3;
+done;
+echo
+# configure georep tenant and georep/default namespace
 pulsar_admin tenants create georep --allowed-clusters cluster-a,cluster-b
 pulsar_admin namespaces create georep/default --clusters cluster-a,cluster-b
 
