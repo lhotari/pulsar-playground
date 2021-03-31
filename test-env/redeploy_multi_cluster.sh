@@ -1,5 +1,6 @@
 #!/bin/bash -xe
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+IMAGES_YAML=${1:-$SCRIPT_DIR/custom_images.yaml}
 
 function remove_pulsar_installation() {
   local ns=${1:-pulsar}
@@ -16,7 +17,7 @@ function install_global_zk() {
   local ns=${1:-global-zk}
   echo "Installing global zookeeper in $ns"
   helm upgrade --install --namespace $ns --create-namespace \
-    -f $SCRIPT_DIR/configuration_store.yaml -f $SCRIPT_DIR/custom_images.yaml \
+    -f $SCRIPT_DIR/configuration_store.yaml -f $IMAGES_YAML \
     --set namespace=${ns} \
     $ns apache/pulsar
 }
@@ -27,7 +28,7 @@ function install_pulsar_cluster() {
   shift 2
   echo "Installing 1node cluster in $ns"
   helm upgrade --install --namespace $ns --create-namespace \
-    -f $SCRIPT_DIR/1node/values.yaml -f $SCRIPT_DIR/custom_images.yaml \
+    -f $SCRIPT_DIR/1node/values.yaml -f $IMAGES_YAML \
     -f $SCRIPT_DIR/minimal_components.yaml \
     --set namespace=${ns} \
     --set clusterName=${ns} \
