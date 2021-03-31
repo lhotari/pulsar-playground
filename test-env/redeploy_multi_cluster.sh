@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 IMAGES_YAML=${1:-$SCRIPT_DIR/custom_images.yaml}
 
@@ -49,10 +49,12 @@ remove_pulsar_installation global-zk || true
 
 install_global_zk global-zk
 install_pulsar_cluster cluster-a global-zk
-until nslookup cluster-a-pulsar-broker.cluster-a.svc.cluster.local; do
-  echo "Waiting until cluster-a broker is available..."
+echo -n "Wait until cluster-a broker is available..."
+until nslookup cluster-a-pulsar-broker.cluster-a.svc.cluster.local 2>&1 >/dev/null; do
+  echo -n "."
   sleep 3;
 done;
+echo
 install_pulsar_cluster cluster-b global-zk --set components.functions=false
 
 pulsar_admin tenants create georep --allowed-clusters cluster-a,cluster-b
