@@ -17,3 +17,8 @@ images:
   functions:
     repository: localhost:32000/apachepulsar/pulsar-all
     tag: 2.8.0-SNAPSHOT-4c204c2c7
+
+pulsar_metadata:
+  image:
+    repository: localhost:32000/apachepulsar/pulsar-all
+    tag: 2.8.0-SNAPSHOT-4c204c2c7
