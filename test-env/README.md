@@ -8,6 +8,30 @@ sudo snap install --classic microk8s
 sudo usermod -a -G microk8s $USER
 ```
 
+### Fixing networking (run after every startup)
+```
+# On Ubuntu 20.10 networking is broken. This is a workaround:
+sudo iptables -P FORWARD ACCEPT
+```
+Don't use this setting on a public network. 
+
+### Fixing high CPU by gvfs-udisk2-volume-monitor process
+
+There's an issue with microk8s & gvfs-udisks2-volume-monitor
+
+https://github.com/ubuntu/microk8s/issues/500
+```
+systemctl stop --user gvfs-udisks2-volume-monitor
+systemctl disable --user gvfs-udisks2-volume-monitor
+```
+
+gvfs-udisk2-volume-monitor is responsible for attaching USB sticks etc. 
+to enable and start it again:
+```
+systemctl enable --user gvfs-udisks2-volume-monitor
+systemctl start --user gvfs-udisks2-volume-monitor
+```
+
 ### Change ip range to 172.17.0.0/16 & 172.30.183.0/24
 
 [Original source](https://github.com/ubuntu/microk8s/issues/276#issuecomment-754704993)
@@ -103,12 +127,6 @@ microk8s enable ingress
 microk8s enable storage
 microk8s enable registry
 microk8s enable metallb:192.168.140.43-192.168.140.49
-```
-
-### Fixing networking
-```
-# On Ubuntu 20.10 networking is broken. This is a workaround:
-sudo iptables -P FORWARD ACCEPT
 ```
 
 ### Adding to kubectl
