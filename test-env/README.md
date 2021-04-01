@@ -17,20 +17,16 @@ Don't use this setting on a public network.
 
 ### Fixing high CPU by gvfs-udisk2-volume-monitor process
 
-There's an issue with microk8s & gvfs-udisks2-volume-monitor
+There's an issue with [microk8s & gvfs-udisks2-volume-monitor](https://github.com/ubuntu/microk8s/issues/500)
 
-https://github.com/ubuntu/microk8s/issues/500
+The workaround is to ignore loopback devices in udisks by adding this udev rule:
 ```
-systemctl stop --user gvfs-udisks2-volume-monitor
-systemctl disable --user gvfs-udisks2-volume-monitor
+sudo tee /etc/udev/rules.d/90-loopback.rules <<EOF
+# hide loopback devices from udisks
+SUBSYSTEM=="block", DEVPATH=="/devices/virtual/block/loop*", ENV{UDISKS_PRESENTATION_HIDE}="1", ENV{UDISKS_IGNORE}="1"
+EOF
 ```
-
-gvfs-udisk2-volume-monitor is responsible for attaching USB sticks etc. 
-to enable and start it again:
-```
-systemctl enable --user gvfs-udisks2-volume-monitor
-systemctl start --user gvfs-udisks2-volume-monitor
-```
+Rebooting is needed after making this change.
 
 ### Change ip range to 172.17.0.0/16 & 172.30.183.0/24
 
