@@ -120,6 +120,8 @@ broker:
     managedLedgerDefaultAckQuorum: "1"
     # configure deletion of inactive topics
     brokerDeleteInactiveTopicsMaxInactiveDurationSeconds: "86400"
+    # activate rate limiting fix https://github.com/apache/pulsar/pull/7078
+    PULSAR_PREFIX_preciseTopicPublishRateLimiterEnable: "true"
 
 proxy:
   replicaCount: 1
