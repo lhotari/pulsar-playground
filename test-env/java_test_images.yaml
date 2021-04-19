@@ -1,24 +1,24 @@
 images:
   zookeeper:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-b3885320a
+    tag: 2.8.0-SNAPSHOT-cfe3b273a
   bookie:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-b3885320a
+    tag: 2.8.0-SNAPSHOT-cfe3b273a
   autorecovery:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-b3885320a
+    tag: 2.8.0-SNAPSHOT-cfe3b273a
   broker:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-b3885320a
+    tag: 2.8.0-SNAPSHOT-cfe3b273a
   proxy:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-b3885320a
+    tag: 2.8.0-SNAPSHOT-cfe3b273a
   functions:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-b3885320a
+    tag: 2.8.0-SNAPSHOT-cfe3b273a
 
 pulsar_metadata:
   image:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-b3885320a
+    tag: 2.8.0-SNAPSHOT-cfe3b273a
