@@ -10,7 +10,7 @@ function remove_pulsar_installation() {
     sleep 10
   }
   echo 'Removing pulsar namespace'
-  kubectl delete namespaces/$ns
+  kubectl delete namespaces/$ns --grace-period=0 --force
 }
 
 function install_global_zk() {
