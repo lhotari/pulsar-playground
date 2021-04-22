@@ -54,16 +54,7 @@ zookeeper:
 
 bookkeeper:
   replicaCount: 1
-  # disable probes when httpServerEnabled: "false"
-  probe:
-    liveness:
-      enabled: false
-    readiness:
-      enabled: false
-    startup:
-      enabled: false
   configData:
-    httpServerEnabled: "false"
     BOOKIE_EXTRA_OPTS: >
       -XX:+UnlockDiagnosticVMOptions
       -XX:+DebugNonSafepoints
