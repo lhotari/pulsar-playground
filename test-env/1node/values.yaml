@@ -77,13 +77,7 @@ bookkeeper:
       -XX:-ResizePLAB
       -XX:+ExitOnOutOfMemoryError
       -XX:+PerfDisableSharedMem
-      -XX:+PrintGCDetails
-      -XX:+PrintGCTimeStamps
-      -XX:+PrintGCApplicationStoppedTime
-      -XX:+PrintHeapAtGC
       -verbosegc
-      -Xloggc:/pulsar/logs/bookie-gc.log
-      -XX:G1LogLevel=finest
 
 broker:
   replicaCount: 1
