@@ -1,0 +1,39 @@
+images:
+  zookeeper:
+    repository: datastax/pulsar-all
+    tag: 2.6.2_1.0.0
+  bookie:
+    repository: datastax/pulsar-all
+    tag: 2.6.2_1.0.0
+  autorecovery:
+    repository: datastax/pulsar-all
+    tag: 2.6.2_1.0.0
+  broker:
+    repository: datastax/pulsar-all
+    tag: 2.6.2_1.0.0
+  proxy:
+    repository: datastax/pulsar-all
+    tag: 2.6.2_1.0.0
+  functions:
+    repository: datastax/pulsar-all
+    tag: 2.6.2_1.0.0
+
+pulsar_metadata:
+  image:
+    repository: datastax/pulsar-all
+    tag: 2.6.2_1.0.0
+
+broker:
+  configData:
+    backlogQuotaDefaultRetentionPolicy: producer_exception
+    bookkeeperEnableStickyReads: 'true'
+    brokerDeduplicationEnabled: 'false'
+    brokerDeleteInactiveTopicsEnabled: 'false'
+    exposeConsumerLevelMetricsInPrometheus: 'false'
+    exposeTopicLevelMetricsInPrometheus: 'true'
+    managedLedgerAddEntryTimeoutSeconds: '120'
+    managedLedgerMaxEntriesPerLedger: '10'
+    managedLedgerMaxLedgerRolloverTimeMinutes: '2'
+    managedLedgerMinLedgerRolloverTimeMinutes: '0'
+    managedLedgerReadEntryTimeoutSeconds: '120'
+    topicFencingTimeoutSeconds: '5'
