@@ -1,5 +1,6 @@
 #!/bin/bash -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+$SCRIPT_DIR/check_kubectx.sh || exit 1
 IMAGES_YAML=${1:-$SCRIPT_DIR/java_test_images.yaml}
 
 function remove_pulsar_installation() {
