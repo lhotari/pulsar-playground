@@ -60,6 +60,7 @@ bookkeeper:
       -XX:+DebugNonSafepoints
       -XX:+FlightRecorder
       -XX:FlightRecorderOptions=stackdepth=1024
+      -Dio.netty.leakDetectionLevel=advanced
     PULSAR_MEM: >
       -Xms128m
       -Xmx1G
@@ -88,12 +89,13 @@ broker:
       -XX:+DebugNonSafepoints
       -XX:+FlightRecorder
       -XX:FlightRecorderOptions=stackdepth=1024
+      -Dpulsar.allocator.leak_detection=Advanced
+      -Dio.netty.leakDetectionLevel=advanced
     PULSAR_MEM: >
       -Xms128m -Xmx1G -XX:MaxDirectMemorySize=1G
     PULSAR_GC: >
       -XX:+UseG1GC
       -XX:MaxGCPauseMillis=10
-      -Dio.netty.leakDetectionLevel=disabled
       -Dio.netty.recycler.linkCapacity=1024
       -XX:+ParallelRefProcEnabled
       -XX:+UnlockExperimentalVMOptions
@@ -113,7 +115,7 @@ broker:
     managedLedgerDefaultWriteQuorum: "1"
     managedLedgerDefaultAckQuorum: "1"
     # configure deletion of inactive topics
-    brokerDeleteInactiveTopicsMaxInactiveDurationSeconds: "86400"
+    #brokerDeleteInactiveTopicsMaxInactiveDurationSeconds: "86400"
 
 proxy:
   replicaCount: 1
@@ -127,12 +129,13 @@ proxy:
       -XX:+DebugNonSafepoints
       -XX:+FlightRecorder
       -XX:FlightRecorderOptions=stackdepth=1024
+      -Dpulsar.allocator.leak_detection=Advanced
+      -Dio.netty.leakDetectionLevel=advanced
     PULSAR_MEM: >
       -Xms64m -Xmx256m -XX:MaxDirectMemorySize=256m
     PULSAR_GC: >
       -XX:+UseG1GC
       -XX:MaxGCPauseMillis=10
-      -Dio.netty.leakDetectionLevel=disabled
       -Dio.netty.recycler.linkCapacity=1024
       -XX:+ParallelRefProcEnabled
       -XX:+UnlockExperimentalVMOptions
