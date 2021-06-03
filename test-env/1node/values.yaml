@@ -40,7 +40,7 @@ zookeeper:
       -XX:+FlightRecorder
       -XX:FlightRecorderOptions=stackdepth=1024
     PULSAR_MEM: >
-      -Xms64m -Xmx256m
+      -Xms64m -Xmx512m
     PULSAR_GC: >
       -XX:+UseG1GC
       -XX:MaxGCPauseMillis=10
