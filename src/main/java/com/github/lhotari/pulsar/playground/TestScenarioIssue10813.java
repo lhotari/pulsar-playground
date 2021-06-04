@@ -86,11 +86,13 @@ public class TestScenarioIssue10813 {
 
         int reportingInterval = newTopic ? 1000 : 1;
 
+        int remainingMessages = maxMessages;
+
         try (Consumer<byte[]> consumer = createConsumer(pulsarClient, topicName)) {
             for (int i = 0; i < maxMessages; i++) {
                 Message<byte[]> msg = consumer.receive();
                 int msgNum = bytesToInt(msg.getData());
-                log.info("Received {}", msgNum);
+                log.info("Received {} remaining: {}", msgNum, --remainingMessages);
                 consumer.acknowledge(msg);
                 if ((i + 1) % reportingInterval == 0) {
                     log.info("Received {} msgs", i + 1);
