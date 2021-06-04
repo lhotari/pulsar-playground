@@ -27,7 +27,9 @@ public class TestScenarioIssue10813 {
             System.getenv().getOrDefault("PULSAR_BROKER_URL", "pulsar://" + PULSAR_HOST + ":6650/");
 
     private final String namespace;
-    private int maxMessages = 100000;
+    private int maxMessages = 1000000;
+    private int partitions = 100;
+    private int messageSize = 20000;
 
     public TestScenarioIssue10813(String namespace) {
         this.namespace = namespace;
@@ -51,7 +53,7 @@ public class TestScenarioIssue10813 {
             // no retention
             policies.retention_policies = new RetentionPolicies(0, 0);
             pulsarAdmin.namespaces().createNamespace(namespaceName.toString(), policies);
-            pulsarAdmin.topics().createPartitionedTopic(topicName, 30);
+            pulsarAdmin.topics().createPartitionedTopic(topicName, partitions);
             newTopic = true;
         } catch (PulsarAdminException.ConflictException e) {
             // topic exists, ignore
@@ -70,7 +72,7 @@ public class TestScenarioIssue10813 {
                 AtomicReference<Throwable> sendFailure = new AtomicReference<>();
                 for (int i = 0; i < maxMessages; i++) {
                     // add a messages to the topic
-                    producer.sendAsync(intToBytes(i)).whenComplete((messageId, throwable) -> {
+                    producer.sendAsync(intToBytes(i, messageSize)).whenComplete((messageId, throwable) -> {
                         if (throwable != null) {
                             log.error("Failed to send message to topic {}", topicName, throwable);
                             sendFailure.set(throwable);
@@ -114,8 +116,8 @@ public class TestScenarioIssue10813 {
         return ByteBuffer.wrap(bytes).getInt();
     }
 
-    byte[] intToBytes(final int i) {
-        return ByteBuffer.allocate(4).putInt(i).array();
+    byte[] intToBytes(final int i, int messageSize) {
+        return ByteBuffer.allocate(Math.max(4, messageSize)).putInt(i).array();
     }
 
     private Consumer<byte[]> createConsumer(PulsarClient pulsarClient, String topicName) throws PulsarClientException {
