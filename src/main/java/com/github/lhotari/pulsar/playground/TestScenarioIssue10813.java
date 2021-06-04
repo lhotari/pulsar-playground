@@ -1,6 +1,7 @@
 package com.github.lhotari.pulsar.playground;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
@@ -32,7 +33,7 @@ public class TestScenarioIssue10813 {
         this.namespace = namespace;
     }
 
-    public void run() throws PulsarClientException, PulsarAdminException, InterruptedException {
+    public void run() throws Throwable {
         PulsarClient pulsarClient = PulsarClient.builder()
                 .serviceUrl(PULSAR_BROKER_URL)
                 .build();
@@ -64,18 +65,22 @@ public class TestScenarioIssue10813 {
             try (Producer<byte[]> producer = pulsarClient.newProducer()
                     .topic(topicName)
                     .enableBatching(true)
-                    // the below setting makes the test case to pass!
                     .blockIfQueueFull(true)
                     .create()) {
+                AtomicReference<Throwable> sendFailure = new AtomicReference<>();
                 for (int i = 0; i < maxMessages; i++) {
-                    try {
-                        // add a messages to the topic
-                        producer.sendAsync(intToBytes(i));
-                        if ((i + 1) % 1000 == 0) {
-                            log.info("Sent {} msgs", i + 1);
+                    // add a messages to the topic
+                    producer.sendAsync(intToBytes(i)).whenComplete((messageId, throwable) -> {
+                        if (throwable != null) {
+                            log.error("Failed to send message to topic {}", topicName, throwable);
+                            sendFailure.set(throwable);
                         }
-                    } catch (Throwable throwable) {
-                        log.error("Failed to send message to topic {}", topicName, throwable);
+                    });
+                    if ((i + 1) % 1000 == 0) {
+                        log.info("Sent {} msgs", i + 1);
+                    }
+                    Throwable throwable = sendFailure.get();
+                    if (throwable != null) {
                         throw throwable;
                     }
                 }
@@ -124,7 +129,7 @@ public class TestScenarioIssue10813 {
     }
 
 
-    public static void main(String[] args) throws PulsarClientException, PulsarAdminException {
+    public static void main(String[] args) throws Throwable {
         try {
             String namespace = "test_ns" + System.currentTimeMillis();
             if (args.length > 0) {
