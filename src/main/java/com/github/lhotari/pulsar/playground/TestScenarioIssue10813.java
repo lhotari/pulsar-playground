@@ -64,6 +64,8 @@ public class TestScenarioIssue10813 {
             try (Producer<byte[]> producer = pulsarClient.newProducer()
                     .topic(topicName)
                     .enableBatching(true)
+                    // the below setting makes the test case to pass!
+                    .blockIfQueueFull(true)
                     .create()) {
                 for (int i = 0; i < maxMessages; i++) {
                     try {
@@ -73,7 +75,8 @@ public class TestScenarioIssue10813 {
                             log.info("Sent {} msgs", i + 1);
                         }
                     } catch (Throwable throwable) {
-                        log.error("Failed to create topic {} after retries", topicName, throwable);
+                        log.error("Failed to send message to topic {}", topicName, throwable);
+                        throw throwable;
                     }
                 }
                 log.info("Flushing");
