@@ -7,6 +7,6 @@ broker:
     managedLedgerDefaultWriteQuorum: "2"
     managedLedgerDefaultAckQuorum: "2"
 zookeeper:
-  replicaCount: 3
+  replicaCount: 1
 proxy:
   replicaCount: 2
