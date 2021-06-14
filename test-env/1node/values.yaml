@@ -33,6 +33,11 @@ components:
 
 zookeeper:
   replicaCount: 1
+  volumes:
+    persistence: true
+    data:
+      name: data
+      size: 2Gi
   configData:
     PULSAR_EXTRA_OPTS: >
       -XX:+UnlockDiagnosticVMOptions
@@ -54,6 +59,14 @@ zookeeper:
 
 bookkeeper:
   replicaCount: 1
+  volumes:
+    persistence: true
+    journal:
+      name: journal
+      size: 1Gi
+    ledgers:
+      name: ledgers
+      size: 2Gi
   configData:
     BOOKIE_EXTRA_OPTS: >
       -XX:+UnlockDiagnosticVMOptions
@@ -144,3 +157,10 @@ proxy:
       -XX:-ResizePLAB
       -XX:+ExitOnOutOfMemoryError
       -XX:+PerfDisableSharedMem
+
+prometheus:
+  volumes:
+    persistence: true
+    data:
+      name: data
+      size: 5Gi
