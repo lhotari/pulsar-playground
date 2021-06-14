@@ -34,9 +34,11 @@ public class TestScenarioIssue5284 implements Runnable {
 
     private final int instanceId;
     private final String namespace;
-    private int maxMessages = 10000;
+    private int maxMessages = 100000;
     private int partitions = 10;
     private int messageSize = 20000;
+    private int maxPendingMessages = 100;
+    private int maxPendingMessagesAcrossPartitions = 200;
 
     public TestScenarioIssue5284(int instanceId) {
         this.instanceId = instanceId;
@@ -85,6 +87,8 @@ public class TestScenarioIssue5284 implements Runnable {
                     .topic(topicName)
                     .enableBatching(true)
                     .blockIfQueueFull(true)
+                    .maxPendingMessages(maxPendingMessages)
+                    .maxPendingMessagesAcrossPartitions(maxPendingMessagesAcrossPartitions)
                     .create()) {
                 AtomicReference<Throwable> sendFailure = new AtomicReference<>();
                 for (int i = 0; i < maxMessages; i++) {
