@@ -34,7 +34,7 @@ public class TestScenarioIssue5284 implements Runnable {
 
     private final int instanceId;
     private final String namespace;
-    private int maxMessages = 100000;
+    private int maxMessages = 10000;
     private int partitions = 10;
     private int messageSize = 20000;
 
