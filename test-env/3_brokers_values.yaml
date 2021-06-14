@@ -1,0 +1,12 @@
+bookkeeper:
+  replicaCount: 3
+broker:
+  replicaCount: 3
+  configData:
+    managedLedgerDefaultEnsembleSize: "2"
+    managedLedgerDefaultWriteQuorum: "2"
+    managedLedgerDefaultAckQuorum: "2"
+zookeeper:
+  replicaCount: 3
+proxy:
+  replicaCount: 2
