@@ -1,0 +1,23 @@
+images:
+  zookeeper:
+    repository: localhost:32000/pulsar/lunastreaming-all
+    tag: ac47b9e
+  bookie:
+    repository: localhost:32000/pulsar/lunastreaming-all
+    tag: ac47b9e
+  autorecovery:
+    repository: localhost:32000/pulsar/lunastreaming-all
+    tag: ac47b9e
+  broker:
+    repository: localhost:32000/pulsar/lunastreaming-all
+    tag: ac47b9e
+  proxy:
+    repository: localhost:32000/pulsar/lunastreaming-all
+    tag: ac47b9e
+  functions:
+    repository: localhost:32000/pulsar/lunastreaming-all
+    tag: ac47b9e
+pulsar_metadata:
+  image:
+    repository: localhost:32000/pulsar/lunastreaming-all
+    tag: ac47b9e
