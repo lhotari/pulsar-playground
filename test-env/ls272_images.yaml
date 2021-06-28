@@ -1,0 +1,23 @@
+images:
+  zookeeper:
+    repository: datastax/pulsar-all
+    tag: 2.7.2_1.1.0
+  bookie:
+    repository: datastax/pulsar-all
+    tag: 2.7.2_1.1.0
+  autorecovery:
+    repository: datastax/pulsar-all
+    tag: 2.7.2_1.1.0
+  broker:
+    repository: datastax/pulsar-all
+    tag: 2.7.2_1.1.0
+  proxy:
+    repository: datastax/pulsar-all
+    tag: 2.7.2_1.1.0
+  functions:
+    repository: datastax/pulsar-all
+    tag: 2.7.2_1.1.0
+pulsar_metadata:
+  image:
+    repository: datastax/pulsar-all
+    tag: 2.7.2_1.1.0
