@@ -1,0 +1,25 @@
+image:
+  zookeeper:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    tag: latest-280
+  bookie:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    tag: latest-280
+  bookkeeper:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    tag: latest-280
+  autorecovery:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    tag: latest-280
+  broker:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    tag: latest-280
+  proxy:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    tag: latest-280
+  functions:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    tag: latest-280
+  function:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    tag: latest-280

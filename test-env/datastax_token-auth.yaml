@@ -1,0 +1,3 @@
+enableTokenAuth: yes
+autoRecovery:
+  enableProvisionContainer: yes

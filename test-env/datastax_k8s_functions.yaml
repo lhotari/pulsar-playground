@@ -1,0 +1,7 @@
+extra:
+  function: yes
+  functionsAsPods: yes
+function:
+  replicaCount: 1
+  functionReplicaCount: 1
+  runtime: "kubernetes"
