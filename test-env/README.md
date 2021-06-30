@@ -196,7 +196,7 @@ sudo tee /etc/systemd/resolved.conf.d/00-k8s-dns-resolver.conf <<EOF
 [Resolve]
 Cache=yes
 DNS=172.30.183.10
-Domains=default.svc.cluster.local svc.cluster.local cluster.local
+Domains=~default.svc.cluster.local ~svc.cluster.local ~cluster.local
 EOF
 sudo service systemd-resolved restart
 ```
