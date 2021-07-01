@@ -1,0 +1,25 @@
+image:
+  zookeeper:
+    repository: datastax/lunastreaming-all
+    tag: 2.8.0_1.0.0
+  bookie:
+    repository: datastax/lunastreaming-all
+    tag: 2.8.0_1.0.0
+  bookkeeper:
+    repository: datastax/lunastreaming-all
+    tag: 2.8.0_1.0.0
+  autorecovery:
+    repository: datastax/lunastreaming-all
+    tag: 2.8.0_1.0.0
+  broker:
+    repository: datastax/lunastreaming-all
+    tag: 2.8.0_1.0.0
+  proxy:
+    repository: datastax/lunastreaming-all
+    tag: 2.8.0_1.0.0
+  functions:
+    repository: datastax/lunastreaming-all
+    tag: 2.8.0_1.0.0
+  function:
+    repository: datastax/lunastreaming-all
+    tag: 2.8.0_1.0.0
