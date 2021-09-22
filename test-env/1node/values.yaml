@@ -93,6 +93,12 @@ bookkeeper:
       -XX:+ExitOnOutOfMemoryError
       -XX:+PerfDisableSharedMem
       -verbosegc
+    # more aggressive disk cleanup
+    journalMaxSizeMB: "256"
+    majorCompactionInterval: "600"
+    minorCompactionInterval: "300"
+    compactionRateByEntries: "5000"
+    gcWaitTime: "60000"
 
 broker:
   replicaCount: 1
@@ -126,6 +132,9 @@ broker:
     managedLedgerDefaultEnsembleSize: "1"
     managedLedgerDefaultWriteQuorum: "1"
     managedLedgerDefaultAckQuorum: "1"
+    # more aggressive disk cleanup
+    managedLedgerMinLedgerRolloverTimeMinutes: "1"
+    managedLedgerMaxLedgerRolloverTimeMinutes: "5"
     # configure deletion of inactive topics
     brokerDeleteInactiveTopicsMaxInactiveDurationSeconds: "86400"
 
