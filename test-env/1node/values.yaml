@@ -128,6 +128,8 @@ broker:
       -XX:-ResizePLAB
       -XX:+ExitOnOutOfMemoryError
       -XX:+PerfDisableSharedMem
+    PULSAR_LOG_ROOT_LEVEL: "info"
+    PULSAR_LOG_LEVEL: "info"
     # storage settings
     managedLedgerDefaultEnsembleSize: "1"
     managedLedgerDefaultWriteQuorum: "1"
