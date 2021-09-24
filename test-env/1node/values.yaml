@@ -30,6 +30,7 @@ affinity:
 components:
   autorecovery: false
   toolset: false
+  functions: false
 
 zookeeper:
   replicaCount: 1
