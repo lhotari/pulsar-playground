@@ -62,7 +62,7 @@ Rebooting is needed after making this change.
 instructions using these aliases
 ```bash
 alias kubectl='microk8s kubectl'
-alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl"
+alias calicoctl="microk8s.kubectl exec -i -n kube-system calicoctl -- /calicoctl"
 ```
 
 
@@ -78,29 +78,49 @@ alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl"
           rm /var/snap/microk8s/current/args/cni-network/calico-kubeconfig
 
   * Edit `nano /var/snap/microk8s/current/args/kube-apiserver` and update the argument of the API server `--service-cluster-ip-range=10.152.183.0/24` to `--service-cluster-ip-range=172.30.183.0/24` .
+
+          sed 's/--service-cluster-ip-range=10.152.183.0/--service-cluster-ip-range=172.30.183.0/' -i /var/snap/microk8s/current/args/kube-apiserver
+
+
   * Edit `nano /var/snap/microk8s/current/certs/csr.conf.template` and replace `IP.2 = 10.152.183.1` with the the new IP `IP.2 = 172.30.183.1` the kubernetes service will have in the new IP range.
+
+          sed 's/10.152.183.1/172.30.183.1/' -i /var/snap/microk8s/current/certs/csr.conf.template
+
+
   * If you are also setting up a proxy, update `nano /var/snap/microk8s/current/args/containerd-env` with the respective IP ranges from:
 
           # NO_PROXY=10.1.0.0/16,10.152.183.0/24
   * to:
 
           # NO_PROXY=172.17.0.0/16,172.30.183.0/24
+          
+          sed 's/10.1.0.0\/16,10.152.183.0\/24/172.17.0.0\/16,172.30.183.0\/24/' -i /var/snap/microk8s/current/args/containerd-env
 
   * Start all services with `microk8s start`
-  * Reload the CNI with `kubectl apply -f /var/snap/microk8s/current/args/cni-network/cni.yaml`
+  * Reload the CNI with `microk8s.kubectl apply -f /var/snap/microk8s/current/args/cni-network/cni.yaml`
   * To enable dns you should make a copy of the dns manifest with `cp /snap/microk8s/current/actions/coredns.yaml /tmp/`
   * In this manifest copy `nano /tmp/coredns.yaml` update the `clusterIP: 10.152.183.10` to this IP `clusterIP: 172.30.183.10` in the new range and replace the `$ALLOWESCALATION` string with `false`.
     `$NAMESERVERS` should be replaced in the `/tmp/coredns.yaml` file with `1.1.1.1 1.0.0.1`.
-  * Apply the manifest with `kubectl apply -f /tmp/coredns.yaml`
-  * Add/Modify the following two arguments on the kubelt arguments at `nano /var/snap/microk8s/current/args/kubelet`:
+    
+           sed 's/10.152.183.10/172.30.183.10/' -i /tmp/coredns.yaml
+           sed 's/$ALLOWESCALATION/false/' -i /tmp/coredns.yaml
+           sed 's/$NAMESERVERS/1.1.1.1 1.0.0.1/' -i /tmp/coredns.yaml
 
-          --cluster-domain cluster.local
-          --cluster-dns 172.30.183.10
+  * Apply the manifest with `microk8s.kubectl apply -f /tmp/coredns.yaml`
+  * Add/Modify the following two arguments on the kubelt arguments at `nano /var/snap/microk8s/current/args/kubelet`:
+         
+        cat >> /var/snap/microk8s/current/args/kubelet << EOF
+        --cluster-domain cluster.local
+        --cluster-dns 172.30.183.10
+        EOF
 
   * Restart MicroK8s with `microk8s stop; microk8s start`.
 
 2. The IP range pods get their IPs from. By default this is set to `10.1.0.0/16`. To change this IP range you need to:
   * Edit `nano /var/snap/microk8s/current/args/kube-proxy` and update the `--cluster-cidr=10.1.0.0/16` argument to `--cluster-cidr=172.17.0.0/16`.
+
+        sed 's/10.1.0.0/172.17.0.0/' -i /var/snap/microk8s/current/args/kube-proxy
+
   * If you are also setting up a proxy, update `nano /var/snap/microk8s/current/args/containerd-env` with the respective IP ranges from:
 
           # NO_PROXY=10.1.0.0/16,10.152.183.0/24
@@ -119,14 +139,16 @@ alias calicoctl="kubectl exec -i -n kube-system calicoctl -- /calicoctl"
           - name: CALICO_IPV4POOL_CIDR
             value: "172.17.0.0/16"
 
-  * Apply the above yaml with `kubectl apply -f /var/snap/microk8s/current/args/cni-network/cni.yaml`.
+        sed 's/10.1.0.0/172.17.0.0/' -i /var/snap/microk8s/current/args/cni-network/cni.yaml
+
+  * Apply the above yaml with `microk8s.kubectl apply -f /var/snap/microk8s/current/args/cni-network/cni.yaml`.
 
   * Restart MicroK8s with `microk8s stop; microk8s start`.
 
 #### Calico CTL install
 
 ``` bash
-kubectl apply -f https://docs.projectcalico.org/manifests/calicoctl.yaml
+microk8s.kubectl apply -f https://docs.projectcalico.org/manifests/calicoctl.yaml
 ```
 #### Configure Calico
 
@@ -139,7 +161,7 @@ microk8s start
 The `default-ipv4-ippool`  is recreated on reboot with the settings from `/var/snap/microk8s/current/args/cni-network/cni.yaml`
 Verify the pod IP-s! They should use the new IP range:
 ``` bash
-kubectl get pod -o wide --all-namespaces
+microk8s.kubectl get pod -o wide --all-namespaces
 ```
 
 ### Configuring (after re-login so that microk8s group membership is effective)
