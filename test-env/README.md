@@ -62,7 +62,6 @@ Rebooting is needed after making this change.
 instructions using these aliases
 ```bash
 alias kubectl='microk8s kubectl'
-alias calicoctl="microk8s.kubectl exec -i -n kube-system calicoctl -- /calicoctl"
 ```
 
 
@@ -148,13 +147,15 @@ alias calicoctl="microk8s.kubectl exec -i -n kube-system calicoctl -- /calicoctl
 #### Calico CTL install
 
 ``` bash
-microk8s.kubectl apply -f https://docs.projectcalico.org/manifests/calicoctl.yaml
+curl -o calicoctl -O -L  "https://github.com/projectcalico/calicoctl/releases/download/v3.20.1/calicoctl"
+chmod +x calicoctl
+sudo mv calicoctl /usr/local/bin
 ```
 #### Configure Calico
 
 ``` bash
-calicoctl get ippool -o wide
-calicoctl delete pool default-ipv4-ippool
+calicoctl --allow-version-mismatch get ippool -o wide
+calicoctl --allow-version-mismatch delete pool default-ipv4-ippool
 microk8s stop
 microk8s start
 ```
@@ -181,7 +182,7 @@ chmod 0600 $HOME/.kube/config
 ### Access to microk8s containerd with microk8s group membership
 ```
 # edit gid=0 -> gid=997 to add access to microk8s group
-sudo vim /var/snap/microk8s/current/args/containerd-template.toml
+sudo sed 's/gid = 0/git = 997/' -i /var/snap/microk8s/current/args/containerd-template.toml
 microk8s stop
 microk8s start
 # this should work without sudo now
