@@ -56,6 +56,7 @@ Rebooting is needed after making this change.
 ### Change ip range to 172.17.0.0/16 & 172.30.183.0/24
 
 [Original source](https://github.com/ubuntu/microk8s/issues/276#issuecomment-754704993)
+[Alternative, official instructions](https://microk8s.io/docs/change-cidr)
 
 #### Configuration:
 
