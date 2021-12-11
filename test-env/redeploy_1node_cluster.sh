@@ -15,4 +15,5 @@ if [ -z "$value_files" ]; then
     value_files="-f $SCRIPT_DIR/java_test_images.yaml"
 fi
 echo "Using values '${value_files}'"
-helm upgrade --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace -f $SCRIPT_DIR/1node/values.yaml $value_files --set initialize=true "${DEPLOYMENT_NAME}" apache/pulsar
+CHART="${CHART:-apache/pulsar}"
+helm upgrade --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace -f $SCRIPT_DIR/1node/values.yaml $value_files --set initialize=true "${DEPLOYMENT_NAME}" "$CHART"
