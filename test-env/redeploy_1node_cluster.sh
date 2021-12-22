@@ -14,6 +14,11 @@ done
 if [ -z "$value_files" ]; then
     value_files="-f $SCRIPT_DIR/java_test_images.yaml"
 fi
-echo "Using values '${value_files}'"
 CHART="${CHART:-apache/pulsar}"
-helm upgrade --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace -f $SCRIPT_DIR/1node/values.yaml $value_files --set initialize=true "${DEPLOYMENT_NAME}" "$CHART"
+if [[ $CHART == *datastax-pulsar* ]]; then
+    value_files="-f $SCRIPT_DIR/datastax_dev-values.yaml ${value_files}"
+else
+    value_files="-f $SCRIPT_DIR/1node/values.yaml ${value_files}"
+fi
+echo "Using values '${value_files}'"
+helm upgrade --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace $value_files --set initialize=true "${DEPLOYMENT_NAME}" "$CHART"
