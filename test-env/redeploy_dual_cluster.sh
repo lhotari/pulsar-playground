@@ -8,11 +8,6 @@ function install_pulsar_cluster() {
   DEPLOYMENT_NAMESPACE="${ns}" DEPLOYMENT_NAME="${ns}-testenv-deployment" $SCRIPT_DIR/redeploy_1node_cluster.sh "$@"
 }
 
-function pulsar_admin() {
-  kubectl exec -i -t -n cluster-a cluster-a-pulsar-broker-0 -- \
-   bin/pulsar-admin "${@}"
-}
-
 install_pulsar_cluster cluster-a "$@"
 echo -n "Wait until cluster-a broker is available..."
 until nslookup cluster-a-pulsar-broker.cluster-a.svc.cluster.local >/dev/null 2>&1; do
