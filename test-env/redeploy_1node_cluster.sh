@@ -13,8 +13,12 @@ fi
 
 value_files=""
 for arg in "$@"; do
+    if [[ "$arg" == "--set" ]]; then
+        break
+    fi
     if [ -f "$arg" ]; then
         value_files+=" -f $arg"
+        shift
     else
         >&2 echo "Cannot find $arg" && exit 1
     fi
@@ -31,4 +35,4 @@ else
     initialize_params="${initialize_params} --set namespace=${DEPLOYMENT_NAMESPACE} --set clusterName=${DEPLOYMENT_NAMESPACE}"
 fi
 echo "Using values '${value_files}'"
-helm upgrade --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace $value_files $initialize_params "${DEPLOYMENT_NAME}" "$CHART"
+helm upgrade --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace $value_files $initialize_params "${DEPLOYMENT_NAME}" "$CHART" "$@"
