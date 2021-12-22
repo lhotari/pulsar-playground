@@ -1,23 +1,42 @@
 images:
   zookeeper:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-ef0669153
+    tag: 2.10.0-SNAPSHOT-5af21b99c
   bookie:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-ef0669153
+    tag: 2.10.0-SNAPSHOT-5af21b99c
   autorecovery:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-ef0669153
+    tag: 2.10.0-SNAPSHOT-5af21b99c
   broker:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-ef0669153
+    tag: 2.10.0-SNAPSHOT-5af21b99c
   proxy:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-ef0669153
+    tag: 2.10.0-SNAPSHOT-5af21b99c
   functions:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-ef0669153
+    tag: 2.10.0-SNAPSHOT-5af21b99c
 pulsar_metadata:
   image:
     repository: localhost:32000/apachepulsar/java-test-image
-    tag: 2.8.0-SNAPSHOT-ef0669153
+    tag: 2.10.0-SNAPSHOT-5af21b99c
+image:
+  broker:
+    repository: localhost:32000/apachepulsar/java-test-image
+    tag: 2.10.0-SNAPSHOT-5af21b99c
+  brokerSts:
+    repository: localhost:32000/apachepulsar/java-test-image
+    tag: 2.10.0-SNAPSHOT-5af21b99c
+  function:
+    repository: localhost:32000/apachepulsar/java-test-image
+    tag: 2.10.0-SNAPSHOT-5af21b99c
+  zookeeper:
+    repository: localhost:32000/apachepulsar/java-test-image
+    tag: 2.10.0-SNAPSHOT-5af21b99c
+  bookkeeper:
+    repository: localhost:32000/apachepulsar/java-test-image
+    tag: 2.10.0-SNAPSHOT-5af21b99c
+  proxy:
+    repository: localhost:32000/apachepulsar/java-test-image
+    tag: 2.10.0-SNAPSHOT-5af21b99c
