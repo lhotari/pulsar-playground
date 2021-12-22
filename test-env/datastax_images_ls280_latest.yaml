@@ -1,25 +1,33 @@
 image:
-  zookeeper:
-    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
-    tag: latest-280
-  bookie:
-    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
-    tag: latest-280
-  bookkeeper:
-    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
-    tag: latest-280
-  autorecovery:
-    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
-    tag: latest-280
   broker:
     repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: Always
     tag: latest-280
-  proxy:
+  brokerSts:
     repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
-    tag: latest-280
-  functions:
-    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: Always
     tag: latest-280
   function:
     repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: Always
+    tag: latest-280
+  zookeeper:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming
+    pullPolicy: Always
+    tag: latest-280
+  bookkeeper:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming
+    pullPolicy: Always
+    tag: latest-280
+  proxy:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming
+    pullPolicy: Always
+    tag: latest-280
+  bastion:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming
+    pullPolicy: Always
+    tag: latest-280
+  pulsarSQL:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: Always
     tag: latest-280
