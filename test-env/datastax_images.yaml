@@ -1,0 +1,33 @@
+image:
+  broker:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.11
+  brokerSts:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.11
+  function:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.11
+  zookeeper:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.11
+  bookkeeper:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.11
+  proxy:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.11
+  bastion:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.11
+  pulsarSQL:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.11
