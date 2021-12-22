@@ -48,6 +48,14 @@ bookkeeper:
       cpu: 0.3
   configData:
     BOOKIE_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+    diskUsageThreshold: "0.99"
+    useHostNameAsBookieID: "true"
+    majorCompactionInterval: "86400"
+    minorCompactionInterval: "600"
+    compactionRateByEntries: "10000"
+    gcWaitTime: "300000"
+    PULSAR_PREFIX_diskUsageLwmThreshold: "0.97"
+    PULSAR_PREFIX_isForceGCAllowWhenNoSpace: "true"
 
 brokerSts:
   component: broker
