@@ -21,11 +21,13 @@ enableTokenAuth: false
 restartOnConfigMapChange:
   enabled: true
 extra:
-  function: true
-  burnell: true
-  burnellLogCollector: true
-  pulsarHeartbeat: true
-  pulsarAdminConsole: true
+  function: false
+  burnell: false
+  burnellLogCollector: false
+  pulsarHeartbeat: false
+  pulsarAdminConsole: false
+  bastion: false
+  wsproxy: false
 
 zookeeper:
   replicaCount: 1
@@ -94,15 +96,15 @@ proxy:
       enabled: true
 
 grafanaDashboards:
-  enabled: true
+  enabled: false
 
 pulsarAdminConsole:
   replicaCount: 1
 
 kube-prometheus-stack:
-  enabled: true
+  enabled: false
   prometheusOperator:
-    enabled: true
+    enabled: false
   grafana:
-    enabled: true
+    enabled: false
     adminPassword: e9JYtk83*4#PM8
