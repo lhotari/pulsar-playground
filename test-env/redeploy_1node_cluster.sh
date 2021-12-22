@@ -1,8 +1,16 @@
 #!/bin/bash
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-$SCRIPT_DIR/delete_deployment.sh || exit 1
 . $SCRIPT_DIR/test-env.env
-echo 'Installing 1node cluster'
+
+if [[ "$1" == "--upgrade" ]]; then
+    shift
+    echo 'Upgrading 1node cluster'
+else
+    $SCRIPT_DIR/delete_deployment.sh || exit 1
+    initialize_params="--set initialize=true"
+    echo 'Installing 1node cluster'
+fi
+
 value_files=""
 for arg in "$@"; do
     if [ -f "$arg" ]; then
@@ -21,4 +29,4 @@ else
     value_files="-f $SCRIPT_DIR/1node/values.yaml ${value_files}"
 fi
 echo "Using values '${value_files}'"
-helm upgrade --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace $value_files --set initialize=true "${DEPLOYMENT_NAME}" "$CHART"
+helm upgrade --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace $value_files $initialize_params "${DEPLOYMENT_NAME}" "$CHART"
