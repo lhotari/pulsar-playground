@@ -13,7 +13,7 @@ georep_tenant="georep"
 georep_namespace="${georep_tenant}/replicated"
 georep_topicbase="perftest"
 georep_topic="persistent://${georep_namespace}/${georep_topicbase}"
-partition_count=50
+partition_count=200
 
 function set_current_cluster() {
     current_namespace="$1"
@@ -52,7 +52,7 @@ function unload_georep_topic() {
 source /pulsar/conf/client.conf
 
 # unload individual partitions
-curl -L --retry 3 -k --parallel --parallel-immediate --parallel-max 10 -X PUT "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}-partition-[0-${partition_count}]/unload"
+curl -L --retry 3 -k --parallel --parallel-immediate --parallel-max 10 -X PUT "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}-partition-[0-$((partition_count - 1))]/unload"
 # unload partitioned topic
 curl -L --retry 3 -k -X PUT "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}/unload"
 EOF
@@ -67,7 +67,7 @@ source /pulsar/conf/client.conf
 # delete partitioned topic
 curl -L --retry 3 -k -X DELETE "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}/partitions?force=true&deleteSchema=false"
 # delete individual partitions
-curl -L --retry 3 -k --parallel --parallel-immediate --parallel-max 10 -X DELETE "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}-partition-[0-${partition_count}]?force=true&deleteSchema=false"
+curl -L --retry 3 -k --parallel --parallel-immediate --parallel-max 10 -X DELETE "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}-partition-[0-$((partition_count - 1))]?force=true&deleteSchema=false"
 EOF
 
     run_command_in_cluster "${admin_script}"
