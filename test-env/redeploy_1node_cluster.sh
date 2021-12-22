@@ -25,7 +25,7 @@ fi
 CHART="${CHART:-apache/pulsar}"
 if [[ $CHART == *datastax-pulsar* ]]; then
     value_files="-f $SCRIPT_DIR/datastax_dev-values.yaml ${value_files}"
-    initialize_params="${initialize_params} --set fullnameOverride=${DEPLOYMENT_NAMESPACE}"
+    initialize_params="${initialize_params} --set fullnameOverride=${DEPLOYMENT_NAMESPACE}-pulsar"
 else
     value_files="-f $SCRIPT_DIR/1node/values.yaml ${value_files}"
     initialize_params="${initialize_params} --set namespace=${DEPLOYMENT_NAMESPACE} --set clusterName=${DEPLOYMENT_NAMESPACE}"
