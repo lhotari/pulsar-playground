@@ -50,11 +50,12 @@ EOF
 function unload_georep_topic() {
     read -r -d '' admin_script <<EOF
 source /pulsar/conf/client.conf
+pulsar_jwt=\$(cat /pulsar/token-superuser-stripped.jwt)
 
 # unload individual partitions
-curl -L --retry 3 -k --parallel --parallel-immediate --parallel-max 10 -X PUT "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}-partition-[0-$((partition_count - 1))]/unload"
+curl -L --retry 3 -k -H "Authorization: Bearer \${pulsar_jwt}" --parallel --parallel-immediate --parallel-max 10 -X PUT "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}-partition-[0-$((partition_count - 1))]/unload"
 # unload partitioned topic
-curl -L --retry 3 -k -X PUT "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}/unload"
+curl -L --retry 3 -k -H "Authorization: Bearer \${pulsar_jwt}" -X PUT "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}/unload"
 EOF
 
     run_command_in_cluster "${admin_script}"
@@ -63,11 +64,12 @@ EOF
 function delete_georep_topic() {
     read -r -d '' admin_script <<EOF
 source /pulsar/conf/client.conf
+pulsar_jwt=\$(cat /pulsar/token-superuser-stripped.jwt)
 
 # delete partitioned topic
-curl -L --retry 3 -k -X DELETE "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}/partitions?force=true&deleteSchema=false"
+curl -L --retry 3 -k -H "Authorization: Bearer \${pulsar_jwt}" -X DELETE "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}/partitions?force=true&deleteSchema=false"
 # delete individual partitions
-curl -L --retry 3 -k --parallel --parallel-immediate --parallel-max 10 -X DELETE "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}-partition-[0-$((partition_count - 1))]?force=true&deleteSchema=false"
+curl -L --retry 3 -k -H "Authorization: Bearer \${pulsar_jwt}" --parallel --parallel-immediate --parallel-max 10 -X DELETE "\${webServiceUrl}admin/v2/persistent/${georep_namespace}/${georep_topicbase}-partition-[0-$((partition_count - 1))]?force=true&deleteSchema=false"
 EOF
 
     run_command_in_cluster "${admin_script}"
@@ -76,9 +78,10 @@ EOF
 function delete_georep_namespace() {
     read -r -d '' admin_script <<EOF
 source /pulsar/conf/client.conf
+pulsar_jwt=\$(cat /pulsar/token-superuser-stripped.jwt)
 
 # force delete namespace
-curl -L --retry 3 -k -X DELETE "\${webServiceUrl}admin/v2/namespaces/${georep_namespace}?force=true"
+curl -L --retry 3 -k -H "Authorization: Bearer \${pulsar_jwt}" -X DELETE "\${webServiceUrl}admin/v2/namespaces/${georep_namespace}?force=true"
 EOF
 
     run_command_in_cluster "${admin_script}"
