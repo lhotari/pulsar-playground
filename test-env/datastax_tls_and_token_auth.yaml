@@ -1,0 +1,15 @@
+enableTls: true
+enableTokenAuth: yes
+
+cert-manager:
+  enabled: true
+
+createCertificates:
+  selfSigned:
+    enabled: true
+
+extra:
+  burnell: true
+
+autoRecovery:
+  enableProvisionContainer: yes
