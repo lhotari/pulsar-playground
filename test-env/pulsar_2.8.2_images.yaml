@@ -1,0 +1,17 @@
+images:
+  zookeeper:
+    tag: 2.8.2
+  bookie:
+    tag: 2.8.2
+  autorecovery:
+    tag: 2.8.2
+  broker:
+    tag: 2.8.2
+  proxy:
+    tag: 2.8.2
+  functions:
+    tag: 2.8.2
+
+pulsar_metadata:
+  image:
+    tag: 2.8.2
