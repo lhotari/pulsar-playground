@@ -13,7 +13,7 @@ function run_command_in_cluster() {
 function create_client_conf_for_cluster() {
     local cid=$1
     set_current_cluster "cluster-${cid}"
-    token="$(run_command_in_cluster "cat /pulsar/token-superuser-stripped.jwt")"
+    token="$(run_command_in_cluster "cat /pulsar/token-superuser/superuser.jwt")"
     cat > client_cluster-${cid}.conf <<EOF
 webServiceUrl=https://cluster-${cid}-pulsar-proxy.cluster-${cid}.svc.cluster.local:8443
 brokerServiceUrl=pulsar+ssl://cluster-${cid}-pulsar-proxy.cluster-${cid}.svc.cluster.local:6651
