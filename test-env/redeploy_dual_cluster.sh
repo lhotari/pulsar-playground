@@ -22,3 +22,22 @@ until nslookup cluster-b-pulsar-broker.cluster-b.svc.cluster.local >/dev/null 2>
   sleep 3;
 done;
 echo
+
+echo "Wait for proxies to start..."
+kubectl wait --timeout=600s --for=condition=ready pod -n cluster-a -l component=proxy
+kubectl wait --timeout=600s --for=condition=ready pod -n cluster-b -l component=proxy
+
+echo "Kill proxy pods to restart..."
+kubectl delete pod -n cluster-a -l component=proxy
+kubectl delete pod -n cluster-b -l component=proxy
+
+echo "Wait for proxies to start..."
+kubectl wait --timeout=600s --for=condition=ready pod -n cluster-a -l component=proxy
+kubectl wait --timeout=600s --for=condition=ready pod -n cluster-b -l component=proxy
+
+echo "Restart brokers..."
+kubectl rollout restart statefulset -n cluster-a cluster-a-pulsar-broker
+kubectl rollout restart statefulset -n cluster-b cluster-b-pulsar-broker
+echo "Waiting for brokers..."
+kubectl rollout status statefulset -n cluster-a cluster-a-pulsar-broker
+kubectl rollout status statefulset -n cluster-b cluster-b-pulsar-broker
