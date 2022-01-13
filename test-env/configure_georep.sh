@@ -4,10 +4,10 @@ command="${1:-start}"
 norestart="${2:-1}"
 
 cluster_a_id=cluster-a-pulsar
-cluster_a_hostname=cluster-a-pulsar-proxy.cluster-a.svc.cluster.local
+cluster_a_hostname=cluster-a-pulsar-broker.cluster-a.svc.cluster.local
 
 cluster_b_id=cluster-b-pulsar
-cluster_b_hostname=cluster-b-pulsar-proxy.cluster-b.svc.cluster.local
+cluster_b_hostname=cluster-b-pulsar-broker.cluster-b.svc.cluster.local
 
 georep_tenant="georep"
 georep_namespace="${georep_tenant}/replicated"

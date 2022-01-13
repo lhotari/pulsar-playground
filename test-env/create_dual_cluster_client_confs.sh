@@ -15,8 +15,8 @@ function create_client_conf_for_cluster() {
     set_current_cluster "cluster-${cid}"
     token="$(run_command_in_cluster "cat /pulsar/token-superuser-stripped.jwt")"
     cat > client_cluster-${cid}.conf <<EOF
-webServiceUrl=https://cluster-${cid}-pulsar-proxy.cluster-${cid}.svc.cluster.local:8443
-brokerServiceUrl=pulsar+ssl://cluster-${cid}-pulsar-proxy.cluster-${cid}.svc.cluster.local:6651
+webServiceUrl=https://cluster-${cid}-pulsar-broker.cluster-${cid}.svc.cluster.local:8443
+brokerServiceUrl=pulsar+ssl://cluster-${cid}-pulsar-broker.cluster-${cid}.svc.cluster.local:6651
 authPlugin=org.apache.pulsar.client.impl.auth.AuthenticationToken
 authParams=token:${token}
 tlsAllowInsecureConnection=true
