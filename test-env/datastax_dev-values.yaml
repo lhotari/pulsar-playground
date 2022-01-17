@@ -23,7 +23,7 @@ restartOnConfigMapChange:
 extra:
   broker: false
   brokerSts: true
-  function: false
+  function: true
   burnell: false
   burnellLogCollector: false
   pulsarHeartbeat: false
