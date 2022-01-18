@@ -23,7 +23,8 @@ set_current_cluster "cluster-a"
 
 function run_command_in_cluster() {
     local admin_script="$1"
-    kubectl exec -i -n "$current_namespace" "$(kubectl get pod -n "$current_namespace" -l component=broker -o name | head -1)" -- bash -xc "export PATH=/pulsar/bin:\$PATH; ${admin_script}"
+    local flags="${2:-"-x"}"
+    kubectl exec -i -n "$current_namespace" "$(kubectl get pod -n "$current_namespace" -l component=broker -o name | head -1)" -c ${current_namespace}-pulsar-broker -- bash -c $flags "export PATH=/pulsar/bin:\$PATH; ${admin_script}"
 }
 
 function stop_georep() {
@@ -92,6 +93,7 @@ function set_up_georep (){
     local own_cluster_name="$1"
     local peer_cluster_dns="$2"
     local peer_cluster_name="$3"
+    local peer_cluster_token="$4"
    
 
     echo "Setting up georep for peer cluster ${peer_cluster_name}, creating ${georep_topic} and removing the existing subscription..."
@@ -99,8 +101,7 @@ function set_up_georep (){
     read -r -d '' admin_script <<EOF
 pulsar-admin tenants create ${georep_tenant}
 pulsar-admin namespaces create -b 64 ${georep_namespace}
-token="\$(cat /pulsar/token-superuser/superuser.jwt)"
-pulsar-admin clusters create --tls-enable --tls-allow-insecure --tls-trust-certs-filepath /pulsar/certs/tls.crt --auth-plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-parameters "token:\${token}" --broker-url-secure pulsar+ssl://${peer_cluster_dns}:6651 --url-secure https://${peer_cluster_dns}:8443 ${peer_cluster_name}
+pulsar-admin clusters create --tls-enable --tls-allow-insecure --tls-trust-certs-filepath /pulsar/certs/tls.crt --auth-plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-parameters "token:${peer_cluster_token}" --broker-url-secure pulsar+ssl://${peer_cluster_dns}:6651 --url-secure https://${peer_cluster_dns}:8443 ${peer_cluster_name}
 #pulsar-admin clusters create --broker-url pulsar://${peer_cluster_dns}:6650 --url http://${peer_cluster_dns}:8080 ${peer_cluster_name}
 pulsar-admin tenants update --allowed-clusters "${cluster_a_id},${cluster_b_id}" ${georep_tenant}
 pulsar-admin namespaces set-clusters -c ${own_cluster_name},${peer_cluster_name} ${georep_namespace}
@@ -167,11 +168,16 @@ function unconfigure_georep() {
 function configure_georep() {
     echo "Configuring geo-replication..."
 
+    set_current_cluster cluster-a
+    token_a=$(run_command_in_cluster "cat /pulsar/token-superuser/superuser.jwt" "")
+    set_current_cluster cluster-b
+    token_b=$(run_command_in_cluster "cat /pulsar/token-superuser/superuser.jwt" "")
+
     # setup georeplication and create topics
     set_current_cluster cluster-a
-    set_up_georep "${cluster_a_id}" "${cluster_b_hostname}" "${cluster_b_id}" 
+    set_up_georep "${cluster_a_id}" "${cluster_b_hostname}" "${cluster_b_id}" "${token_b}"
     set_current_cluster cluster-b
-    set_up_georep "${cluster_b_id}" "${cluster_a_hostname}" "${cluster_a_id}"
+    set_up_georep "${cluster_b_id}" "${cluster_a_hostname}" "${cluster_a_id}" "${token_a}"
 
     echo "Wait 15 seconds..."
     sleep 15
