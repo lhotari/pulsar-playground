@@ -224,3 +224,10 @@ Domains=~default.svc.cluster.local ~svc.cluster.local ~cluster.local
 EOF
 sudo service systemd-resolved restart
 ```
+
+## Enabling k8s feature gates for microk8s
+
+edit the https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/#feature-gates-for-alpha-or-beta-features argument in `/var/snap/microk8s/current/args/kube-apiserver`
+```
+vim /var/snap/microk8s/current/args/kube-apiserver
+```
