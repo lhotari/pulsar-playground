@@ -165,7 +165,11 @@ microk8s enable metallb:192.168.140.43-192.168.140.49
 
 ### Adding to kubectl
 ```
-microk8s config -l > $HOME/.kube/config
+# remove possible previous entry
+kubectl config delete-context microk8s
+kubectl config delete-cluster microk8s-cluster
+kubectl config delete-user admin
+KUBECONFIG=~/.kube/config:<(microk8s config -l) kubectl config view --flatten > /tmp/kubeconfig.new$$ && mv /tmp/kubeconfig.new$$ ~/.kube/config
 chmod 0600 $HOME/.kube/config
 ```
 
