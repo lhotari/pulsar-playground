@@ -35,4 +35,5 @@ else
     initialize_params="${initialize_params} --set namespace=${DEPLOYMENT_NAMESPACE} --set clusterName=${DEPLOYMENT_NAMESPACE}"
 fi
 echo "Using values '${value_files}'"
+set -x
 helm upgrade --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace $value_files $initialize_params "${DEPLOYMENT_NAME}" "$CHART" "$@"
