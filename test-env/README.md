@@ -143,23 +143,12 @@ alias kubectl='microk8s kubectl'
 
   * Apply the above yaml with `microk8s.kubectl apply -f /var/snap/microk8s/current/args/cni-network/cni.yaml`.
 
+  * Remove default-ipv4-ippool (it will get recreated after startup)
+
+        microk8s.kubectl delete ippool/default-ipv4-ippool
+
   * Restart MicroK8s with `microk8s stop; microk8s start`.
 
-#### Calico CTL install
-
-``` bash
-curl -o calicoctl -O -L  "https://github.com/projectcalico/calicoctl/releases/download/v3.20.1/calicoctl"
-chmod +x calicoctl
-sudo mv calicoctl /usr/local/bin
-```
-#### Configure Calico
-
-``` bash
-calicoctl --allow-version-mismatch get ippool -o wide
-calicoctl --allow-version-mismatch delete pool default-ipv4-ippool
-microk8s stop
-microk8s start
-```
 The `default-ipv4-ippool`  is recreated on reboot with the settings from `/var/snap/microk8s/current/args/cni-network/cni.yaml`
 Verify the pod IP-s! They should use the new IP range:
 ``` bash
