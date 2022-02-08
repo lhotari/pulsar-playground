@@ -1,4 +1,7 @@
 #!/bin/bash
+# Prequiresite: microk8s with the configuration explained in README.md
+# Tested with DataStax Luna Streaming LS280 (based on Apache Pulsar 2.8.x) with 3 brokers:
+# CHART=datastax-pulsar/pulsar ./redeploy_1node_cluster.sh ls280_images.yaml --set brokerSts.replicaCount=3
 TENANT=mytenant$$
 NS="${TENANT}/myns"
 TOPIC="persistent://${NS}/mytopic"
