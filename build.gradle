@@ -1,5 +1,6 @@
 plugins {
-    id 'java'
+    id 'application'
+    id "io.freefair.lombok" version "6.3.0"
 }
 
 repositories {
@@ -8,20 +9,14 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
-    compileOnly 'org.projectlombok:lombok:1.18.16'
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    implementation 'org.apache.pulsar:pulsar-client:2.8.2'
+    implementation 'org.apache.pulsar:pulsar-client-admin:2.8.2'
+    implementation 'org.slf4j:slf4j-simple:1.7.32'
 
-    testCompileOnly 'org.projectlombok:lombok:1.18.16'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
-
-    implementation 'org.apache.pulsar:pulsar-client:2.7.2'
-    implementation 'org.apache.pulsar:pulsar-client-admin:2.7.2'
-    implementation 'org.slf4j:slf4j-simple:1.7.30'
-
-    implementation 'io.github.resilience4j:resilience4j-retry:1.7.0'
+    implementation 'io.github.resilience4j:resilience4j-retry:1.7.1'
 }
 
 tasks.named('test') {

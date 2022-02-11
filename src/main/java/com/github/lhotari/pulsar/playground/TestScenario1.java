@@ -33,7 +33,9 @@ public class TestScenario1 {
         NamespaceName namespace = NamespaceName.get("public", "test_ns" + System.currentTimeMillis());
         Policies policies = new Policies();
         policies.retention_policies = new RetentionPolicies(-1, -1);
-        policies.autoTopicCreationOverride = new AutoTopicCreationOverride(false, null, null);
+        policies.autoTopicCreationOverride = AutoTopicCreationOverride.builder()
+                .allowAutoTopicCreation(false)
+                .build();
         pulsarAdmin.namespaces().createNamespace(namespace.toString(), policies);
 
         CheckedFunction1<String, Void> createTopicFunction = createCreateTopicFunctionWithRetries(pulsarAdmin);
