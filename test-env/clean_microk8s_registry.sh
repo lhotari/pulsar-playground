@@ -16,4 +16,4 @@ for repo in $(echo "${repositories}" | jq -r '.repositories[]'); do
   done
 done
 kubectl exec -it --namespace="container-registry" $(kubectl get pods --namespace="container-registry" -o name) -- \
-  bash -c "bin/registry garbage-collect /etc/docker/registry/config.yml"
+  sh -c "bin/registry garbage-collect /etc/docker/registry/config.yml"
