@@ -148,6 +148,7 @@ proxy:
   ingress:
     enabled: true
   configData:
+    httpNumThreads: "16"
     PULSAR_EXTRA_OPTS: >
       -XX:+UnlockDiagnosticVMOptions
       -XX:+DebugNonSafepoints
