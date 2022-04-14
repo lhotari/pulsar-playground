@@ -12,8 +12,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
-    implementation 'org.apache.pulsar:pulsar-client:2.8.2'
-    implementation 'org.apache.pulsar:pulsar-client-admin:2.8.2'
+    implementation 'org.apache.pulsar:pulsar-client:2.10.0'
+    implementation 'org.apache.pulsar:pulsar-client-admin:2.10.0'
     implementation 'org.slf4j:slf4j-simple:1.7.32'
 
     implementation 'io.github.resilience4j:resilience4j-retry:1.7.1'
