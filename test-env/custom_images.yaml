@@ -1,24 +1,42 @@
 images:
   zookeeper:
-    repository: localhost:32000/apachepulsar/pulsar-all
-    tag: 2.8.0-SNAPSHOT-4c204c2c7
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
   bookie:
-    repository: localhost:32000/apachepulsar/pulsar-all
-    tag: 2.8.0-SNAPSHOT-4c204c2c7
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
   autorecovery:
-    repository: localhost:32000/apachepulsar/pulsar-all
-    tag: 2.8.0-SNAPSHOT-4c204c2c7
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
   broker:
-    repository: localhost:32000/apachepulsar/pulsar-all
-    tag: 2.8.0-SNAPSHOT-4c204c2c7
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
   proxy:
-    repository: localhost:32000/apachepulsar/pulsar-all
-    tag: 2.8.0-SNAPSHOT-4c204c2c7
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
   functions:
-    repository: localhost:32000/apachepulsar/pulsar-all
-    tag: 2.8.0-SNAPSHOT-4c204c2c7
-
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
 pulsar_metadata:
   image:
-    repository: localhost:32000/apachepulsar/pulsar-all
-    tag: 2.8.0-SNAPSHOT-4c204c2c7
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
+image:
+  broker:
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
+  brokerSts:
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
+  function:
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
+  zookeeper:
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
+  bookkeeper:
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
+  proxy:
+    repository: localhost:32000/apachepulsar/pulsar
+    tag: 2.7.2.1.1.31-SNAPSHOT
