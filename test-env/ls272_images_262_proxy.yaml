@@ -1,0 +1,50 @@
+image:
+  zookeeper:
+    repository: datastax/lunastreaming
+    tag: 2.7.2_1.1.28
+  bookie:
+    repository: datastax/lunastreaming
+    tag: 2.8.0_1.1.4
+  bookkeeper:
+    repository: datastax/lunastreaming
+    tag: 2.7.2_1.1.28
+  autorecovery:
+    repository: datastax/lunastreaming
+    tag: 2.8.0_1.1.4
+  broker:
+    repository: datastax/lunastreaming
+    tag: 2.7.2_1.1.28
+  proxy:
+    repository: datastax/pulsar
+    tag: 2.6.2_1.0.1
+  functions:
+    repository: datastax/lunastreaming
+    tag: 2.8.0_1.1.4
+  function:
+    repository: datastax/lunastreaming
+    tag: 2.7.2_1.1.28
+  brokerSts:
+    tag: 2.7.2_1.1.28
+pulsar_metadata:
+  image:
+    repository: datastax/lunastreaming
+    tag: 2.7.2_1.1.28
+images:
+  zookeeper:
+    repository: datastax/lunastreaming
+    tag: 2.7.2_1.1.28
+  bookie:
+    repository: datastax/lunastreaming
+    tag: 2.7.2_1.1.28
+  autorecovery:
+    repository: datastax/lunastreaming
+    tag: 2.7.2_1.1.28
+  broker:
+    repository: datastax/lunastreaming
+    tag: 2.7.2_1.1.28
+  proxy:
+    repository: datastax/pulsar
+    tag: 2.6.2_1.0.1
+  functions:
+    repository: datastax/lunastreaming
+    tag: 2.7.2_1.1.28
