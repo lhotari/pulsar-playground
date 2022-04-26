@@ -1,0 +1,42 @@
+image:
+  zookeeper:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+  bookkeeper:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+  broker:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+  proxy:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+  function:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+  brokerSts:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+pulsar_metadata:
+  image:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+images:
+  zookeeper:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+  bookie:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+  autorecovery:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+  broker:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+  proxy:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
+  functions:
+    repository: localhost:32000/pulsar/lunastreaming
+    tag: release-ls272_1.1.32
