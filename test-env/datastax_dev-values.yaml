@@ -115,6 +115,7 @@ proxy:
       cpu: 0.3
   configData:
     PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m"
+    maxConcurrentInboundConnections: "30000"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
