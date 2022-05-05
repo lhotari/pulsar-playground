@@ -38,6 +38,11 @@ zookeeper:
       memory: 300Mi
       cpu: 0.3
   configData:
+    PULSAR_EXTRA_OPTS: >
+      -XX:+UnlockDiagnosticVMOptions
+      -XX:+DebugNonSafepoints
+      -XX:+FlightRecorder
+      -XX:FlightRecorderOptions=stackdepth=1024  
     PULSAR_MEM: "-Xms64m -Xmx512m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError"
 
 bookkeeper:
@@ -47,6 +52,11 @@ bookkeeper:
       memory: 512Mi
       cpu: 0.3
   configData:
+    BOOKIE_EXTRA_OPTS: >
+      -XX:+UnlockDiagnosticVMOptions
+      -XX:+DebugNonSafepoints
+      -XX:+FlightRecorder
+      -XX:FlightRecorderOptions=stackdepth=1024  
     BOOKIE_MEM: "-Xms128m -Xmx1G -XX:MaxDirectMemorySize=1G -XX:+ExitOnOutOfMemoryError"
     diskUsageThreshold: "0.99"
     useHostNameAsBookieID: "true"
@@ -69,6 +79,11 @@ brokerSts:
       memory: 600Mi
       cpu: 0.3
   configData:
+    PULSAR_EXTRA_OPTS: >
+      -XX:+UnlockDiagnosticVMOptions
+      -XX:+DebugNonSafepoints
+      -XX:+FlightRecorder
+      -XX:FlightRecorderOptions=stackdepth=1024  
     PULSAR_MEM: "-Xms128m -Xmx1G -XX:MaxDirectMemorySize=1G -XX:+ExitOnOutOfMemoryError"
     exposeTopicLevelMetricsInPrometheus: "true"
     brokerDeleteInactiveTopicsEnabled: "false"
@@ -101,6 +116,11 @@ function:
       memory: 512Mi
       cpu: 0.3
   configData:
+    PULSAR_EXTRA_OPTS: >
+      -XX:+UnlockDiagnosticVMOptions
+      -XX:+DebugNonSafepoints
+      -XX:+FlightRecorder
+      -XX:FlightRecorderOptions=stackdepth=1024  
     PULSAR_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
 
 proxy:
@@ -114,6 +134,11 @@ proxy:
       memory: 512Mi
       cpu: 0.3
   configData:
+    PULSAR_EXTRA_OPTS: >
+      -XX:+UnlockDiagnosticVMOptions
+      -XX:+DebugNonSafepoints
+      -XX:+FlightRecorder
+      -XX:FlightRecorderOptions=stackdepth=1024  
     PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m"
     maxConcurrentInboundConnections: "30000"
   autoPortAssign:
