@@ -226,3 +226,15 @@ edit the https://kubernetes.io/docs/reference/command-line-tools-reference/featu
 ```
 vim /var/snap/microk8s/current/args/kube-apiserver
 ```
+
+
+## Installing promtail and Loki
+
+```bash
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+helm upgrade --install loki grafana/loki
+helm upgrade --install promtail grafana/promtail --set "loki.serviceName=loki" --set "config.lokiAddress=http://loki.default.svc.cluster.local:3100/loki/api/v1/push"
+```
+
+Use "http://loki.default.svc.cluster.local:3100" in Grafana for the Loki datasource.

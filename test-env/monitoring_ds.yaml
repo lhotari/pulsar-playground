@@ -1,0 +1,65 @@
+prometheus_persistence: yes
+
+#prometheus_rbac: yes
+
+grafanaDashboards:
+  enabled: yes
+  namespaceOverride: null
+
+kube-prometheus-stack:
+  namespaceOverride: null
+  prometheus-node-exporter:
+    namespaceOverride: null
+  enabled: yes
+  defaultRules:
+    create: yes
+  prometheusOperator:
+    enabled: true
+  coreDns:
+    enabled: false
+  kubeDns:
+    enabled: true
+
+  grafana:
+    image:
+      tag: 7.5.10
+    enabled: true
+    namespaceOverride: null 
+    defaultDashboardsEnabled: true
+    adminUser: admin
+    adminPassword: iese2aeK
+    env:
+      GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      GF_SERVER_ROOT_URL: http://pulsar-testenv-deployment-grafana.pulsar-testenv.svc.cluster.local:3000/
+      GF_METRICS_ENABLED: "false"
+    ingress:
+      enabled: false
+    service:
+      type: ClusterIP
+
+  alertmanager:
+    enabled: false
+
+  prometheus:
+    enabled: true
+    ingress:
+      enabled: false
+    prometheusSpec:
+      retention: 3d
+      paused: false
+      replicas: 1
+      logLevel: info
+      scrapeInterval: 10s
+      resources:
+        requests:
+          memory: "1.5Gi"
+          cpu: 1
+        limits:
+          memory: "2000Mi"
+          cpu: "1500m"
+      storageSpec: 
+        volumeClaimTemplate:
+          spec:
+            resources:
+              requests:
+                storage: 5Gi
