@@ -49,7 +49,7 @@ kube-prometheus-stack:
       paused: false
       replicas: 1
       logLevel: info
-      scrapeInterval: 10s
+      scrapeInterval: 30s
       resources:
         requests:
           memory: "1.5Gi"
