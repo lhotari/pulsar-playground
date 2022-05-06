@@ -57,7 +57,7 @@ bookkeeper:
       -XX:+DebugNonSafepoints
       -XX:+FlightRecorder
       -XX:FlightRecorderOptions=stackdepth=1024  
-    BOOKIE_MEM: "-Xms128m -Xmx1G -XX:MaxDirectMemorySize=1G -XX:+ExitOnOutOfMemoryError"
+    BOOKIE_MEM: "-Xms128m -Xmx2G -XX:MaxDirectMemorySize=2G -XX:+ExitOnOutOfMemoryError"
     diskUsageThreshold: "0.99"
     useHostNameAsBookieID: "true"
     majorCompactionInterval: "86400"
