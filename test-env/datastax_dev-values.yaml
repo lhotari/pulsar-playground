@@ -63,6 +63,8 @@ bookkeeper:
     majorCompactionInterval: "86400"
     minorCompactionInterval: "600"
     compactionRateByEntries: "10000"
+    # skip fsync for performance reasons
+    journalSyncData: "false"
     gcWaitTime: "300000"
     PULSAR_PREFIX_diskUsageLwmThreshold: "0.97"
     PULSAR_PREFIX_isForceGCAllowWhenNoSpace: "true"
