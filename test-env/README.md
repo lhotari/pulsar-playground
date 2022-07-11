@@ -31,6 +31,7 @@ broker:
 ```
 sudo snap install --classic microk8s
 sudo usermod -a -G microk8s $USER
+sudo microk8s enable dns
 ```
 
 ### Fixing networking (run after every startup)
