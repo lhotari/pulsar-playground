@@ -162,7 +162,7 @@ microk8s.kubectl get pod -o wide --all-namespaces
 ### Configuring (after re-login so that microk8s group membership is effective)
 ```
 microk8s enable ingress
-microk8s enable storage
+microk8s enable hostpath-storage
 microk8s enable registry
 microk8s enable metallb:192.168.140.43-192.168.140.49
 ```
