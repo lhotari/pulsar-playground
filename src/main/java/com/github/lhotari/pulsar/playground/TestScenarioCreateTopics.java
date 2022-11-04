@@ -2,9 +2,16 @@ package com.github.lhotari.pulsar.playground;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
@@ -38,6 +45,10 @@ public class TestScenarioCreateTopics {
     @Parameter(names = {"--topics"},
             description = "Number of topics")
     int numberOfTopics = 10;
+    @Parameter(names = {"--concurrency"},
+            description = "Maximum concurrency for admin operations")
+    int concurrency = 100;
+
 
     @Parameter(names = {"-h", "--help"},
             description = "Help",
@@ -52,21 +63,60 @@ public class TestScenarioCreateTopics {
         TenantInfo tenantInfo = createTenantInfo(pulsarAdmin);
         Policies policies = createPolicies();
 
-        for (int i = 0; i < numberOfTenants; i++) {
-            String tenantName = String.format(tenantPrefix + "%03d", (i + 1));
-            log.info("Creating tenant {}", tenantName);
-            pulsarAdmin.tenants().createTenant(tenantName, tenantInfo);
-            for (int j = 0; j < numberOfNamespaces; j++) {
-                String namespacePart = String.format("namespace%03d", (j + 1));
-                NamespaceName namespace = NamespaceName.get(tenantName, namespacePart);
-                log.info("Creating namespace {}", namespace);
-                pulsarAdmin.namespaces().createNamespace(namespace.toString(), policies);
-                for (int k = 0; k < numberOfTopics; k++) {
-                    String topicName = namespace.getPersistentTopicName(String.format("topic%03d", (k + 1)));
-                    log.info("Creating {}", topicName);
-                    pulsarAdmin.topics().createNonPartitionedTopic(topicName);
-                }
+        Semaphore limiter = new Semaphore(concurrency, false);
+        ExecutorService callbackExecutor = Executors.newSingleThreadExecutor();
+        try {
+            List<CompletableFuture<Void>> tenantFutures = new ArrayList<>();
+            for (int i = 0; i < numberOfTenants; i++) {
+                String tenantName = String.format(tenantPrefix + "%03d", (i + 1));
+                log.info("Creating tenant {}", tenantName);
+                tenantFutures.add(
+                        limitConcurrency(limiter, () -> pulsarAdmin.tenants().createTenantAsync(tenantName, tenantInfo))
+                                .thenComposeAsync(__ -> {
+                                    List<CompletableFuture<Void>> namespaceFutures = new ArrayList<>();
+                                    for (int j = 0; j < numberOfNamespaces; j++) {
+                                        String namespacePart = String.format("namespace%03d", (j + 1));
+                                        NamespaceName namespace = NamespaceName.get(tenantName, namespacePart);
+                                        namespaceFutures.add(limitConcurrency(limiter, () -> {
+                                            log.info("Creating namespace {}", namespace);
+                                            return pulsarAdmin.namespaces()
+                                                    .createNamespaceAsync(namespace.toString(), policies);
+                                        }).thenComposeAsync(___ -> {
+                                            List<CompletableFuture<Void>> topicFutures = new ArrayList<>();
+                                            for (int k = 0; k < numberOfTopics; k++) {
+                                                String topicName =
+                                                        namespace.getPersistentTopicName(
+                                                                String.format("topic%03d", (k + 1)));
+                                                topicFutures.add(limitConcurrency(limiter, () -> {
+                                                    log.info("Creating {}", topicName);
+                                                    return pulsarAdmin.topics()
+                                                            .createNonPartitionedTopicAsync(topicName);
+                                                }));
+                                            }
+                                            return CompletableFuture.allOf(
+                                                    topicFutures.toArray(new CompletableFuture[0]));
+                                        }, callbackExecutor));
+                                    }
+                                    return CompletableFuture.allOf(namespaceFutures.toArray(new CompletableFuture[0]));
+                                }, callbackExecutor));
             }
+            CompletableFuture.allOf(tenantFutures.toArray(new CompletableFuture[0]))
+                    .join();
+        } finally {
+            callbackExecutor.shutdown();
+        }
+    }
+
+    private CompletableFuture<Void> limitConcurrency(Semaphore limiter,
+                                                     Supplier<CompletableFuture<Void>> futureSupplier) {
+        try {
+            limiter.acquire();
+            CompletableFuture<Void> future = futureSupplier.get();
+            future.whenComplete((__, ___) -> limiter.release());
+            return future;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
         }
     }
 
