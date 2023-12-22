@@ -116,7 +116,7 @@ public class TestScenarioIssueRedeliveries {
                 .ackTimeout(5, TimeUnit.SECONDS)
                 .negativeAckRedeliveryDelay(5, TimeUnit.SECONDS)
                 .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
-                .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(5).build())
+                .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(Integer.MAX_VALUE).build())
                 .receiverQueueSize(Math.max(maxMessages / 10, 1000))
                 .consumerName("consumer")
                 .subscribe()) {
