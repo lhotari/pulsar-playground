@@ -110,6 +110,7 @@ public class TestScenarioIssueRedeliveries {
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 .enableRetry(true)
                 .ackTimeout(5, TimeUnit.SECONDS)
+                .negativeAckRedeliveryDelay(5, TimeUnit.SECONDS)
                 .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
                 .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(5).build())
                 .receiverQueueSize(Math.max(maxMessages / 10, 1000))
@@ -123,12 +124,25 @@ public class TestScenarioIssueRedeliveries {
                     break;
                 }
                 int msgNum = bytesToInt(msg.getData());
-                if (i % 100 < 5) {
+
+                int mod100 = i % 100;
+
+                // reconsume about 5% of the messages
+                if (mod100 == 2 || mod100 == 5 || mod100 == 11 || mod100 == 17  || mod100 == 23) {
                     reconsumed++;
                     log.info("Reconsuming {} msgNum: {} reconsumed: {}", i, msgNum, reconsumed);
                     consumer.reconsumeLater(msg, 5, TimeUnit.SECONDS);
                     continue;
                 }
+
+                // nack about 5% of the messages
+                if (mod100 == 3 || mod100 == 7 || mod100 == 13 || mod100 == 19 || mod100 == 29) {
+                    reconsumed++;
+                    log.info("Nacking {} msgNum: {} reconsumed: {}", i, msgNum, reconsumed);
+                    consumer.negativeAcknowledge(msg);
+                    continue;
+                }
+
                 boolean added = receivedMessages.checkedAdd(msgNum);
                 if (added) {
                     --remainingMessages;
