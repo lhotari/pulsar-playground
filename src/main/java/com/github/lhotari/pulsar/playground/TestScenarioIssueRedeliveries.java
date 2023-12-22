@@ -112,6 +112,7 @@ public class TestScenarioIssueRedeliveries {
                 .ackTimeout(5, TimeUnit.SECONDS)
                 .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
                 .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(5).build())
+                .receiverQueueSize(Math.max(maxMessages / 10, 1000))
                 .consumerName("consumer")
                 .subscribe()) {
             int i = 0;
@@ -141,7 +142,8 @@ public class TestScenarioIssueRedeliveries {
                 }
             }
         }
-        log.info("Done receiving. Remaining: {} duplicates: {} reconsumed: {}", remainingMessages, duplicates, reconsumed);
+        log.info("Done receiving. Remaining: {} duplicates: {} reconsumed: {}", remainingMessages, duplicates,
+                reconsumed);
     }
 
     private int bytesToInt(byte[] bytes) {
