@@ -1,16 +1,18 @@
 package com.github.lhotari.pulsar.playground;
 
 import java.nio.ByteBuffer;
-import java.util.BitSet;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
+import org.apache.pulsar.client.api.BatchReceivePolicy;
 import org.apache.pulsar.client.api.Consumer;
+import org.apache.pulsar.client.api.ConsumerBuilder;
+import org.apache.pulsar.client.api.DeadLetterPolicy;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.SubscriptionInitialPosition;
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.common.naming.NamespaceName;
@@ -28,7 +30,7 @@ public class TestScenarioIssueRedeliveries {
             System.getenv().getOrDefault("PULSAR_BROKER_URL", "pulsar://" + PULSAR_HOST + ":6650/");
 
     private final String namespace;
-    private int maxMessages = 1000000;
+    private int maxMessages = 10000;
     private int messageSize = 4;
 
     private boolean enableBatching = true;
@@ -63,7 +65,7 @@ public class TestScenarioIssueRedeliveries {
         }
 
         if (newTopic) {
-            try (Consumer<byte[]> consumer = createConsumer(pulsarClient, topicName)) {
+            try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName).subscribe()) {
                 // just to create the subscription
             }
             try (Producer<byte[]> producer = pulsarClient.newProducer()
@@ -101,11 +103,29 @@ public class TestScenarioIssueRedeliveries {
         int remainingMessages = maxMessages;
         RoaringBitmap receivedMessages = new RoaringBitmap();
         int duplicates = 0;
+        int reconsumed = 0;
 
-        try (Consumer<byte[]> consumer = createConsumer(pulsarClient, topicName)) {
-            for (int i = 1; i <= maxMessages; i++) {
-                Message<byte[]> msg = consumer.receive();
+        try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
+                .enableRetry(true)
+                .ackTimeout(5, TimeUnit.SECONDS)
+                .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
+                .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(5).build())
+                .consumerName("consumer")
+                .subscribe()) {
+            int i = 0;
+            while (!Thread.currentThread().isInterrupted()) {
+                i++;
+                Message<byte[]> msg = consumer.receive(10, TimeUnit.SECONDS);
+                if (msg == null) {
+                    break;
+                }
                 int msgNum = bytesToInt(msg.getData());
+                if (i % 100 < 5) {
+                    reconsumed++;
+                    log.info("Reconsuming {} msgNum: {} reconsumed: {}", i, msgNum, reconsumed);
+                    consumer.reconsumeLater(msg, 5, TimeUnit.SECONDS);
+                    continue;
+                }
                 boolean added = receivedMessages.checkedAdd(msgNum);
                 if (added) {
                     --remainingMessages;
@@ -119,7 +139,7 @@ public class TestScenarioIssueRedeliveries {
                 }
             }
         }
-        log.info("Done receiving. duplicates: {}", duplicates);
+        log.info("Done receiving. Remaining: {} duplicates: {} reconsumed: {}", remainingMessages, duplicates, reconsumed);
     }
 
     private int bytesToInt(byte[] bytes) {
@@ -130,16 +150,13 @@ public class TestScenarioIssueRedeliveries {
         return ByteBuffer.allocate(Math.max(4, messageSize)).putInt(i).array();
     }
 
-    private Consumer<byte[]> createConsumer(PulsarClient pulsarClient, String topicName) throws PulsarClientException {
-        Consumer<byte[]> consumer = pulsarClient.newConsumer()
+    private ConsumerBuilder<byte[]> createConsumerBuilder(PulsarClient pulsarClient, String topicName) {
+        return pulsarClient.newConsumer()
                 .subscriptionName("sub")
                 .subscriptionInitialPosition(SubscriptionInitialPosition.Earliest)
                 .subscriptionType(SubscriptionType.Shared)
-                .topic(topicName)
-                .subscribe();
-        return consumer;
+                .topic(topicName);
     }
-
 
     public static void main(String[] args) throws Throwable {
         try {
