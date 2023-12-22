@@ -31,7 +31,7 @@ public class TestScenarioIssueRedeliveries {
             System.getenv().getOrDefault("PULSAR_BROKER_URL", "pulsar://" + PULSAR_HOST + ":6650/");
 
     private final String namespace;
-    private int maxMessages = 1000000;
+    private int maxMessages = 10000;
     private int messageSize = 4;
 
     private boolean enableBatching = true;
@@ -73,6 +73,7 @@ public class TestScenarioIssueRedeliveries {
             try (Producer<byte[]> producer = pulsarClient.newProducer()
                     .topic(topicName)
                     .enableBatching(enableBatching)
+                    .batchingMaxMessages(Math.max(50, maxMessages / 10000))
                     .blockIfQueueFull(true)
                     .create()) {
                 AtomicReference<Throwable> sendFailure = new AtomicReference<>();
@@ -117,6 +118,20 @@ public class TestScenarioIssueRedeliveries {
                 .consumerName("consumer")
                 .subscribe()) {
             int i = 0;
+
+            Thread triggerReliveryThread = new Thread(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        Thread.sleep(1000);
+                        log.info("Triggering redeliverUnacknowledgedMessages");
+                        consumer.redeliverUnacknowledgedMessages();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            });
+            triggerReliveryThread.start();
+
             while (!Thread.currentThread().isInterrupted()) {
                 i++;
                 Message<byte[]> msg = consumer.receive(10, TimeUnit.SECONDS);
@@ -155,6 +170,8 @@ public class TestScenarioIssueRedeliveries {
                     log.info("Received {} msgs. remaining: {} duplicates: {}", i, remainingMessages, duplicates);
                 }
             }
+
+            triggerReliveryThread.interrupt();
         }
         log.info("Done receiving. Remaining: {} duplicates: {} reconsumed: {}", remainingMessages, duplicates,
                 reconsumed);
