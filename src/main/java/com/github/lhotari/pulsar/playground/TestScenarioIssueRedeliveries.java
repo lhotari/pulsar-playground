@@ -36,6 +36,8 @@ public class TestScenarioIssueRedeliveries {
 
     private boolean enableBatching = true;
 
+    private boolean enableRetry = false;
+
     public TestScenarioIssueRedeliveries(String namespace) {
         this.namespace = namespace;
     }
@@ -109,7 +111,7 @@ public class TestScenarioIssueRedeliveries {
         int reconsumed = 0;
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
-                .enableRetry(true)
+                .enableRetry(enableRetry)
                 .ackTimeout(5, TimeUnit.SECONDS)
                 .negativeAckRedeliveryDelay(5, TimeUnit.SECONDS)
                 .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
@@ -122,7 +124,7 @@ public class TestScenarioIssueRedeliveries {
             Thread triggerReliveryThread = new Thread(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(500);
                         log.info("Triggering redeliverUnacknowledgedMessages");
                         consumer.redeliverUnacknowledgedMessages();
                     } catch (InterruptedException e) {
@@ -142,12 +144,14 @@ public class TestScenarioIssueRedeliveries {
 
                 int mod100 = i % 100;
 
-                // reconsume about 5% of the messages
-                if (mod100 == 2 || mod100 == 5 || mod100 == 11 || mod100 == 17  || mod100 == 23) {
-                    reconsumed++;
-                    log.info("Reconsuming {} msgNum: {} reconsumed: {}", i, msgNum, reconsumed);
-                    consumer.reconsumeLater(msg, 5, TimeUnit.SECONDS);
-                    continue;
+                if (enableRetry) {
+                    // reconsume about 5% of the messages
+                    if (mod100 == 2 || mod100 == 5 || mod100 == 11 || mod100 == 17 || mod100 == 23) {
+                        reconsumed++;
+                        log.info("Reconsuming {} msgNum: {} reconsumed: {}", i, msgNum, reconsumed);
+                        consumer.reconsumeLater(msg, 5, TimeUnit.SECONDS);
+                        continue;
+                    }
                 }
 
                 // nack about 5% of the messages
