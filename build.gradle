@@ -1,7 +1,7 @@
 plugins {
     id 'application'
-    id "io.freefair.lombok" version "6.5.1"
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "io.freefair.lombok" version "8.1.0"
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 repositories {
@@ -14,14 +14,14 @@ application {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
-    implementation 'org.apache.pulsar:pulsar-client:2.10.2'
-    implementation 'org.apache.pulsar:pulsar-client-admin:2.10.2'
-    implementation 'org.slf4j:slf4j-simple:1.7.32'
+    implementation 'org.apache.pulsar:pulsar-client:3.1.1'
+    implementation 'org.apache.pulsar:pulsar-client-admin:3.1.1'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
 
-    implementation 'io.github.resilience4j:resilience4j-retry:1.7.1'
+    implementation 'io.github.resilience4j:resilience4j-retry:2.2.0'
 
     implementation 'com.beust:jcommander:1.82'
 }

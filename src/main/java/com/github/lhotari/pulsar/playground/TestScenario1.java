@@ -1,9 +1,9 @@
 package com.github.lhotari.pulsar.playground;
 
 import io.github.resilience4j.core.IntervalFunction;
+import io.github.resilience4j.core.functions.CheckedFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
-import io.vavr.CheckedFunction1;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
@@ -38,7 +38,7 @@ public class TestScenario1 {
                 .build();
         pulsarAdmin.namespaces().createNamespace(namespace.toString(), policies);
 
-        CheckedFunction1<String, Void> createTopicFunction = createCreateTopicFunctionWithRetries(pulsarAdmin);
+        CheckedFunction<String, Void> createTopicFunction = createCreateTopicFunctionWithRetries(pulsarAdmin);
 
         for (int i = 0; i < 10000; i++) {
             String topicName = namespace.getPersistentTopicName("topic" + i);
@@ -57,13 +57,13 @@ public class TestScenario1 {
 
     }
 
-    private CheckedFunction1<String, Void> createCreateTopicFunctionWithRetries(PulsarAdmin pulsarAdmin) {
+    private CheckedFunction<String, Void> createCreateTopicFunctionWithRetries(PulsarAdmin pulsarAdmin) {
         RetryConfig retryConfig = RetryConfig.custom()
                 .maxAttempts(5)
                 .intervalFunction(IntervalFunction.ofExponentialBackoff())
                 .build();
         Retry retry = Retry.of("createNonPartitionedTopic", retryConfig);
-        CheckedFunction1<String, Void> createTopicFunction =
+        CheckedFunction<String, Void> createTopicFunction =
                 Retry.<String, Void>decorateCheckedFunction(retry, topicName -> {
                     log.info("Creating {}", topicName);
                     pulsarAdmin.topics().createNonPartitionedTopic(topicName);
