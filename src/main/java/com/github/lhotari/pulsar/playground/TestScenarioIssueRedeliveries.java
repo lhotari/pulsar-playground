@@ -13,6 +13,7 @@ import org.apache.pulsar.client.api.DeadLetterPolicy;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
+import org.apache.pulsar.client.api.SizeUnit;
 import org.apache.pulsar.client.api.SubscriptionInitialPosition;
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.common.naming.NamespaceName;
@@ -42,6 +43,7 @@ public class TestScenarioIssueRedeliveries {
     public void run() throws Throwable {
         PulsarClient pulsarClient = PulsarClient.builder()
                 .serviceUrl(PULSAR_BROKER_URL)
+                .memoryLimit(300, SizeUnit.MEGA_BYTES)
                 .build();
 
         PulsarAdmin pulsarAdmin = PulsarAdmin.builder()
