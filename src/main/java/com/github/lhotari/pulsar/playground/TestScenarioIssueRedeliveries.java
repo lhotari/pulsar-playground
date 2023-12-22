@@ -136,7 +136,7 @@ public class TestScenarioIssueRedeliveries {
 
             while (!Thread.currentThread().isInterrupted()) {
                 i++;
-                Message<byte[]> msg = consumer.receive(10, TimeUnit.SECONDS);
+                Message<byte[]> msg = consumer.receive(20, TimeUnit.SECONDS);
                 if (msg == null) {
                     break;
                 }
@@ -179,6 +179,9 @@ public class TestScenarioIssueRedeliveries {
         }
         log.info("Done receiving. Remaining: {} duplicates: {} reconsumed: {}", remainingMessages, duplicates,
                 reconsumed);
+        if (remainingMessages > 0) {
+            log.error("Not all messages received. Remaining: " + remainingMessages);
+        }
     }
 
     private int bytesToInt(byte[] bytes) {
