@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pulsar.PulsarVersion;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.BatchReceivePolicy;
@@ -182,6 +183,8 @@ public class TestScenarioIssueRedeliveries {
         if (remainingMessages > 0) {
             log.error("Not all messages received. Remaining: " + remainingMessages);
         }
+        log.info("Pulsar client version: {} {} {} {}", PulsarVersion.getVersion(), PulsarVersion.getGitBranch(),
+                PulsarVersion.getGitSha(), PulsarVersion.getBuildTime());
     }
 
     private int bytesToInt(byte[] bytes) {
