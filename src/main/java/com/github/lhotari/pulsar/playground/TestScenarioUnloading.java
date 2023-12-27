@@ -1,6 +1,8 @@
 package com.github.lhotari.pulsar.playground;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,8 @@ public class TestScenarioUnloading {
     private final String namespace;
     private int maxMessages = 10000;
     private int messageSize = 4;
+
+    private int unloadThreadCount = 5;
 
     private boolean enableBatching = false;
 
@@ -69,22 +73,31 @@ public class TestScenarioUnloading {
 
         // Unload the topic every ms for 120 seconds
         long stopUnloadingTime = System.currentTimeMillis() + 120000;
-        Thread unloadingThread = new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted() && System.currentTimeMillis() < stopUnloadingTime) {
-                try {
-                    Thread.sleep(1);
-                    log.info("Triggering unload. remaining time: {} s",
-                            (stopUnloadingTime - System.currentTimeMillis()) / 1000);
-                    pulsarAdmin.topics().unload(topicName);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                } catch (PulsarAdminException e) {
-                    log.warn("Failed to unload topic", e);
+        Thread[] unloadingThreads = new Thread[unloadThreadCount];
+        Phaser phaser = new Phaser(unloadThreadCount);
+        for (int i = 0; i < unloadThreadCount; i++) {
+            Thread unloadingThread = new Thread(() -> {
+                while (!Thread.currentThread().isInterrupted() && System.currentTimeMillis() < stopUnloadingTime) {
+                    try {
+                        Thread.sleep(1);
+                        phaser.arriveAndAwaitAdvance();
+                        log.info("Triggering unload. remaining time: {} s",
+                                (stopUnloadingTime - System.currentTimeMillis()) / 1000);
+                        pulsarAdmin.topics().unload(topicName);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    } catch (PulsarAdminException e) {
+                        if (e.getMessage().contains("Topic is already fenced")) {
+                            log.info("Failed to unload topic. Topic is already fenced.");
+                        } else {
+                            log.error("Failed to unload topic", e);
+                        }
+                    }
                 }
-            }
-        });
-        unloadingThread.start();
-
+            });
+            unloadingThread.start();
+            unloadingThreads[i] = unloadingThread;
+        }
 
         if (newTopic) {
             try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName).subscribe()) {
@@ -162,7 +175,7 @@ public class TestScenarioUnloading {
             }
         }
 
-        unloadingThread.interrupt();
+        Arrays.stream(unloadingThreads).forEach(Thread::interrupt);
 
         log.info("Done receiving. Remaining: {} duplicates: {} reconsumed: {}", remainingMessages, duplicates,
                 reconsumed);
