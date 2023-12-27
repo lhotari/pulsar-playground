@@ -37,7 +37,7 @@ public class TestScenarioUnloading {
     private int maxMessages = 10000;
     private int messageSize = 4;
 
-    private int unloadThreadCount = 5;
+    private int unloadThreadCount = 1;
 
     private boolean enableBatching = false;
 
