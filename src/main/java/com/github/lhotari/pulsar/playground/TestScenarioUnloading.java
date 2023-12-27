@@ -15,6 +15,7 @@ import org.apache.pulsar.client.api.ConsumerBuilder;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
+import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.SizeUnit;
 import org.apache.pulsar.client.api.SubscriptionInitialPosition;
 import org.apache.pulsar.client.api.SubscriptionType;
@@ -77,22 +78,34 @@ public class TestScenarioUnloading {
         Random random = new Random();
         for (int i = 0; i < unloadThreadCount; i++) {
             Thread unloadingThread = new Thread(() -> {
-                while (!Thread.currentThread().isInterrupted() && System.currentTimeMillis() < stopUnloadingTime) {
-                    try {
-                        Thread.sleep(random.nextInt(7) + 1);
-                        phaser.arriveAndAwaitAdvance();
-                        log.info("Triggering unload. remaining time: {} s",
-                                (stopUnloadingTime - System.currentTimeMillis()) / 1000);
-                        pulsarAdmin.topics().unload(topicName);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    } catch (PulsarAdminException e) {
-                        if (e.getMessage().contains("Topic is already fenced")) {
-                            log.info("Failed to unload topic. Topic is already fenced.");
-                        } else {
-                            log.error("Failed to unload topic", e);
+                try (PulsarAdmin admin = PulsarAdmin.builder()
+                        .serviceHttpUrl(PULSAR_SERVICE_URL)
+                        .build()) {
+                    while (!Thread.currentThread().isInterrupted() && System.currentTimeMillis() < stopUnloadingTime) {
+                        try {
+                            Thread.sleep(random.nextInt(7) + 1);
+                            phaser.arriveAndAwaitAdvance();
+                            log.info("Triggering unload. remaining time: {} s",
+                                    (stopUnloadingTime - System.currentTimeMillis()) / 1000);
+                            //admin.topics().unload(topicName);
+                            admin.namespaces().unload(namespaceName.toString());
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        } catch (PulsarAdminException e) {
+                            String message = e.getMessage();
+                            if (message.contains("is being unloaded")) {
+                                log.info("Failed to unload namespace. Namespace is being unloaded.");
+                            } else if (message.contains("Namespace is not active")) {
+                                log.info("Failed to unload namespace. Namespace is not active.");
+                            } else if (message.contains("Topic is already fenced")) {
+                                log.info("Failed to unload topic. Topic is already fenced.");
+                            } else {
+                                log.error("Failed to unload topic", e);
+                            }
                         }
                     }
+                } catch (PulsarClientException e) {
+                    throw new RuntimeException(e);
                 }
             });
             unloadingThread.start();
