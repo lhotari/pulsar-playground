@@ -2,6 +2,7 @@ package com.github.lhotari.pulsar.playground;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -9,10 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.PulsarVersion;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
-import org.apache.pulsar.client.api.BatchReceivePolicy;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.ConsumerBuilder;
-import org.apache.pulsar.client.api.DeadLetterPolicy;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
@@ -37,7 +36,7 @@ public class TestScenarioUnloading {
     private int maxMessages = 10000;
     private int messageSize = 4;
 
-    private int unloadThreadCount = 1;
+    private int unloadThreadCount = 10;
 
     private boolean enableBatching = false;
 
@@ -74,12 +73,13 @@ public class TestScenarioUnloading {
         // Unload the topic every ms for 120 seconds
         long stopUnloadingTime = System.currentTimeMillis() + 120000;
         Thread[] unloadingThreads = new Thread[unloadThreadCount];
-        Phaser phaser = new Phaser(unloadThreadCount);
+        Phaser phaser = new Phaser(2);
+        Random random = new Random();
         for (int i = 0; i < unloadThreadCount; i++) {
             Thread unloadingThread = new Thread(() -> {
                 while (!Thread.currentThread().isInterrupted() && System.currentTimeMillis() < stopUnloadingTime) {
                     try {
-                        Thread.sleep(1);
+                        Thread.sleep(random.nextInt(7) + 1);
                         phaser.arriveAndAwaitAdvance();
                         log.info("Triggering unload. remaining time: {} s",
                                 (stopUnloadingTime - System.currentTimeMillis()) / 1000);
@@ -144,10 +144,7 @@ public class TestScenarioUnloading {
         int reconsumed = 0;
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
-                .ackTimeout(5, TimeUnit.SECONDS)
-                .negativeAckRedeliveryDelay(5, TimeUnit.SECONDS)
-                .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
-                .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(Integer.MAX_VALUE).build())
+                .ackTimeout(0, TimeUnit.SECONDS)
                 .receiverQueueSize(Math.max(maxMessages / 10, 1000))
                 .consumerName("consumer")
                 .subscribe()) {
@@ -155,7 +152,7 @@ public class TestScenarioUnloading {
 
             while (!Thread.currentThread().isInterrupted()) {
                 i++;
-                Message<byte[]> msg = consumer.receive(5, TimeUnit.SECONDS);
+                Message<byte[]> msg = consumer.receive(30, TimeUnit.SECONDS);
                 if (msg == null) {
                     break;
                 }
