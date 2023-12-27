@@ -32,7 +32,7 @@ public class TestScenarioIssueRedeliveries {
             System.getenv().getOrDefault("PULSAR_BROKER_URL", "pulsar://" + PULSAR_HOST + ":6650/");
 
     private final String namespace;
-    private int maxMessages = 10000;
+    private int maxMessages = 1000000;
     private int messageSize = 4;
 
     private boolean enableBatching = true;
