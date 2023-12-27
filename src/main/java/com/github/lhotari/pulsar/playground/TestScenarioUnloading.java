@@ -67,11 +67,14 @@ public class TestScenarioUnloading {
             log.info("Namespace or Topic exists {}", topicName);
         }
 
+        // Unload the topic every ms for 120 seconds
+        long stopUnloadingTime = System.currentTimeMillis() + 120000;
         Thread unloadingThread = new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted()) {
+            while (!Thread.currentThread().isInterrupted() && System.currentTimeMillis() < stopUnloadingTime) {
                 try {
                     Thread.sleep(1);
-                    log.info("Triggering unload");
+                    log.info("Triggering unload. remaining time: {} s",
+                            (stopUnloadingTime - System.currentTimeMillis()) / 1000);
                     pulsarAdmin.topics().unload(topicName);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
