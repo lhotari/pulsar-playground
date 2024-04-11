@@ -34,6 +34,14 @@ public class TestScenarioCreateTopics {
             description = "Tenant prefix")
     String tenantPrefix = "tenant";
 
+    @Parameter(names = {"--namespace-prefix"},
+            description = "Namespace prefix")
+    private String namespacePrefix = "namespace";
+
+    @Parameter(names = {"--topic-prefix"},
+            description = "Topic prefix")
+    private String topicPrefix = "topic";
+
     @Parameter(names = {"--tenants"},
             description = "Number of tenants")
     int numberOfTenants = 10;
@@ -74,7 +82,7 @@ public class TestScenarioCreateTopics {
                                 .thenComposeAsync(__ -> {
                                     List<CompletableFuture<Void>> namespaceFutures = new ArrayList<>();
                                     for (int j = 0; j < numberOfNamespaces; j++) {
-                                        String namespacePart = String.format("namespace%03d", (j + 1));
+                                        String namespacePart = String.format(namespacePrefix + "%03d", (j + 1));
                                         NamespaceName namespace = NamespaceName.get(tenantName, namespacePart);
                                         namespaceFutures.add(limitConcurrency(limiter, () -> {
                                             log.info("Creating namespace {}", namespace);
@@ -85,7 +93,7 @@ public class TestScenarioCreateTopics {
                                             for (int k = 0; k < numberOfTopics; k++) {
                                                 String topicName =
                                                         namespace.getPersistentTopicName(
-                                                                String.format("topic%03d", (k + 1)));
+                                                                String.format(topicPrefix + "%03d", (k + 1)));
                                                 topicFutures.add(limitConcurrency(limiter, () -> {
                                                     log.info("Creating {}", topicName);
                                                     return pulsarAdmin.topics()
