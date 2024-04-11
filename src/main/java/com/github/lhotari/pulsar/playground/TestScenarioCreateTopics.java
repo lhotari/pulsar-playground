@@ -36,11 +36,11 @@ public class TestScenarioCreateTopics {
 
     @Parameter(names = {"--namespace-prefix"},
             description = "Namespace prefix")
-    private String namespacePrefix = "namespace";
+    String namespacePrefix = "namespace";
 
     @Parameter(names = {"--topic-prefix"},
             description = "Topic prefix")
-    private String topicPrefix = "topic";
+    String topicPrefix = "topic";
 
     @Parameter(names = {"--tenants"},
             description = "Number of tenants")
