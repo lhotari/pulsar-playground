@@ -1,5 +1,7 @@
 package com.github.lhotari.pulsar.playground;
 
+import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_BROKER_URL;
+import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_SERVICE_URL;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.core.functions.CheckedFunction;
 import io.github.resilience4j.retry.Retry;
@@ -18,9 +20,6 @@ import org.apache.pulsar.common.policies.data.RetentionPolicies;
 
 @Slf4j
 public class TestScenario1 {
-    private static final String PULSAR_SERVICE_URL = System.getenv().getOrDefault("PULSAR_SERVICE_URL", "http://pulsar-proxy.pulsar.svc.cluster.local:8080");
-    private static final String PULSAR_BROKER_URL = System.getenv().getOrDefault("PULSAR_BROKER_URL", "pulsar://pulsar-proxy.pulsar.svc.cluster.local:6650");
-
     public void run() throws PulsarClientException, PulsarAdminException {
         PulsarClient pulsarClient = PulsarClient.builder()
                 .serviceUrl(PULSAR_BROKER_URL)

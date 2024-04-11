@@ -1,5 +1,6 @@
 package com.github.lhotari.pulsar.playground;
 
+import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_SERVICE_URL;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import java.util.ArrayList;
@@ -24,10 +25,6 @@ import org.apache.pulsar.common.policies.data.TenantInfo;
 
 @Slf4j
 public class TestScenarioCreateTopics {
-    private static final String PULSAR_SERVICE_URL =
-            System.getenv().getOrDefault("PULSAR_SERVICE_URL",
-                    "http://pulsar-testenv-pulsar-broker.pulsar-testenv.svc.cluster.local:8080");
-
     @Parameter(names = {"--admin-url"},
             description = "Admin Service URL to which to connect.\n")
     String adminUrl = PULSAR_SERVICE_URL;

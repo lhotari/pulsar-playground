@@ -1,5 +1,7 @@
 package com.github.lhotari.pulsar.playground;
 
+import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_BROKER_URL;
+import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_SERVICE_URL;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -24,14 +26,6 @@ import org.apache.pulsar.common.policies.data.RetentionPolicies;
 
 @Slf4j
 public class TestScenarioIssue5284 implements Runnable {
-    private static final String PULSAR_HOST = System.getenv().getOrDefault("PULSAR_HOST",
-            // deployed with https://github.com/lhotari/pulsar-playground/tree/master/test-env
-            "pulsar-testenv-deployment-proxy.pulsar-testenv.svc.cluster.local");
-    private static final String PULSAR_SERVICE_URL =
-            System.getenv().getOrDefault("PULSAR_SERVICE_URL", "http://" + PULSAR_HOST + ":8080/");
-    private static final String PULSAR_BROKER_URL =
-            System.getenv().getOrDefault("PULSAR_BROKER_URL", "pulsar://" + PULSAR_HOST + ":6650/");
-
     private final int instanceId;
     private final String namespace;
     private int maxMessages = 100000;
