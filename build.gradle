@@ -13,7 +13,7 @@ application {
     mainClass = 'com.github.lhotari.pulsar.playground.TestScenarioCreateTopics'
 }
 
-def pulsarVersion = System.getenv('PULSAR_VERSION') ?: '3.1.1'
+def pulsarVersion = System.getenv('PULSAR_VERSION') ?: '3.2.2'
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
