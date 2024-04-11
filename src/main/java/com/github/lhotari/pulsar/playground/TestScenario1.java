@@ -6,6 +6,7 @@ import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.core.functions.CheckedFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
+import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
@@ -21,10 +22,12 @@ import org.apache.pulsar.common.policies.data.RetentionPolicies;
 @Slf4j
 public class TestScenario1 {
     public void run() throws PulsarClientException, PulsarAdminException {
+        @Cleanup
         PulsarClient pulsarClient = PulsarClient.builder()
                 .serviceUrl(PULSAR_BROKER_URL)
                 .build();
 
+        @Cleanup
         PulsarAdmin pulsarAdmin = PulsarAdmin.builder()
                 .serviceHttpUrl(PULSAR_SERVICE_URL)
                 .build();

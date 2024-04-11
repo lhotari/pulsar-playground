@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.PulsarVersion;
 import org.apache.pulsar.client.admin.PulsarAdmin;
@@ -41,11 +42,13 @@ public class TestScenarioUnloading {
     }
 
     public void run() throws Throwable {
+        @Cleanup
         PulsarClient pulsarClient = PulsarClient.builder()
                 .serviceUrl(PULSAR_BROKER_URL)
                 .memoryLimit(300, SizeUnit.MEGA_BYTES)
                 .build();
 
+        @Cleanup
         PulsarAdmin pulsarAdmin = PulsarAdmin.builder()
                 .serviceHttpUrl(PULSAR_SERVICE_URL)
                 .build();

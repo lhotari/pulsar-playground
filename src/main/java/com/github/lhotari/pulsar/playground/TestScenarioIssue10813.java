@@ -4,6 +4,7 @@ import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_BROKER
 import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_SERVICE_URL;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
@@ -30,10 +31,12 @@ public class TestScenarioIssue10813 {
     }
 
     public void run() throws Throwable {
+        @Cleanup
         PulsarClient pulsarClient = PulsarClient.builder()
                 .serviceUrl(PULSAR_BROKER_URL)
                 .build();
 
+        @Cleanup
         PulsarAdmin pulsarAdmin = PulsarAdmin.builder()
                 .serviceHttpUrl(PULSAR_SERVICE_URL)
                 .build();
