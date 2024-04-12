@@ -1,0 +1,41 @@
+affinity:
+  anti_affinity: false
+bookkeeper:
+  resources:
+    requests:
+      memory: 800m
+      cpu: 1
+  configData:
+    PULSAR_EXTRA_OPTS: >
+      -Djute.maxbuffer=20000000
+    PULSAR_MEM: >
+      -Xms128m -Xmx400m -XX:MaxDirectMemorySize=300m
+broker:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 2500m
+      cpu: 1
+  configData:
+    metricsBufferResponse: "true"
+    zookeeperSessionExpiredPolicy: "shutdown"
+    PULSAR_EXTRA_OPTS: >
+      -Djute.maxbuffer=20000000
+    PULSAR_MEM: >
+      -Xms128m -Xmx1024m -XX:MaxDirectMemorySize=1024m
+proxy:
+  replicaCount: 1
+zookeeper:
+  resources:
+    requests:
+      memory: 600m
+      cpu: 1
+  configData:
+    PULSAR_EXTRA_OPTS: >
+      -Djute.maxbuffer=20000000
+    PULSAR_MEM: >
+      -Xms200m -Xmx500m
+kube-prometheus-stack:
+  prometheus-node-exporter:
+    hostRootFsMount: 
+      enabled: false
