@@ -2,9 +2,12 @@ defaultPulsarImageTag: 3.2.2
 
 bookkeeper:
   replicaCount: 3
+  configData:
+    OPTS: "-XX:ActiveProcessorCount=8"
 broker:
   replicaCount: 3
   configData:
+    OPTS: "-XX:ActiveProcessorCount=8"
     managedLedgerDefaultEnsembleSize: "2"
     managedLedgerDefaultWriteQuorum: "2"
     managedLedgerDefaultAckQuorum: "2"
