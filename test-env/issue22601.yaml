@@ -1,0 +1,18 @@
+defaultPulsarImageTag: 3.0.4
+
+bookkeeper:
+  replicaCount: 3
+broker:
+  replicaCount: 3
+  configData:
+    managedLedgerDefaultEnsembleSize: "2"
+    managedLedgerDefaultWriteQuorum: "2"
+    managedLedgerDefaultAckQuorum: "2"
+    acknowledgmentAtBatchIndexLevelEnabled: "true"
+zookeeper:
+  replicaCount: 3
+proxy:
+  replicaCount: 1
+
+toolset:
+  useProxy: false
