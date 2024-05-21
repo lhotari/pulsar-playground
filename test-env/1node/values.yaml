@@ -17,6 +17,18 @@
 # under the License.
 #
 
+# disable prometheus by default
+kube-prometheus-stack:
+  enabled: false
+  prometheusOperator:
+    enabled: false
+  grafana:
+    enabled: false
+  alertmanager:
+    enabled: false
+  prometheus:
+    enabled: false
+
 # enable persistence
 persistence: true
 volumes:
@@ -34,6 +46,8 @@ components:
 
 zookeeper:
   replicaCount: 1
+  podMonitor:
+    enabled: false
   volumes:
     persistence: true
     data:
@@ -60,6 +74,8 @@ zookeeper:
 
 bookkeeper:
   replicaCount: 1
+  podMonitor:
+    enabled: false
   volumes:
     persistence: true
     journal:
@@ -103,6 +119,8 @@ bookkeeper:
 
 broker:
   replicaCount: 1
+  podMonitor:
+    enabled: false
   configData:
     #PULSAR_ROUTING_APPENDER_DEFAULT: RollingFile
     PULSAR_EXTRA_OPTS: >
@@ -141,8 +159,14 @@ broker:
     # configure deletion of inactive topics
     brokerDeleteInactiveTopicsMaxInactiveDurationSeconds: "86400"
 
+autorecovery:
+  podMonitor:
+    enabled: false
+
 proxy:
   replicaCount: 1
+  podMonitor:
+    enabled: false
   ports:
     http: 8080
   ingress:
@@ -173,10 +197,3 @@ proxy:
       -XX:-ResizePLAB
       -XX:+ExitOnOutOfMemoryError
       -XX:+PerfDisableSharedMem
-
-prometheus:
-  volumes:
-    persistence: true
-    data:
-      name: data
-      size: 5Gi
