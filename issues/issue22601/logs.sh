@@ -1,10 +1,19 @@
 #!/bin/bash
 function ptbx_k_logs() {
   {
+    follow_arg="-f"
+    if [[ "$no_follow" == "1" ]]; then
+       follow_arg=""
+    fi
     while read -r namespace name; do
-      printf "kubectl logs -f -n %s pod/%s | sed -e 's/^/[%s] /'\0" "$namespace" "$name" "$name"
+      printf "kubectl logs %s -n %s pod/%s | sed -e 's/^/[%s] /'\0" "$follow_arg" "$namespace" "$name" "$name"
     done < <(kubectl get "$@" pods --no-headers -o custom-columns=":metadata.namespace,:metadata.name")
   } | xargs -0 parallel --
 }
+no_follow=0
+if [[ "$1" == "--no-follow" ]]; then
+    no_follow=1
+    shift
+fi
 filter="${1-:'ERROR|WARN|Exception'}"
 ptbx_k_logs -n pulsar-testenv -l app=pulsar | { [[ "$filter" != "" ]] && egrep "$filter" || cat; }
