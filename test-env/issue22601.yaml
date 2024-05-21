@@ -16,3 +16,22 @@ proxy:
 
 toolset:
   useProxy: false
+
+# enable TLS
+tls:
+  enabled: true
+  proxy:
+    enabled: true
+  broker:
+    enabled: true
+  bookie:
+    enabled: true
+  zookeeper:
+    enabled: true
+
+# issue selfsigning certs
+# run https://github.com/apache/pulsar-helm-chart/blob/master/scripts/cert-manager/install-cert-manager.sh 
+# to install cert-manager
+certs:
+  internal_issuer:
+    enabled: true
