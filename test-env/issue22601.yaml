@@ -9,6 +9,7 @@ broker:
     managedLedgerDefaultWriteQuorum: "2"
     managedLedgerDefaultAckQuorum: "2"
     acknowledgmentAtBatchIndexLevelEnabled: "true"
+    bookkeeperClientRegionawarePolicyEnabled: "true"
 zookeeper:
   replicaCount: 3
 proxy:
