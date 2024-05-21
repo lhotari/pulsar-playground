@@ -6,4 +6,5 @@ function ptbx_k_logs() {
     done < <(kubectl get "$@" pods --no-headers -o custom-columns=":metadata.namespace,:metadata.name")
   } | xargs -0 parallel --
 }
-ptbx_k_logs -n pulsar-testenv -l app=pulsar | egrep 'ERROR|WARN|Exception'
+filter="${1-:'ERROR|WARN|Exception'}"
+ptbx_k_logs -n pulsar-testenv -l app=pulsar | { [[ "$filter" != "" ]] && egrep "$filter" || cat; }
