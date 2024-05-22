@@ -5,9 +5,9 @@ bookkeeper:
   configData:
     OPTS: "-XX:ActiveProcessorCount=8"
 broker:
-  replicaCount: 3
+  replicaCount: 1
   configData:
-    OPTS: "-XX:ActiveProcessorCount=8"
+    OPTS: "-XX:ActiveProcessorCount=8 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
     managedLedgerDefaultEnsembleSize: "2"
     managedLedgerDefaultWriteQuorum: "2"
     managedLedgerDefaultAckQuorum: "2"
