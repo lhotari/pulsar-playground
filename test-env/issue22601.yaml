@@ -1,4 +1,4 @@
-defaultPulsarImageTag: 3.2.2
+defaultPulsarImageTag: 3.2.3
 
 bookkeeper:
   replicaCount: 3
