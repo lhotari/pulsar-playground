@@ -20,7 +20,7 @@ filter="${1:-"extract_exceptions"}"
 ptbx_k_logs -n pulsar-testenv -l app=pulsar | { 
     if [[ "$filter" == "extract_exceptions" ]]; then
         $SCRIPT_DIR/extract_exceptions.py
-    elif [[ "$filter" == "" ]]; then
+    elif [[ "$filter" == "" || "$filter" == "_no_filter_" ]]; then
         cat
     else
         egrep "$filter"
