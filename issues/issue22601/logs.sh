@@ -1,4 +1,5 @@
 #!/bin/bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 function ptbx_k_logs() {
   {
     follow_arg="-f"
@@ -15,5 +16,13 @@ if [[ "$1" == "--no-follow" ]]; then
     no_follow=1
     shift
 fi
-filter="${1-:'ERROR|WARN|Exception'}"
-ptbx_k_logs -n pulsar-testenv -l app=pulsar | { [[ "$filter" != "" ]] && egrep "$filter" || cat; }
+filter="${1:-"extract_exceptions"}"
+ptbx_k_logs -n pulsar-testenv -l app=pulsar | { 
+    if [[ "$filter" == "extract_exceptions" ]]; then
+        $SCRIPT_DIR/extract_exceptions.py
+    elif [[ "$filter" == "" ]]; then
+        cat
+    else
+        egrep "$filter"
+    fi
+}
