@@ -36,4 +36,4 @@ else
 fi
 echo "Using values '${value_files}'"
 set -x
-helm upgrade --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace $value_files $initialize_params "${DEPLOYMENT_NAME}" "$CHART" "$@"
+helm upgrade --wait --debug --install --namespace "${DEPLOYMENT_NAMESPACE}" --create-namespace $value_files $initialize_params "${DEPLOYMENT_NAME}" "$CHART" "$@"
