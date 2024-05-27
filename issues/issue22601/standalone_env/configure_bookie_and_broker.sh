@@ -36,4 +36,5 @@ PULSAR_PREFIX_bookkeeperTLSProviderFactoryClass=org.apache.bookkeeper.tls.TLSCon
   managedLedgerDefaultEnsembleSize=1 \
   managedLedgerDefaultWriteQuorum=1 \
   managedLedgerDefaultAckQuorum=1 \
+  bookkeeperUseV2WireProtocol=false \
   $SCRIPT_DIR/apply-config-from-env.py $PULSAR_HOME/conf/broker.conf
