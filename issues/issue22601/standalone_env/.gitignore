@@ -1,4 +1,4 @@
-apache-pulsar-3.2.2
+apache-pulsar-*
 *.pem
 *.jks
 *.p12
