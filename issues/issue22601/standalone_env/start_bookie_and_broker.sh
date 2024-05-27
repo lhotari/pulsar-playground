@@ -3,4 +3,4 @@
 cd "$PULSAR_HOME"
 bin/pulsar-daemon start bookie
 sleep 5
-bin/pulsar-daemon start broker
+OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" bin/pulsar-daemon start broker
