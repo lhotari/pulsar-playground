@@ -1,8 +1,10 @@
 #!/bin/bash
 . ./common.sh
 cd $SCRIPT_DIR
-curl -o apply-config-from-env.py https://raw.githubusercontent.com/apache/pulsar/master/docker/pulsar/scripts/apply-config-from-env.py
-chmod +x apply-config-from-env.py
+if [[ ! -f apply-config-from-env.py ]]; then
+    curl -o apply-config-from-env.py https://raw.githubusercontent.com/apache/pulsar/master/docker/pulsar/scripts/apply-config-from-env.py
+    chmod +x apply-config-from-env.py
+fi
 cd "$PULSAR_HOME"/conf
 rm truststore.jks keystore.jks
 $SCRIPT_DIR/ca.sh
