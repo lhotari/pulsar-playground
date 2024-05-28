@@ -20,7 +20,6 @@ PULSAR_PREFIX_tlsProvider=OpenSSL \
   PULSAR_PREFIX_allowLoopback=true \
   PULSAR_PREFIX_prometheusStatsHttpPort=8001 \
   PULSAR_PREFIX_httpServerPort=8001 \
-  PULSAR_PREFIX_tlsEnabledProtocols=TLSv1.2 \
   $SCRIPT_DIR/apply-config-from-env.py $PULSAR_HOME/conf/bookkeeper.conf
 
 PULSAR_PREFIX_bookkeeperTLSProviderFactoryClass=org.apache.bookkeeper.tls.TLSContextFactory \
@@ -37,6 +36,5 @@ PULSAR_PREFIX_bookkeeperTLSProviderFactoryClass=org.apache.bookkeeper.tls.TLSCon
   managedLedgerDefaultEnsembleSize=1 \
   managedLedgerDefaultWriteQuorum=1 \
   managedLedgerDefaultAckQuorum=1 \
-  PULSAR_PREFIX_bookkeeper_tlsEnabledProtocols=TLSv1.2 \
   bookkeeperUseV2WireProtocol=true \
   $SCRIPT_DIR/apply-config-from-env.py $PULSAR_HOME/conf/broker.conf
