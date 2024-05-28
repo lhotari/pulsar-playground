@@ -8,3 +8,5 @@ ca-key
 ca-cert
 .pass
 apply-config-from-env.py
+topic_*.json
+exceptions_*.txt
