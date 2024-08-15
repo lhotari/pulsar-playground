@@ -39,7 +39,7 @@ public class TestScenarioIssueKeyShared {
     public static final int RECEIVE_TIMEOUT_SECONDS = 5;
     private final String namespace;
     private int consumerCount = 4;
-    private int maxMessages = 1000000;
+    private int maxMessages = 50000;
     private int messageSize = 4;
 
     private boolean enableBatching = true;
@@ -122,36 +122,8 @@ public class TestScenarioIssueKeyShared {
             log.info("Attempting to consume remaining messages...");
         }
 
-        Random random = new Random();
-        Thread unloadingThread = new Thread(() -> {
-            try (PulsarAdmin admin = PulsarAdmin.builder()
-                    .serviceHttpUrl(PULSAR_SERVICE_URL)
-                    .build()) {
-                while (!Thread.currentThread().isInterrupted()) {
-                    try {
-                        Thread.sleep(random.nextInt(5000) + 1000);
-                        log.info("Triggering unload.");
-                        admin.namespaces().unload(namespaceName.toString());
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    } catch (PulsarAdminException e) {
-                        String message = e.getMessage();
-                        if (message.contains("is being unloaded")) {
-                            log.info("Failed to unload namespace. Namespace is being unloaded.");
-                        } else if (message.contains("Namespace is not active")) {
-                            log.info("Failed to unload namespace. Namespace is not active.");
-                        } else if (message.contains("Topic is already fenced")) {
-                            log.info("Failed to unload topic. Topic is already fenced.");
-                        } else {
-                            log.error("Failed to unload topic", e);
-                        }
-                    }
-                }
-            } catch (PulsarClientException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        unloadingThread.start();
+        //Random random = new Random();
+        //Thread unloadingThread = createUnloadingThread(random, namespaceName);
 
         List<CompletableFuture<ConsumeReport>> tasks = IntStream.range(1, consumerCount + 1).mapToObj(i -> {
             String consumerName = "consumer" + i;
@@ -188,7 +160,40 @@ public class TestScenarioIssueKeyShared {
             log.error("Not all messages received. Remaining: " + remaining);
         }
 
-        unloadingThread.interrupt();
+        //unloadingThread.interrupt();
+    }
+
+    private static Thread createUnloadingThread(Random random, NamespaceName namespaceName) {
+        Thread unloadingThread = new Thread(() -> {
+            try (PulsarAdmin admin = PulsarAdmin.builder()
+                    .serviceHttpUrl(PULSAR_SERVICE_URL)
+                    .build()) {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        Thread.sleep(random.nextInt(5000) + 1000);
+                        log.info("Triggering unload.");
+                        admin.namespaces().unload(namespaceName.toString());
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    } catch (PulsarAdminException e) {
+                        String message = e.getMessage();
+                        if (message.contains("is being unloaded")) {
+                            log.info("Failed to unload namespace. Namespace is being unloaded.");
+                        } else if (message.contains("Namespace is not active")) {
+                            log.info("Failed to unload namespace. Namespace is not active.");
+                        } else if (message.contains("Topic is already fenced")) {
+                            log.info("Failed to unload topic. Topic is already fenced.");
+                        } else {
+                            log.error("Failed to unload topic", e);
+                        }
+                    }
+                }
+            } catch (PulsarClientException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        unloadingThread.start();
+        return unloadingThread;
     }
 
     private ConsumeReport consumeMessages(String topicName, String consumerName)
@@ -211,7 +216,7 @@ public class TestScenarioIssueKeyShared {
                 .negativeAckRedeliveryDelay(5, TimeUnit.SECONDS)
                 .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
                 .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(Integer.MAX_VALUE).build())
-                .receiverQueueSize(Math.max(maxMessages / 10, 1000))
+                .receiverQueueSize(10)
                 .consumerName("consumer")
                 .subscribe()) {
             int i = 0;
