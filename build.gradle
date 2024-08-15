@@ -14,21 +14,26 @@ application {
     mainClass = 'com.github.lhotari.pulsar.playground.TestScenarioCreateTopics'
 }
 
-def pulsarVersion = System.getenv('PULSAR_VERSION') ?: '3.3.1'
+//def pulsarGroup = 'org.apache.pulsar'
+//def defaultPulsarVersion = '3.3.1'
+def pulsarGroup = 'io.streamnative'
+def defaultPulsarVersion = '3.2.3.1'
+def pulsarVersion = System.getenv('PULSAR_VERSION') ?: defaultPulsarVersion
 
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.11.0')
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
-    implementation "org.apache.pulsar:pulsar-client-original:${pulsarVersion}"
-    implementation "org.apache.pulsar:pulsar-client-admin-original:${pulsarVersion}"
+    implementation "${pulsarGroup}:pulsar-client-original:${pulsarVersion}"
+    implementation "${pulsarGroup}:pulsar-client-admin-original:${pulsarVersion}"
 
     implementation platform("org.apache.logging.log4j:log4j-bom:2.23.1")
     implementation "org.apache.logging.log4j:log4j-api"
     implementation "org.apache.logging.log4j:log4j-core"
     // use log4j-slf4j2-impl with Pulsar 3.3.0 and newer, for older versions use log4j-slf4j-impl
-    implementation "org.apache.logging.log4j:log4j-slf4j2-impl"
+    //implementation "org.apache.logging.log4j:log4j-slf4j2-impl"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl"
 
     implementation 'io.github.resilience4j:resilience4j-retry:2.2.0'
 
