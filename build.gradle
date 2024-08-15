@@ -27,7 +27,8 @@ dependencies {
     implementation platform("org.apache.logging.log4j:log4j-bom:2.23.1")
     implementation "org.apache.logging.log4j:log4j-api"
     implementation "org.apache.logging.log4j:log4j-core"
-    implementation "org.apache.logging.log4j:log4j-slf4j-impl"
+    // use log4j-slf4j2-impl with Pulsar 3.3.0 and newer, for older versions use log4j-slf4j-impl
+    implementation "org.apache.logging.log4j:log4j-slf4j2-impl"
 
     implementation 'io.github.resilience4j:resilience4j-retry:2.2.0'
 
