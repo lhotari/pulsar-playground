@@ -1,7 +1,8 @@
 plugins {
     id 'application'
-    id "io.freefair.lombok" version "8.1.0"
+    id "io.freefair.lombok" version "8.7.1"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.github.ben-manes.versions' version '0.51.0'
 }
 
 repositories {
@@ -13,24 +14,26 @@ application {
     mainClass = 'com.github.lhotari.pulsar.playground.TestScenarioCreateTopics'
 }
 
-def pulsarVersion = System.getenv('PULSAR_VERSION') ?: '3.2.2'
+def pulsarVersion = System.getenv('PULSAR_VERSION') ?: '3.3.1'
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+    testImplementation platform('org.junit:junit-bom:5.11.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
     implementation "org.apache.pulsar:pulsar-client-original:${pulsarVersion}"
     implementation "org.apache.pulsar:pulsar-client-admin-original:${pulsarVersion}"
 
-    implementation "org.apache.logging.log4j:log4j-api:2.20.0"
-    implementation "org.apache.logging.log4j:log4j-core:2.20.0"
-    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.20.0"
+    implementation platform("org.apache.logging.log4j:log4j-bom:2.23.1")
+    implementation "org.apache.logging.log4j:log4j-api"
+    implementation "org.apache.logging.log4j:log4j-core"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl"
 
     implementation 'io.github.resilience4j:resilience4j-retry:2.2.0'
 
     implementation 'com.beust:jcommander:1.82'
 
-    implementation 'org.roaringbitmap:RoaringBitmap:1.0.1'
+    implementation 'org.roaringbitmap:RoaringBitmap:1.2.1'
 }
 
 // Workaround for invalid metadata for Bookkeeper dependencies which contain <packaging>nar</packaging> in pom.xml
