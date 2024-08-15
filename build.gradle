@@ -25,8 +25,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
-    implementation "${pulsarGroup}:pulsar-client-original:${pulsarVersion}"
-    implementation "${pulsarGroup}:pulsar-client-admin-original:${pulsarVersion}"
+    implementation("${pulsarGroup}:pulsar-client-original:${pulsarVersion}") {
+        exclude group: 'org.apache.logging.log4j', module:'log4j-layout-template-json'
+    }
+    implementation("${pulsarGroup}:pulsar-client-admin-original:${pulsarVersion}") {
+        exclude group: 'org.apache.logging.log4j', module:'log4j-layout-template-json'
+    }
 
     implementation platform("org.apache.logging.log4j:log4j-bom:2.23.1")
     implementation "org.apache.logging.log4j:log4j-api"
@@ -45,11 +49,19 @@ dependencies {
 // Workaround for invalid metadata for Bookkeeper dependencies which contain <packaging>nar</packaging> in pom.xml
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'org.apache.bookkeeper' &&
+        if ((details.requested.group == 'org.apache.bookkeeper' || details.requested.group == 'io.streamnative') &&
                 details.requested.name in ['circe-checksum', 'cpu-affinity', 'native-io']) {
             details.artifactSelection { ArtifactSelectionDetails asDetails ->
                 asDetails.selectArtifact('jar', null, null)
             }
+        }
+    }
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'commons-logging' && details.requested.name == 'commons-logging') {
+            details.useTarget 'org.slf4j:jcl-over-slf4j:1.7.36'
         }
     }
 }
