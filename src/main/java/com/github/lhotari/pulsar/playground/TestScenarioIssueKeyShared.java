@@ -7,7 +7,9 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -125,11 +127,12 @@ public class TestScenarioIssueKeyShared {
         //Random random = new Random();
         //Thread unloadingThread = createUnloadingThread(random, namespaceName);
 
+        Phaser ackPhaser = new Phaser(consumerCount);
         List<CompletableFuture<ConsumeReport>> tasks = IntStream.range(1, consumerCount + 1).mapToObj(i -> {
             String consumerName = "consumer" + i;
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    return consumeMessages(topicName, consumerName);
+                    return consumeMessages(topicName, consumerName, ackPhaser);
                 } catch (PulsarClientException e) {
                     throw new RuntimeException(e);
                 }
@@ -196,7 +199,7 @@ public class TestScenarioIssueKeyShared {
         return unloadingThread;
     }
 
-    private ConsumeReport consumeMessages(String topicName, String consumerName)
+    private ConsumeReport consumeMessages(String topicName, String consumerName, Phaser ackPhaser)
             throws PulsarClientException {
         @Cleanup
         PulsarClient pulsarClient = PulsarClient.builder()
@@ -217,6 +220,7 @@ public class TestScenarioIssueKeyShared {
                 .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
                 .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(Integer.MAX_VALUE).build())
                 .receiverQueueSize(10)
+                .acknowledgmentGroupTime(0, TimeUnit.SECONDS)
                 .consumerName("consumer")
                 .subscribe()) {
             int i = 0;
@@ -235,6 +239,7 @@ public class TestScenarioIssueKeyShared {
                 if (mod100 == 3 || mod100 == 7 || mod100 == 13 || mod100 == 19 || mod100 == 29) {
                     reconsumed++;
                     log.info("Nacking {} msgNum: {} reconsumed: {}", i, msgNum, reconsumed);
+                    waitOthersOrTimeout(ackPhaser);
                     consumer.negativeAcknowledge(msg);
                     continue;
                 }
@@ -246,6 +251,7 @@ public class TestScenarioIssueKeyShared {
                     duplicates++;
                 }
                 log.info("Received {} duplicate: {} unique: {}", msgNum, !added, uniqueMessages);
+                waitOthersOrTimeout(ackPhaser);
                 consumer.acknowledge(msg);
                 if (i % reportingInterval == 0) {
                     log.info("Received {} msgs. unique: {} duplicates: {}", i, uniqueMessages, duplicates);
@@ -253,6 +259,15 @@ public class TestScenarioIssueKeyShared {
             }
         }
         return new ConsumeReport(uniqueMessages, duplicates, reconsumed, receivedMessages);
+    }
+
+    private static void waitOthersOrTimeout(Phaser ackPhaser) {
+        int phase = ackPhaser.arrive();
+        try {
+            ackPhaser.awaitAdvanceInterruptibly(phase, 1, TimeUnit.SECONDS);
+        } catch (InterruptedException|TimeoutException e) {
+            // ignore
+        }
     }
 
     private record ConsumeReport(int uniqueMessages, int duplicates, int reconsumed, RoaringBitmap receivedMessages) {
