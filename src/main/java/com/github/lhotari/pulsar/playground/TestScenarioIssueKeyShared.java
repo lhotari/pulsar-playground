@@ -243,7 +243,7 @@ public class TestScenarioIssueKeyShared {
         int duplicates = 0;
         int reconsumed = 0;
 
-        Executor delayedExecutor = createDelayedExecutor(scheduledExecutorService, random, 9000);
+        Executor delayedExecutor = createDelayedExecutor(scheduledExecutorService, random, 3000);
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 //.ackTimeout(60, TimeUnit.SECONDS)
