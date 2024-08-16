@@ -89,9 +89,8 @@ public class TestScenarioIssueKeyShared {
                 // just to create the subscription
             }
             producerThread = new Thread(() -> {
-                Random random = ThreadLocalRandom.current();
                 try {
-                    produceMessages(pulsarClient, topicName, random);
+                    produceMessages(pulsarClient, topicName);
                 } catch (Throwable throwable) {
                     log.error("Failed to produce messages", throwable);
                 }
@@ -139,7 +138,7 @@ public class TestScenarioIssueKeyShared {
         }
     }
 
-    private void produceMessages(PulsarClient pulsarClient, String topicName, Random random) throws Throwable {
+    private void produceMessages(PulsarClient pulsarClient, String topicName) throws Throwable {
         try (Producer<byte[]> producer = pulsarClient.newProducer()
                 .topic(topicName)
                 .enableBatching(enableBatching)
@@ -155,10 +154,6 @@ public class TestScenarioIssueKeyShared {
                     key = value;
                 } else {
                     key = intToBytes(i, 4);
-                }
-                // sleep for 1 ms with 5% probability
-                if (random.nextInt(100) < 5) {
-                    Thread.sleep(1);
                 }
                 producer.newMessage().orderingKey(key).value(value)
                         .sendAsync().whenComplete((messageId, throwable) -> {
@@ -193,10 +188,7 @@ public class TestScenarioIssueKeyShared {
         int uniqueMessages = 0;
         int duplicates = 0;
 
-        Random random = ThreadLocalRandom.current();
-
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
-                //.receiverQueueSize(10)
                 .consumerName(consumerName)
                 .keySharedPolicy(KeySharedPolicy.autoSplitHashRange().setAllowOutOfOrderDelivery(true))
                 .subscribe()) {
@@ -209,15 +201,6 @@ public class TestScenarioIssueKeyShared {
                     break;
                 }
                 int msgNum = bytesToInt(msg.getData());
-
-                // sleep for a random time with 3% probability
-                if (random.nextInt(100) < 3) {
-                    try {
-                        Thread.sleep(random.nextInt(100) + 1);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
 
                 boolean added = receivedMessages.checkedAdd(msgNum);
                 if (added) {
