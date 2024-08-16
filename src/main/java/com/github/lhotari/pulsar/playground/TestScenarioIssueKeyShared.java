@@ -246,10 +246,10 @@ public class TestScenarioIssueKeyShared {
         Executor delayedExecutor = createDelayedExecutor(scheduledExecutorService, random, 9000);
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
-                .ackTimeout(60, TimeUnit.SECONDS)
-                .negativeAckRedeliveryDelay(5, TimeUnit.SECONDS)
-                .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
-                .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(Integer.MAX_VALUE).build())
+                //.ackTimeout(60, TimeUnit.SECONDS)
+                //.negativeAckRedeliveryDelay(5, TimeUnit.SECONDS)
+                //.batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
+                //.deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(Integer.MAX_VALUE).build())
                 .receiverQueueSize(10)
                 //.acknowledgmentGroupTime(1, TimeUnit.MICROSECONDS)
                 .consumerName(consumerName)
