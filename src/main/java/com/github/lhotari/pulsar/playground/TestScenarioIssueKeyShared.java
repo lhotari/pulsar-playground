@@ -243,7 +243,8 @@ public class TestScenarioIssueKeyShared {
         int duplicates = 0;
         int reconsumed = 0;
 
-        Executor delayedExecutor = createDelayedExecutor(scheduledExecutorService, random, 3000);
+        int ackDelayMax = 3000;
+        Executor delayedExecutor = createDelayedExecutor(scheduledExecutorService, random, ackDelayMax);
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 //.ackTimeout(60, TimeUnit.SECONDS)
@@ -313,6 +314,9 @@ public class TestScenarioIssueKeyShared {
     // make the delay exponentially distributed, up to delayMax
     private static Executor createDelayedExecutor(ScheduledExecutorService scheduledExecutorService, Random random,
                                                   int delayMax) {
+        if (delayMax <= 0) {
+            return scheduledExecutorService;
+        }
         int delayMaxSqrt = (int) Math.sqrt(delayMax);
         return runnable -> {
             int randomInt = random.nextInt(delayMaxSqrt);
