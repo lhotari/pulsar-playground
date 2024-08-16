@@ -220,8 +220,8 @@ public class TestScenarioIssueKeyShared {
                 .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
                 .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(Integer.MAX_VALUE).build())
                 .receiverQueueSize(10)
-                .acknowledgmentGroupTime(0, TimeUnit.SECONDS)
-                .consumerName("consumer")
+                .acknowledgmentGroupTime(1, TimeUnit.MICROSECONDS)
+                .consumerName(consumerName)
                 .subscribe()) {
             int i = 0;
 
