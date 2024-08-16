@@ -7,7 +7,10 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -124,15 +127,16 @@ public class TestScenarioIssueKeyShared {
             log.info("Attempting to consume remaining messages...");
         }
 
-        //Random random = new Random();
+        Random random = new Random();
         //Thread unloadingThread = createUnloadingThread(random, namespaceName);
 
         Phaser ackPhaser = new Phaser(consumerCount);
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(consumerCount * 10);
         List<CompletableFuture<ConsumeReport>> tasks = IntStream.range(1, consumerCount + 1).mapToObj(i -> {
             String consumerName = "consumer" + i;
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    return consumeMessages(topicName, consumerName, ackPhaser);
+                    return consumeMessages(topicName, consumerName, ackPhaser, scheduledExecutorService, random);
                 } catch (PulsarClientException e) {
                     throw new RuntimeException(e);
                 }
@@ -199,7 +203,8 @@ public class TestScenarioIssueKeyShared {
         return unloadingThread;
     }
 
-    private ConsumeReport consumeMessages(String topicName, String consumerName, Phaser ackPhaser)
+    private ConsumeReport consumeMessages(String topicName, String consumerName, Phaser ackPhaser,
+                                          ScheduledExecutorService scheduledExecutorService, Random random)
             throws PulsarClientException {
         @Cleanup
         PulsarClient pulsarClient = PulsarClient.builder()
@@ -213,6 +218,8 @@ public class TestScenarioIssueKeyShared {
         int uniqueMessages = 0;
         int duplicates = 0;
         int reconsumed = 0;
+
+        Executor delayedExecutor = createDelayedExecutor(scheduledExecutorService, random, 9000);
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 .ackTimeout(60, TimeUnit.SECONDS)
@@ -239,8 +246,10 @@ public class TestScenarioIssueKeyShared {
                 if (mod100 == 3 || mod100 == 7 || mod100 == 13 || mod100 == 19 || mod100 == 29) {
                     reconsumed++;
                     log.info("Nacking {} msgNum: {} reconsumed: {}", i, msgNum, reconsumed);
-                    waitOthersOrTimeout(ackPhaser);
-                    consumer.negativeAcknowledge(msg);
+                    delayedExecutor.execute(() -> {
+                        waitOthersOrTimeout(ackPhaser);
+                        consumer.negativeAcknowledge(msg);
+                    });
                     continue;
                 }
 
@@ -251,14 +260,31 @@ public class TestScenarioIssueKeyShared {
                     duplicates++;
                 }
                 log.info("Received {} duplicate: {} unique: {}", msgNum, !added, uniqueMessages);
-                waitOthersOrTimeout(ackPhaser);
-                consumer.acknowledge(msg);
+                delayedExecutor.execute(() -> {
+                    waitOthersOrTimeout(ackPhaser);
+                    try {
+                        consumer.acknowledge(msg);
+                    } catch (PulsarClientException e) {
+                        log.error("Failed to ack message", e);
+                    }
+                });
                 if (i % reportingInterval == 0) {
                     log.info("Received {} msgs. unique: {} duplicates: {}", i, uniqueMessages, duplicates);
                 }
             }
         }
         return new ConsumeReport(uniqueMessages, duplicates, reconsumed, receivedMessages);
+    }
+
+    // make the delay exponentially distributed, up to delayMax
+    private static Executor createDelayedExecutor(ScheduledExecutorService scheduledExecutorService, Random random,
+                                                  int delayMax) {
+        int delayMaxSqrt = (int) Math.sqrt(delayMax);
+        return runnable -> {
+            int randomInt = random.nextInt(delayMaxSqrt);
+            int randomDelay = randomInt * randomInt;
+            scheduledExecutorService.schedule(runnable, randomDelay, TimeUnit.MILLISECONDS);
+        };
     }
 
     private static void waitOthersOrTimeout(Phaser ackPhaser) {
