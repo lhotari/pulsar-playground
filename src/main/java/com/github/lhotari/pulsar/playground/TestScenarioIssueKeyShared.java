@@ -297,7 +297,10 @@ public class TestScenarioIssueKeyShared {
                 log.info("Received {} duplicate: {} unique: {}", msgNum, !added, uniqueMessages);
                 delayedExecutor.execute(() -> {
                     waitOthersOrTimeout(ackPhaser);
-                    consumer.acknowledgeAsync(msg);
+                    consumer.acknowledgeAsync(msg).exceptionally(throwable -> {
+                        log.error("Failed to ack message", throwable);
+                        return null;
+                    });
                 });
                 if (i % reportingInterval == 0) {
                     log.info("Received {} msgs. unique: {} duplicates: {}", i, uniqueMessages, duplicates);
