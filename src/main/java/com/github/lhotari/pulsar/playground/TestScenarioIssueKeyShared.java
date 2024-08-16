@@ -252,7 +252,8 @@ public class TestScenarioIssueKeyShared {
                 //.deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(Integer.MAX_VALUE).build())
                 .receiverQueueSize(10)
                 // disable AcknowledgmentsGroupingTracker
-                .acknowledgmentGroupTime(0, TimeUnit.MICROSECONDS)
+                //.acknowledgmentGroupTime(0, TimeUnit.MICROSECONDS)
+                .isAckReceiptEnabled(true)
                 .consumerName(consumerName)
                 .subscribe()) {
             int i = 0;
@@ -296,11 +297,7 @@ public class TestScenarioIssueKeyShared {
                 log.info("Received {} duplicate: {} unique: {}", msgNum, !added, uniqueMessages);
                 delayedExecutor.execute(() -> {
                     waitOthersOrTimeout(ackPhaser);
-                    try {
-                        consumer.acknowledge(msg);
-                    } catch (PulsarClientException e) {
-                        log.error("Failed to ack message", e);
-                    }
+                    consumer.acknowledgeAsync(msg);
                 });
                 if (i % reportingInterval == 0) {
                     log.info("Received {} msgs. unique: {} duplicates: {}", i, uniqueMessages, duplicates);
