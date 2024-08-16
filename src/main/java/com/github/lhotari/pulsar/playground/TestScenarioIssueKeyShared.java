@@ -196,7 +196,6 @@ public class TestScenarioIssueKeyShared {
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 .consumerName(consumerName)
-                .keySharedPolicy(KeySharedPolicy.autoSplitHashRange().setAllowOutOfOrderDelivery(true))
                 .subscribe()) {
             int i = 0;
 
@@ -246,6 +245,7 @@ public class TestScenarioIssueKeyShared {
                 .subscriptionName("sub")
                 .subscriptionInitialPosition(SubscriptionInitialPosition.Earliest)
                 .subscriptionType(SubscriptionType.Key_Shared)
+                .keySharedPolicy(KeySharedPolicy.autoSplitHashRange().setAllowOutOfOrderDelivery(true))
                 .topic(topicName);
     }
 
