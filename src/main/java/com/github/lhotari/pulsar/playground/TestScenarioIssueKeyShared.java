@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -45,7 +44,7 @@ public class TestScenarioIssueKeyShared {
     public static final int RECEIVE_TIMEOUT_SECONDS = 15;
     private final String namespace;
     private int consumerCount = 4;
-    private int maxMessages = 10000000;
+    private int maxMessages = 100000;
     private int messageSize = 4;
 
     private boolean enableBatching = false;
@@ -135,14 +134,17 @@ public class TestScenarioIssueKeyShared {
 
         int duplicates = results.stream().mapToInt(ConsumeReport::duplicates).sum();
         int reconsumed = results.stream().mapToInt(ConsumeReport::reconsumed).sum();
+        int unique = results.stream().mapToInt(ConsumeReport::uniqueMessages).sum();
 
         int received = joinedReceivedMessages.getCardinality();
         int remaining = maxMessages - received;
-        log.info("Done receiving. Remaining: {} duplicates: {} reconsumed: {}", remaining,
-                duplicates,
-                reconsumed);
+        log.info("Done receiving. Remaining: {} duplicates: {} unique: {} reconsumed: {}", remaining, duplicates,
+                unique, reconsumed);
         if (remaining > 0) {
             log.error("Not all messages received. Remaining: " + remaining);
+        }
+        if (unique != maxMessages) {
+            log.error("Unique message count should match maxMessages!");
         }
 
         //unloadingThread.interrupt();
@@ -257,6 +259,17 @@ public class TestScenarioIssueKeyShared {
                 int msgNum = bytesToInt(msg.getData());
 
                 int mod100 = i % 100;
+
+                // sleep for a random time with 50% probability once every 100 messages
+                if (mod100 == 7) {
+                    if (random.nextBoolean()) {
+                        try {
+                            Thread.sleep(random.nextInt(300));
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                }
 
                 // nack about 5% of the messages
 //                if (mod100 == 3 || mod100 == 7 || mod100 == 13 || mod100 == 19 || mod100 == 29) {
