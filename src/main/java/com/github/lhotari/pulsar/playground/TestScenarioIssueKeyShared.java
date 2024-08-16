@@ -12,6 +12,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class TestScenarioIssueKeyShared {
     public static final int RECEIVE_TIMEOUT_SECONDS = 15;
     private final String namespace;
     private int consumerCount = 4;
-    private int maxMessages = 100000;
+    private int maxMessages = 1000000;
     private int messageSize = 4;
 
     private boolean enableBatching = false;
@@ -90,8 +91,9 @@ public class TestScenarioIssueKeyShared {
                 // just to create the subscription
             }
             producerThread = new Thread(() -> {
+                Random random = ThreadLocalRandom.current();
                 try {
-                    produceMessages(pulsarClient, topicName);
+                    produceMessages(pulsarClient, topicName, random);
                 } catch (Throwable throwable) {
                     log.error("Failed to produce messages", throwable);
                 }
@@ -101,7 +103,6 @@ public class TestScenarioIssueKeyShared {
             log.info("Attempting to consume remaining messages...");
         }
 
-        Random random = new Random();
         //Thread unloadingThread = createUnloadingThread(random, namespaceName);
 
         Phaser ackPhaser = new Phaser(consumerCount);
@@ -110,7 +111,8 @@ public class TestScenarioIssueKeyShared {
             String consumerName = "consumer" + i;
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    return consumeMessages(topicName, consumerName, ackPhaser, scheduledExecutorService, random);
+                    return consumeMessages(topicName, consumerName, ackPhaser, scheduledExecutorService,
+                            ThreadLocalRandom.current());
                 } catch (PulsarClientException e) {
                     log.error("Failed to consume messages", e);
                     return null;
@@ -150,7 +152,7 @@ public class TestScenarioIssueKeyShared {
         //unloadingThread.interrupt();
     }
 
-    private void produceMessages(PulsarClient pulsarClient, String topicName) throws Throwable {
+    private void produceMessages(PulsarClient pulsarClient, String topicName, Random random) throws Throwable {
         try (Producer<byte[]> producer = pulsarClient.newProducer()
                 .topic(topicName)
                 .enableBatching(enableBatching)
@@ -166,6 +168,10 @@ public class TestScenarioIssueKeyShared {
                     key = value;
                 } else {
                     key = intToBytes(i, 4);
+                }
+                // sleep for 1 ms with 5% probability
+                if (random.nextInt(100) < 5) {
+                    Thread.sleep(1);
                 }
                 producer.newMessage().orderingKey(key).value(value)
                         .sendAsync().whenComplete((messageId, throwable) -> {
@@ -260,14 +266,12 @@ public class TestScenarioIssueKeyShared {
 
                 int mod100 = i % 100;
 
-                // sleep for a random time with 50% probability once every 100 messages
-                if (mod100 == 7) {
-                    if (random.nextBoolean()) {
-                        try {
-                            Thread.sleep(random.nextInt(300));
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        }
+                // sleep for a random time with 3% probability
+                if (random.nextInt(100) < 3) {
+                    try {
+                        Thread.sleep(random.nextInt(500) + 1);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
                 }
 
