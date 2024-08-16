@@ -30,6 +30,7 @@ import org.apache.pulsar.client.api.SizeUnit;
 import org.apache.pulsar.client.api.SubscriptionInitialPosition;
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.common.naming.NamespaceName;
+import org.apache.pulsar.common.policies.data.DelayedDeliveryPolicies;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.policies.data.RetentionPolicies;
 import org.apache.pulsar.common.util.FutureUtil;
@@ -75,6 +76,9 @@ public class TestScenarioIssueKeyShared {
             Policies policies = new Policies();
             // no retention
             policies.retention_policies = new RetentionPolicies(0, 0);
+            policies.delayed_delivery_policies = DelayedDeliveryPolicies.builder()
+                    .active(false)
+                    .build();
             pulsarAdmin.namespaces().createNamespace(namespaceName.toString(), policies);
             pulsarAdmin.topics().createNonPartitionedTopic(topicName);
             newTopic = true;
