@@ -245,6 +245,8 @@ public class TestScenarioIssueKeyShared {
 
         int ackDelayMax = 0;
         Executor delayedExecutor = createDelayedExecutor(scheduledExecutorService, random, ackDelayMax);
+        // run in same thread
+        delayedExecutor = Runnable::run;
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 //.ackTimeout(60, TimeUnit.SECONDS)
@@ -298,10 +300,13 @@ public class TestScenarioIssueKeyShared {
                 log.info("Received {} duplicate: {} unique: {}", msgNum, !added, uniqueMessages);
                 delayedExecutor.execute(() -> {
                     waitOthersOrTimeout(ackPhaser);
+                    consumer.acknowledgeAsync(msg);
+                    /*
                     consumer.acknowledgeAsync(msg).exceptionally(throwable -> {
                         log.error("Failed to ack message", throwable);
                         return null;
                     });
+                     */
                 });
                 if (i % reportingInterval == 0) {
                     log.info("Received {} msgs. unique: {} duplicates: {}", i, uniqueMessages, duplicates);
