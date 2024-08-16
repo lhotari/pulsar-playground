@@ -42,13 +42,13 @@ import org.roaringbitmap.RoaringBitmap;
 
 @Slf4j
 public class TestScenarioIssueKeyShared {
-    public static final int RECEIVE_TIMEOUT_SECONDS = 30;
+    public static final int RECEIVE_TIMEOUT_SECONDS = 15;
     private final String namespace;
     private int consumerCount = 4;
-    private int maxMessages = 50000;
+    private int maxMessages = 10000000;
     private int messageSize = 4;
 
-    private boolean enableBatching = true;
+    private boolean enableBatching = false;
 
     public TestScenarioIssueKeyShared(String namespace) {
         this.namespace = namespace;
@@ -85,45 +85,19 @@ public class TestScenarioIssueKeyShared {
             log.info("Namespace or Topic exists {}", topicName);
         }
 
+        Thread producerThread = null;
         if (newTopic) {
             try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName).subscribe()) {
                 // just to create the subscription
             }
-            try (Producer<byte[]> producer = pulsarClient.newProducer()
-                    .topic(topicName)
-                    .enableBatching(enableBatching)
-                    .batcherBuilder(BatcherBuilder.KEY_BASED)
-                    .batchingMaxMessages(Math.max(50, maxMessages / 10000))
-                    .blockIfQueueFull(true)
-                    .create()) {
-                AtomicReference<Throwable> sendFailure = new AtomicReference<>();
-                for (int i = 1; i <= maxMessages; i++) {
-                    byte[] value = intToBytes(i, messageSize);
-                    byte[] key;
-                    if (messageSize == 4) {
-                        key = value;
-                    } else {
-                        key = intToBytes(i, 4);
-                    }
-                    producer.newMessage().orderingKey(key).value(value)
-                            .sendAsync().whenComplete((messageId, throwable) -> {
-                        if (throwable != null) {
-                            log.error("Failed to send message to topic {}", topicName, throwable);
-                            sendFailure.set(throwable);
-                        }
-                    });
-                    if (i % 1000 == 0) {
-                        log.info("Sent {} msgs", i);
-                    }
-                    Throwable throwable = sendFailure.get();
-                    if (throwable != null) {
-                        throw throwable;
-                    }
+            producerThread = new Thread(() -> {
+                try {
+                    produceMessages(pulsarClient, topicName);
+                } catch (Throwable throwable) {
+                    log.error("Failed to produce messages", throwable);
                 }
-                log.info("Flushing");
-                producer.flush();
-            }
-            log.info("Done sending.");
+            });
+            producerThread.start();
         } else {
             log.info("Attempting to consume remaining messages...");
         }
@@ -149,6 +123,7 @@ public class TestScenarioIssueKeyShared {
             });
         }).collect(Collectors.toUnmodifiableList());
 
+        producerThread.join();
         FutureUtil.waitForAll(tasks).get();
 
         List<ConsumeReport> results =
@@ -171,6 +146,44 @@ public class TestScenarioIssueKeyShared {
         }
 
         //unloadingThread.interrupt();
+    }
+
+    private void produceMessages(PulsarClient pulsarClient, String topicName) throws Throwable {
+        try (Producer<byte[]> producer = pulsarClient.newProducer()
+                .topic(topicName)
+                .enableBatching(enableBatching)
+                .batcherBuilder(BatcherBuilder.KEY_BASED)
+                .batchingMaxMessages(Math.max(50, maxMessages / 10000))
+                .blockIfQueueFull(true)
+                .create()) {
+            AtomicReference<Throwable> sendFailure = new AtomicReference<>();
+            for (int i = 1; i <= maxMessages; i++) {
+                byte[] value = intToBytes(i, messageSize);
+                byte[] key;
+                if (messageSize == 4) {
+                    key = value;
+                } else {
+                    key = intToBytes(i, 4);
+                }
+                producer.newMessage().orderingKey(key).value(value)
+                        .sendAsync().whenComplete((messageId, throwable) -> {
+                    if (throwable != null) {
+                        log.error("Failed to send message to topic {}", topicName, throwable);
+                        sendFailure.set(throwable);
+                    }
+                });
+                if (i % 1000 == 0) {
+                    log.info("Sent {} msgs", i);
+                }
+                Throwable throwable = sendFailure.get();
+                if (throwable != null) {
+                    throw throwable;
+                }
+            }
+            log.info("Flushing");
+            producer.flush();
+        }
+        log.info("Done sending.");
     }
 
     private static Thread createUnloadingThread(Random random, NamespaceName namespaceName) {
@@ -230,7 +243,7 @@ public class TestScenarioIssueKeyShared {
                 .batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
                 .deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(Integer.MAX_VALUE).build())
                 .receiverQueueSize(10)
-                .acknowledgmentGroupTime(1, TimeUnit.MICROSECONDS)
+                //.acknowledgmentGroupTime(1, TimeUnit.MICROSECONDS)
                 .consumerName(consumerName)
                 .subscribe()) {
             int i = 0;
@@ -246,15 +259,15 @@ public class TestScenarioIssueKeyShared {
                 int mod100 = i % 100;
 
                 // nack about 5% of the messages
-                if (mod100 == 3 || mod100 == 7 || mod100 == 13 || mod100 == 19 || mod100 == 29) {
-                    reconsumed++;
-                    log.info("Nacking {} msgNum: {} reconsumed: {}", i, msgNum, reconsumed);
-                    delayedExecutor.execute(() -> {
-                        waitOthersOrTimeout(ackPhaser);
-                        consumer.negativeAcknowledge(msg);
-                    });
-                    continue;
-                }
+//                if (mod100 == 3 || mod100 == 7 || mod100 == 13 || mod100 == 19 || mod100 == 29) {
+//                    reconsumed++;
+//                    log.info("Nacking {} msgNum: {} reconsumed: {}", i, msgNum, reconsumed);
+//                    delayedExecutor.execute(() -> {
+//                        waitOthersOrTimeout(ackPhaser);
+//                        consumer.negativeAcknowledge(msg);
+//                    });
+//                    continue;
+//                }
 
                 boolean added = receivedMessages.checkedAdd(msgNum);
                 if (added) {
@@ -291,12 +304,12 @@ public class TestScenarioIssueKeyShared {
     }
 
     private static void waitOthersOrTimeout(Phaser ackPhaser) {
-        int phase = ackPhaser.arrive();
-        try {
-            ackPhaser.awaitAdvanceInterruptibly(phase, 1, TimeUnit.SECONDS);
-        } catch (InterruptedException|TimeoutException e) {
-            // ignore
-        }
+//        int phase = ackPhaser.arrive();
+//        try {
+//            ackPhaser.awaitAdvanceInterruptibly(phase, 1, TimeUnit.SECONDS);
+//        } catch (InterruptedException|TimeoutException e) {
+//            // ignore
+//        }
     }
 
     private record ConsumeReport(int uniqueMessages, int duplicates, int reconsumed, RoaringBitmap receivedMessages) {
