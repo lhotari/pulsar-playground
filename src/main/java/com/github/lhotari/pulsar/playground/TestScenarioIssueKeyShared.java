@@ -196,7 +196,7 @@ public class TestScenarioIssueKeyShared {
         Random random = ThreadLocalRandom.current();
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
-                .receiverQueueSize(10)
+                //.receiverQueueSize(10)
                 .consumerName(consumerName)
                 .keySharedPolicy(KeySharedPolicy.autoSplitHashRange().setAllowOutOfOrderDelivery(true))
                 .subscribe()) {
