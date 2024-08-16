@@ -58,6 +58,9 @@ public class TestScenarioIssueKeyShared {
         log.info("Pulsar client version: {} {} {} {}", PulsarVersion.getVersion(), PulsarVersion.getGitBranch(),
                 PulsarVersion.getGitSha(), PulsarVersion.getBuildTime());
 
+        log.info("Waiting 2 seconds before starting...");
+        Thread.sleep(2000L);
+
         @Cleanup
         PulsarClient pulsarClient = PulsarClient.builder()
                 .serviceUrl(PULSAR_BROKER_URL)
@@ -298,16 +301,17 @@ public class TestScenarioIssueKeyShared {
                     duplicates++;
                 }
                 log.info("Received {} duplicate: {} unique: {}", msgNum, !added, uniqueMessages);
-                delayedExecutor.execute(() -> {
-                    waitOthersOrTimeout(ackPhaser);
-                    consumer.acknowledgeAsync(msg);
-                    /*
-                    consumer.acknowledgeAsync(msg).exceptionally(throwable -> {
-                        log.error("Failed to ack message", throwable);
-                        return null;
-                    });
-                     */
-                });
+                consumer.acknowledgeAsync(msg);
+//                delayedExecutor.execute(() -> {
+//                    waitOthersOrTimeout(ackPhaser);
+//                    consumer.acknowledgeAsync(msg);
+//                    /*
+//                    consumer.acknowledgeAsync(msg).exceptionally(throwable -> {
+//                        log.error("Failed to ack message", throwable);
+//                        return null;
+//                    });
+//                     */
+//                });
                 if (i % reportingInterval == 0) {
                     log.info("Received {} msgs. unique: {} duplicates: {}", i, uniqueMessages, duplicates);
                 }
