@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Phaser;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -22,11 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pulsar.PulsarVersion;
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.admin.PulsarAdminException;
-import org.apache.pulsar.client.api.BatchReceivePolicy;
 import org.apache.pulsar.client.api.BatcherBuilder;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.ConsumerBuilder;
-import org.apache.pulsar.client.api.DeadLetterPolicy;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
@@ -106,16 +100,11 @@ public class TestScenarioIssueKeyShared {
             log.info("Attempting to consume remaining messages...");
         }
 
-        //Thread unloadingThread = createUnloadingThread(random, namespaceName);
-
-        Phaser ackPhaser = new Phaser(consumerCount);
-        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(consumerCount * 10);
         List<CompletableFuture<ConsumeReport>> tasks = IntStream.range(1, consumerCount + 1).mapToObj(i -> {
             String consumerName = "consumer" + i;
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    return consumeMessages(topicName, consumerName, ackPhaser, scheduledExecutorService,
-                            ThreadLocalRandom.current());
+                    return consumeMessages(topicName, consumerName);
                 } catch (PulsarClientException e) {
                     log.error("Failed to consume messages", e);
                     return null;
@@ -136,23 +125,17 @@ public class TestScenarioIssueKeyShared {
 
         RoaringBitmap joinedReceivedMessages = new RoaringBitmap();
         results.stream().map(ConsumeReport::receivedMessages).forEach(joinedReceivedMessages::or);
-
         int duplicates = results.stream().mapToInt(ConsumeReport::duplicates).sum();
-        int reconsumed = results.stream().mapToInt(ConsumeReport::reconsumed).sum();
         int unique = results.stream().mapToInt(ConsumeReport::uniqueMessages).sum();
-
         int received = joinedReceivedMessages.getCardinality();
         int remaining = maxMessages - received;
-        log.info("Done receiving. Remaining: {} duplicates: {} unique: {} reconsumed: {}", remaining, duplicates,
-                unique, reconsumed);
+        log.info("Done receiving. Remaining: {} duplicates: {} unique: {}", remaining, duplicates, unique);
         if (remaining > 0) {
             log.error("Not all messages received. Remaining: " + remaining);
         }
         if (unique != maxMessages) {
             log.error("Unique message count should match maxMessages!");
         }
-
-        //unloadingThread.interrupt();
     }
 
     private void produceMessages(PulsarClient pulsarClient, String topicName, Random random) throws Throwable {
@@ -197,41 +180,7 @@ public class TestScenarioIssueKeyShared {
         log.info("Done sending.");
     }
 
-    private static Thread createUnloadingThread(Random random, NamespaceName namespaceName) {
-        Thread unloadingThread = new Thread(() -> {
-            try (PulsarAdmin admin = PulsarAdmin.builder()
-                    .serviceHttpUrl(PULSAR_SERVICE_URL)
-                    .build()) {
-                while (!Thread.currentThread().isInterrupted()) {
-                    try {
-                        Thread.sleep(random.nextInt(5000) + 1000);
-                        log.info("Triggering unload.");
-                        admin.namespaces().unload(namespaceName.toString());
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    } catch (PulsarAdminException e) {
-                        String message = e.getMessage();
-                        if (message.contains("is being unloaded")) {
-                            log.info("Failed to unload namespace. Namespace is being unloaded.");
-                        } else if (message.contains("Namespace is not active")) {
-                            log.info("Failed to unload namespace. Namespace is not active.");
-                        } else if (message.contains("Topic is already fenced")) {
-                            log.info("Failed to unload topic. Topic is already fenced.");
-                        } else {
-                            log.error("Failed to unload topic", e);
-                        }
-                    }
-                }
-            } catch (PulsarClientException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        unloadingThread.start();
-        return unloadingThread;
-    }
-
-    private ConsumeReport consumeMessages(String topicName, String consumerName, Phaser ackPhaser,
-                                          ScheduledExecutorService scheduledExecutorService, Random random)
+    private ConsumeReport consumeMessages(String topicName, String consumerName)
             throws PulsarClientException {
         @Cleanup
         PulsarClient pulsarClient = PulsarClient.builder()
@@ -239,27 +188,14 @@ public class TestScenarioIssueKeyShared {
                 .memoryLimit(300, SizeUnit.MEGA_BYTES)
                 .build();
 
-        int reportingInterval = 1000;
-
         RoaringBitmap receivedMessages = new RoaringBitmap();
         int uniqueMessages = 0;
         int duplicates = 0;
-        int reconsumed = 0;
 
-        int ackDelayMax = 0;
-        Executor delayedExecutor = createDelayedExecutor(scheduledExecutorService, random, ackDelayMax);
-        // run in same thread
-        delayedExecutor = Runnable::run;
+        Random random = ThreadLocalRandom.current();
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
-                //.ackTimeout(60, TimeUnit.SECONDS)
-                //.negativeAckRedeliveryDelay(5, TimeUnit.SECONDS)
-                //.batchReceivePolicy(BatchReceivePolicy.DEFAULT_POLICY)
-                //.deadLetterPolicy(DeadLetterPolicy.builder().maxRedeliverCount(Integer.MAX_VALUE).build())
                 .receiverQueueSize(10)
-                // disable AcknowledgmentsGroupingTracker
-                //.acknowledgmentGroupTime(0, TimeUnit.MICROSECONDS)
-                .isAckReceiptEnabled(true)
                 .consumerName(consumerName)
                 .subscribe()) {
             int i = 0;
@@ -272,8 +208,6 @@ public class TestScenarioIssueKeyShared {
                 }
                 int msgNum = bytesToInt(msg.getData());
 
-                int mod100 = i % 100;
-
                 // sleep for a random time with 3% probability
                 if (random.nextInt(100) < 3) {
                     try {
@@ -283,67 +217,20 @@ public class TestScenarioIssueKeyShared {
                     }
                 }
 
-                // nack about 5% of the messages
-//                if (mod100 == 3 || mod100 == 7 || mod100 == 13 || mod100 == 19 || mod100 == 29) {
-//                    reconsumed++;
-//                    log.info("Nacking {} msgNum: {} reconsumed: {}", i, msgNum, reconsumed);
-//                    delayedExecutor.execute(() -> {
-//                        waitOthersOrTimeout(ackPhaser);
-//                        consumer.negativeAcknowledge(msg);
-//                    });
-//                    continue;
-//                }
-
                 boolean added = receivedMessages.checkedAdd(msgNum);
                 if (added) {
                     uniqueMessages++;
                 } else {
                     duplicates++;
                 }
-                log.info("Received {} duplicate: {} unique: {}", msgNum, !added, uniqueMessages);
+                log.info("Received value: {} duplicate: {} unique: {} duplicates: {}", msgNum, !added, uniqueMessages,
+                        duplicates);
                 consumer.acknowledgeAsync(msg);
-//                delayedExecutor.execute(() -> {
-//                    waitOthersOrTimeout(ackPhaser);
-//                    consumer.acknowledgeAsync(msg);
-//                    /*
-//                    consumer.acknowledgeAsync(msg).exceptionally(throwable -> {
-//                        log.error("Failed to ack message", throwable);
-//                        return null;
-//                    });
-//                     */
-//                });
-                if (i % reportingInterval == 0) {
-                    log.info("Received {} msgs. unique: {} duplicates: {}", i, uniqueMessages, duplicates);
-                }
             }
         }
-        return new ConsumeReport(uniqueMessages, duplicates, reconsumed, receivedMessages);
+        return new ConsumeReport(uniqueMessages, duplicates, receivedMessages);
     }
-
-    // make the delay exponentially distributed, up to delayMax
-    private static Executor createDelayedExecutor(ScheduledExecutorService scheduledExecutorService, Random random,
-                                                  int delayMax) {
-        if (delayMax <= 0) {
-            return scheduledExecutorService;
-        }
-        int delayMaxSqrt = (int) Math.sqrt(delayMax);
-        return runnable -> {
-            int randomInt = random.nextInt(delayMaxSqrt);
-            int randomDelay = randomInt * randomInt;
-            scheduledExecutorService.schedule(runnable, randomDelay, TimeUnit.MILLISECONDS);
-        };
-    }
-
-    private static void waitOthersOrTimeout(Phaser ackPhaser) {
-//        int phase = ackPhaser.arrive();
-//        try {
-//            ackPhaser.awaitAdvanceInterruptibly(phase, 1, TimeUnit.SECONDS);
-//        } catch (InterruptedException|TimeoutException e) {
-//            // ignore
-//        }
-    }
-
-    private record ConsumeReport(int uniqueMessages, int duplicates, int reconsumed, RoaringBitmap receivedMessages) {
+    private record ConsumeReport(int uniqueMessages, int duplicates, RoaringBitmap receivedMessages) {
     }
 
     private int bytesToInt(byte[] bytes) {
