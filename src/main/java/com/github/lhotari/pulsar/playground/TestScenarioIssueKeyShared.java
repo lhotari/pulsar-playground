@@ -269,7 +269,7 @@ public class TestScenarioIssueKeyShared {
                 // sleep for a random time with 3% probability
                 if (random.nextInt(100) < 3) {
                     try {
-                        Thread.sleep(random.nextInt(500) + 1);
+                        Thread.sleep(random.nextInt(100) + 1);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
