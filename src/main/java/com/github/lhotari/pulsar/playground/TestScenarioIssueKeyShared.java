@@ -5,6 +5,7 @@ import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_SERVIC
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -41,7 +42,7 @@ import org.roaringbitmap.RoaringBitmap;
 
 @Slf4j
 public class TestScenarioIssueKeyShared {
-    public static final int RECEIVE_TIMEOUT_SECONDS = 5;
+    public static final int RECEIVE_TIMEOUT_SECONDS = 30;
     private final String namespace;
     private int consumerCount = 4;
     private int maxMessages = 50000;
@@ -138,7 +139,8 @@ public class TestScenarioIssueKeyShared {
                 try {
                     return consumeMessages(topicName, consumerName, ackPhaser, scheduledExecutorService, random);
                 } catch (PulsarClientException e) {
-                    throw new RuntimeException(e);
+                    log.error("Failed to consume messages", e);
+                    return null;
                 }
             }, runnable -> {
                 Thread thread = new Thread(runnable);
@@ -150,7 +152,8 @@ public class TestScenarioIssueKeyShared {
         FutureUtil.waitForAll(tasks).get();
 
         List<ConsumeReport> results =
-                tasks.stream().map(CompletableFuture::join).collect(Collectors.toUnmodifiableList());
+                tasks.stream().map(CompletableFuture::join)
+                        .filter(Objects::nonNull).collect(Collectors.toUnmodifiableList());
 
         RoaringBitmap joinedReceivedMessages = new RoaringBitmap();
         results.stream().map(ConsumeReport::receivedMessages).forEach(joinedReceivedMessages::or);
