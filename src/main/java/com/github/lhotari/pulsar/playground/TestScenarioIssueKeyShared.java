@@ -21,6 +21,7 @@ import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.BatcherBuilder;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.ConsumerBuilder;
+import org.apache.pulsar.client.api.KeySharedPolicy;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
@@ -197,6 +198,7 @@ public class TestScenarioIssueKeyShared {
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 .receiverQueueSize(10)
                 .consumerName(consumerName)
+                .keySharedPolicy(KeySharedPolicy.autoSplitHashRange().setAllowOutOfOrderDelivery(true))
                 .subscribe()) {
             int i = 0;
 
