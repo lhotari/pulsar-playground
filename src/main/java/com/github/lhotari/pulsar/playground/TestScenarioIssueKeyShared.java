@@ -104,7 +104,7 @@ public class TestScenarioIssueKeyShared {
             String consumerName = "consumer" + i;
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    return consumeMessages(topicName, consumerName);
+                    return consumeMessages(pulsarClient, topicName, consumerName);
                 } catch (PulsarClientException e) {
                     log.error("Failed to consume messages", e);
                     return null;
@@ -180,13 +180,13 @@ public class TestScenarioIssueKeyShared {
         log.info("Done sending.");
     }
 
-    private ConsumeReport consumeMessages(String topicName, String consumerName)
+    private ConsumeReport consumeMessages(PulsarClient pulsarClient, String topicName, String consumerName)
             throws PulsarClientException {
-        @Cleanup
-        PulsarClient pulsarClient = PulsarClient.builder()
-                .serviceUrl(PULSAR_BROKER_URL)
-                .memoryLimit(300, SizeUnit.MEGA_BYTES)
-                .build();
+//        @Cleanup
+//        PulsarClient pulsarClient = PulsarClient.builder()
+//                .serviceUrl(PULSAR_BROKER_URL)
+//                .memoryLimit(300, SizeUnit.MEGA_BYTES)
+//                .build();
 
         RoaringBitmap receivedMessages = new RoaringBitmap();
         int uniqueMessages = 0;
