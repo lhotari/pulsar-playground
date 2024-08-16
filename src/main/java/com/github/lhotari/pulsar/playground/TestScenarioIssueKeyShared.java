@@ -188,6 +188,8 @@ public class TestScenarioIssueKeyShared {
         int uniqueMessages = 0;
         int duplicates = 0;
 
+        Random random = ThreadLocalRandom.current();
+
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 .consumerName(consumerName)
                 .keySharedPolicy(KeySharedPolicy.autoSplitHashRange().setAllowOutOfOrderDelivery(true))
@@ -201,6 +203,15 @@ public class TestScenarioIssueKeyShared {
                     break;
                 }
                 int msgNum = bytesToInt(msg.getData());
+
+                // sleep for a random time with 3% probability
+                if (random.nextInt(100) < 3) {
+                    try {
+                        Thread.sleep(random.nextInt(100) + 1);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
 
                 boolean added = receivedMessages.checkedAdd(msgNum);
                 if (added) {
