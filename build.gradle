@@ -15,7 +15,7 @@ application {
 }
 
 def pulsarGroup = 'org.apache.pulsar'
-def defaultPulsarVersion = '4.0.0-SNAPSHOT'
+def defaultPulsarVersion = '3.3.1'
 //def pulsarGroup = 'io.streamnative'
 //def defaultPulsarVersion = '3.2.3.1'
 def pulsarVersion = System.getenv('PULSAR_VERSION') ?: defaultPulsarVersion
