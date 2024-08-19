@@ -169,6 +169,8 @@ public class TestScenarioIssueKeyShared {
                     key = intToBytes(i, 4);
                 }
                 producer.newMessage().orderingKey(key).value(value)
+                        // set System.nanoTime() as event time
+                        .eventTime(System.nanoTime())
                         .sendAsync().whenComplete((messageId, throwable) -> {
                     if (throwable != null) {
                         log.error("Failed to send message to topic {}", topicName, throwable);
@@ -203,14 +205,14 @@ public class TestScenarioIssueKeyShared {
 
         Random random = ThreadLocalRandom.current();
         long startTimeNanos = System.nanoTime();
-        long maxLatencyDifferenceMillis = 0;
+        long maxLatencyDifferenceNanos = 0;
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 .consumerName(consumerName)
                 .subscribe()) {
             int i = 0;
 
-            long previousLatencyMillis = -1;
+            long previousLatencyNanos = -1;
             while (!Thread.currentThread().isInterrupted()) {
                 i++;
                 Message<byte[]> msg = consumer.receive(RECEIVE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
@@ -218,15 +220,17 @@ public class TestScenarioIssueKeyShared {
                     break;
                 }
 
-                long latencyMillis = Math.max(System.currentTimeMillis() - msg.getPublishTime(), 0);
-                if (previousLatencyMillis != -1) {
-                    long latencyDifferenceMillis = Math.abs(latencyMillis - previousLatencyMillis);
-                    if (latencyDifferenceMillis > maxLatencyDifferenceMillis) {
-                        maxLatencyDifferenceMillis = latencyDifferenceMillis;
-                        log.info("Max latency difference increased: {} ms", maxLatencyDifferenceMillis);
+                // we set System.nanoTime() as event time in publishing for e2e latency calculation
+                long latencyNanos = Math.max(System.nanoTime() - msg.getEventTime(), 0);
+                if (previousLatencyNanos != -1) {
+                    long latencyDifferenceNanos = Math.abs(latencyNanos - previousLatencyNanos);
+                    if (latencyDifferenceNanos > maxLatencyDifferenceNanos) {
+                        maxLatencyDifferenceNanos = latencyDifferenceNanos;
+                        log.info("Max latency difference increased: {} ms",
+                                TimeUnit.NANOSECONDS.toMillis(maxLatencyDifferenceNanos));
                     }
                 }
-                previousLatencyMillis = latencyMillis;
+                previousLatencyNanos = latencyNanos;
 
                 int msgNum = bytesToInt(msg.getData());
 
@@ -252,7 +256,7 @@ public class TestScenarioIssueKeyShared {
         }
         long durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNanos);
         return new ConsumeReport(consumerName, uniqueMessages, duplicates, receivedMessages, durationMillis,
-                maxLatencyDifferenceMillis);
+                TimeUnit.NANOSECONDS.toMillis(maxLatencyDifferenceNanos));
     }
     private record ConsumeReport(String consumerName, int uniqueMessages, int duplicates, RoaringBitmap receivedMessages,
                                  long durationMillis, long maxLatencyDifferenceMillis) {
