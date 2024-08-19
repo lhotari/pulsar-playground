@@ -220,7 +220,7 @@ public class TestScenarioIssueKeyShared {
 
                 long latencyMillis = Math.max(System.currentTimeMillis() - msg.getPublishTime(), 0);
                 if (previousLatencyMillis != -1) {
-                    long latencyIncreaseMillis = latencyMillis - previousLatencyMillis;
+                    long latencyIncreaseMillis = Math.abs(latencyMillis - previousLatencyMillis);
                     if (latencyIncreaseMillis > maxLatencyIncreaseMillis) {
                         maxLatencyIncreaseMillis = latencyIncreaseMillis;
                         log.info("Max latency increase: {} ms", maxLatencyIncreaseMillis);
