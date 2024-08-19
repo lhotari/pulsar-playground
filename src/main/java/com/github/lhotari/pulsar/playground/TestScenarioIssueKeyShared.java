@@ -11,6 +11,8 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -46,6 +48,8 @@ public class TestScenarioIssueKeyShared {
     private int messageSize = 4;
 
     private boolean enableBatching = false;
+    private AtomicInteger messagesInFlight = new AtomicInteger();
+    private int targetMessagesInFlight = 50000;
 
     public TestScenarioIssueKeyShared(String namespace) {
         this.namespace = namespace;
@@ -177,6 +181,12 @@ public class TestScenarioIssueKeyShared {
                         sendFailure.set(throwable);
                     }
                 });
+                int currentMessagesInFlight = messagesInFlight.incrementAndGet();
+                while (currentMessagesInFlight > targetMessagesInFlight) {
+                    // throttling
+                    Thread.sleep(100);
+                    currentMessagesInFlight = messagesInFlight.get();
+                }
                 if (i % 1000 == 0) {
                     log.info("Sent {} msgs", i);
                 }
@@ -252,6 +262,7 @@ public class TestScenarioIssueKeyShared {
                 log.info("Received value: {} duplicate: {} unique: {} duplicates: {}", msgNum, !added, uniqueMessages,
                         duplicates);
                 consumer.acknowledgeAsync(msg);
+                messagesInFlight.decrementAndGet();
             }
         }
         long durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNanos);
