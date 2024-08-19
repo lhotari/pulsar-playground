@@ -154,7 +154,8 @@ public class TestScenarioKeySharedReconnects {
             String consumerName = "consumer" + i;
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    return consumeMessages(topicName, consumerName, i % consumerCount == 0);
+                    boolean simulateReconnecting = i % consumerCount == 0;
+                    return consumeMessages(topicName, consumerName, simulateReconnecting);
                 } catch (PulsarClientException e) {
                     log.error("Failed to consume messages", e);
                     return null;
@@ -206,6 +207,23 @@ public class TestScenarioKeySharedReconnects {
                                 TimeUnit.MILLISECONDS.toSeconds(report.durationMillis()),
                                 report.maxLatencyDifferenceMillis(), report.connectCount()));
 
+        writeStats(pulsarAdmin, topicName);
+
+        if (ackHoleReport != null) {
+            writeAckHoleReportStats();
+        }
+    }
+
+    private void writeAckHoleReportStats() throws IOException {
+        File statsFile = File.createTempFile("stats", ".json");
+        writeJsonToFile(statsFile, ackHoleReport.topicStats());
+        log.info("Wrote worst case ack hole topic stats to {}", statsFile);
+        File internalStatsFile = File.createTempFile("internalStats", ".json");
+        writeJsonToFile(internalStatsFile, ackHoleReport.internalStats());
+        log.info("Wrote worst case ack hole topic internal stats to {}", internalStatsFile);
+    }
+
+    private void writeStats(PulsarAdmin pulsarAdmin, String topicName) throws IOException, PulsarAdminException {
         File statsFile = File.createTempFile("stats", ".json");
         writeJsonToFile(statsFile, pulsarAdmin.topics().getStats(topicName));
         log.info("Wrote topic stats to {}", statsFile);
