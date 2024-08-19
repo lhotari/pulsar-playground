@@ -3,6 +3,11 @@ package com.github.lhotari.pulsar.playground;
 import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_BROKER_URL;
 import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_SERVICE_URL;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.List;
@@ -36,7 +41,9 @@ import org.apache.pulsar.common.policies.data.DelayedDeliveryPolicies;
 import org.apache.pulsar.common.policies.data.PersistentTopicInternalStats;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.policies.data.RetentionPolicies;
+import org.apache.pulsar.common.policies.data.TopicStats;
 import org.apache.pulsar.common.util.FutureUtil;
+import org.apache.pulsar.common.util.ObjectMapperFactory;
 import org.roaringbitmap.RoaringBitmap;
 
 @Slf4j
@@ -51,9 +58,13 @@ public class TestScenarioIssueKeyShared {
     private AtomicInteger messagesInFlight = new AtomicInteger();
     private int targetMessagesInFlight = 50000;
     private AtomicInteger maxAckHoles = new AtomicInteger();
+    private volatile AckHoleReport ackHoleReport;
 
     public TestScenarioIssueKeyShared(String namespace) {
         this.namespace = namespace;
+    }
+
+    record AckHoleReport(int maxAckHoles, TopicStats topicStats, PersistentTopicInternalStats internalStats) {
     }
 
     public void run() throws Throwable {
@@ -113,13 +124,17 @@ public class TestScenarioIssueKeyShared {
         Thread ackHoleMonitorThread = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    PersistentTopicInternalStats internalStats = pulsarAdmin.topics().getInternalStats(topicName);
-                    int ackHoles = internalStats.cursors.values().stream()
-                            .mapToInt(stats -> stats.totalNonContiguousDeletedMessagesRange).max()
-                            .orElse(0);
+                    TopicStats stats = pulsarAdmin.topics().getStats(topicName);
+                    int ackHoles = stats.getSubscriptions().values().stream()
+                            .mapToInt(subscriptionStats -> subscriptionStats.getNonContiguousDeletedMessagesRanges())
+                            .max().orElse(0);
                     if (ackHoles > 0) {
                         log.info("Ack holes: {}", ackHoles);
-                        maxAckHoles.updateAndGet(currentValue -> Math.max(currentValue, ackHoles));
+                        int maxValue = maxAckHoles.updateAndGet(currentValue -> Math.max(currentValue, ackHoles));
+                        if (ackHoles == maxValue) {
+                            ackHoleReport = new AckHoleReport(ackHoles, stats,
+                                    pulsarAdmin.topics().getInternalStats(topicName));
+                        }
                     }
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
@@ -183,6 +198,22 @@ public class TestScenarioIssueKeyShared {
                         log.info("Consumer {} received {} unique messages {} duplicates in {} s, max latency difference of subsequent messages {} ms",
                                 report.consumerName(), report.uniqueMessages(), report.duplicates(),
                                 TimeUnit.MILLISECONDS.toSeconds(report.durationMillis()), report.maxLatencyDifferenceMillis()));
+
+        if (ackHoleReport != null) {
+            File statsFile = File.createTempFile("stats", ".json");
+            writeJsonToFile(statsFile, ackHoleReport.topicStats());
+            log.info("Wrote worst case ack hole topic stats to {}", statsFile);
+            File internalStatsFile = File.createTempFile("internalStats", ".json");
+            writeJsonToFile(internalStatsFile, ackHoleReport.internalStats());
+            log.info("Wrote worst case ack hole topic internal stats to {}", internalStatsFile);
+        }
+    }
+
+    private void writeJsonToFile(File jsonFile, Object object) throws IOException {
+        ObjectWriter writer = ObjectMapperFactory.getMapper().writer();
+        try (JsonGenerator generator = writer.createGenerator(jsonFile, JsonEncoding.UTF8).useDefaultPrettyPrinter()) {
+            generator.writeObject(object);
+        }
     }
 
     private void produceMessages(PulsarClient pulsarClient, String topicName) throws Throwable {
