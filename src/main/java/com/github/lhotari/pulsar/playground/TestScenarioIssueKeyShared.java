@@ -134,7 +134,10 @@ public class TestScenarioIssueKeyShared {
         int unique = results.stream().mapToInt(ConsumeReport::uniqueMessages).sum();
         int received = joinedReceivedMessages.getCardinality();
         int remaining = maxMessages - received;
-        log.info("Done receiving. Remaining: {} duplicates: {} unique: {}", remaining, duplicates, unique);
+        long maxLatencyIncreaseMillis =
+                results.stream().mapToLong(ConsumeReport::maxLatencyIncreaseMillis).max().orElse(0);
+        log.info("Done receiving. Remaining: {} duplicates: {} unique: {} max latency increase: {} ms", remaining,
+                duplicates, unique, maxLatencyIncreaseMillis);
         if (remaining > 0) {
             log.error("Not all messages received. Remaining: " + remaining);
         }
@@ -143,9 +146,9 @@ public class TestScenarioIssueKeyShared {
         }
         results.stream().sorted(Comparator.comparing(ConsumeReport::consumerName))
                 .forEach(report ->
-                        log.info("Consumer {} received {} unique messages {} duplicates in {} s",
+                        log.info("Consumer {} received {} unique messages {} duplicates in {} s, max latency increase {} ms",
                                 report.consumerName(), report.uniqueMessages(), report.duplicates(),
-                                TimeUnit.MILLISECONDS.toSeconds(report.durationMillis())));
+                                TimeUnit.MILLISECONDS.toSeconds(report.durationMillis()), report.maxLatencyIncreaseMillis()));
     }
 
     private void produceMessages(PulsarClient pulsarClient, String topicName) throws Throwable {
@@ -200,18 +203,31 @@ public class TestScenarioIssueKeyShared {
 
         Random random = ThreadLocalRandom.current();
         long startTimeNanos = System.nanoTime();
+        long maxLatencyIncreaseMillis = 0;
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 .consumerName(consumerName)
                 .subscribe()) {
             int i = 0;
 
+            long previousLatencyMillis = -1;
             while (!Thread.currentThread().isInterrupted()) {
                 i++;
                 Message<byte[]> msg = consumer.receive(RECEIVE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
                 if (msg == null) {
                     break;
                 }
+
+                long latencyMillis = Math.max(System.currentTimeMillis() - msg.getPublishTime(), 0);
+                if (previousLatencyMillis != -1) {
+                    long latencyIncreaseMillis = latencyMillis - previousLatencyMillis;
+                    if (latencyIncreaseMillis > maxLatencyIncreaseMillis) {
+                        maxLatencyIncreaseMillis = latencyIncreaseMillis;
+                        log.info("Max latency increase: {} ms", maxLatencyIncreaseMillis);
+                    }
+                }
+                previousLatencyMillis = latencyMillis;
+
                 int msgNum = bytesToInt(msg.getData());
 
                 // sleep for a random time with 3% probability
@@ -235,10 +251,11 @@ public class TestScenarioIssueKeyShared {
             }
         }
         long durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNanos);
-        return new ConsumeReport(consumerName, uniqueMessages, duplicates, receivedMessages, durationMillis);
+        return new ConsumeReport(consumerName, uniqueMessages, duplicates, receivedMessages, durationMillis,
+                maxLatencyIncreaseMillis);
     }
     private record ConsumeReport(String consumerName, int uniqueMessages, int duplicates, RoaringBitmap receivedMessages,
-                                 long durationMillis) {
+                                 long durationMillis, long maxLatencyIncreaseMillis) {
     }
 
     private int bytesToInt(byte[] bytes) {
