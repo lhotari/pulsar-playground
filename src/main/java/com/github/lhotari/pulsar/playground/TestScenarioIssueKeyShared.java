@@ -4,6 +4,7 @@ import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_BROKER
 import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_SERVICE_URL;
 
 import java.nio.ByteBuffer;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -140,6 +141,11 @@ public class TestScenarioIssueKeyShared {
         if (unique != maxMessages) {
             log.error("Unique message count should match maxMessages!");
         }
+        results.stream().sorted(Comparator.comparing(ConsumeReport::consumerName))
+                .forEach(report ->
+                        log.info("Consumer {} received {} unique messages {} duplicates in {} s",
+                                report.consumerName(), report.uniqueMessages(), report.duplicates(),
+                                TimeUnit.MILLISECONDS.toSeconds(report.durationMillis())));
     }
 
     private void produceMessages(PulsarClient pulsarClient, String topicName) throws Throwable {
@@ -193,6 +199,7 @@ public class TestScenarioIssueKeyShared {
         int duplicates = 0;
 
         Random random = ThreadLocalRandom.current();
+        long startTimeNanos = System.nanoTime();
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                 .consumerName(consumerName)
@@ -227,9 +234,11 @@ public class TestScenarioIssueKeyShared {
                 consumer.acknowledgeAsync(msg);
             }
         }
-        return new ConsumeReport(uniqueMessages, duplicates, receivedMessages);
+        long durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNanos);
+        return new ConsumeReport(consumerName, uniqueMessages, duplicates, receivedMessages, durationMillis);
     }
-    private record ConsumeReport(int uniqueMessages, int duplicates, RoaringBitmap receivedMessages) {
+    private record ConsumeReport(String consumerName, int uniqueMessages, int duplicates, RoaringBitmap receivedMessages,
+                                 long durationMillis) {
     }
 
     private int bytesToInt(byte[] bytes) {
