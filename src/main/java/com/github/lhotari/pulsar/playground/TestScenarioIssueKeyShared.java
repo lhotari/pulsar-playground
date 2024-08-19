@@ -223,7 +223,7 @@ public class TestScenarioIssueKeyShared {
                     long latencyDifferenceMillis = Math.abs(latencyMillis - previousLatencyMillis);
                     if (latencyDifferenceMillis > maxLatencyDifferenceMillis) {
                         maxLatencyDifferenceMillis = latencyDifferenceMillis;
-                        log.info("Max latency increase: {} ms", maxLatencyDifferenceMillis);
+                        log.info("Max latency difference increased: {} ms", maxLatencyDifferenceMillis);
                     }
                 }
                 previousLatencyMillis = latencyMillis;
