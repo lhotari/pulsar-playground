@@ -12,7 +12,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -34,6 +33,7 @@ import org.apache.pulsar.client.api.SubscriptionInitialPosition;
 import org.apache.pulsar.client.api.SubscriptionType;
 import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.policies.data.DelayedDeliveryPolicies;
+import org.apache.pulsar.common.policies.data.PersistentTopicInternalStats;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.policies.data.RetentionPolicies;
 import org.apache.pulsar.common.util.FutureUtil;
@@ -50,6 +50,7 @@ public class TestScenarioIssueKeyShared {
     private boolean enableBatching = false;
     private AtomicInteger messagesInFlight = new AtomicInteger();
     private int targetMessagesInFlight = 50000;
+    private AtomicInteger maxAckHoles = new AtomicInteger();
 
     public TestScenarioIssueKeyShared(String namespace) {
         this.namespace = namespace;
@@ -109,6 +110,27 @@ public class TestScenarioIssueKeyShared {
             log.info("Attempting to consume remaining messages...");
         }
 
+        Thread ackHoleMonitorThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    PersistentTopicInternalStats internalStats = pulsarAdmin.topics().getInternalStats(topicName);
+                    int ackHoles = internalStats.cursors.values().stream()
+                            .mapToInt(stats -> stats.totalNonContiguousDeletedMessagesRange).max()
+                            .orElse(0);
+                    if (ackHoles > 0) {
+                        log.info("Ack holes: {}", ackHoles);
+                        maxAckHoles.updateAndGet(currentValue -> Math.max(currentValue, ackHoles));
+                    }
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } catch (PulsarAdminException e) {
+                    log.error("Failed to get ack holes", e);
+                }
+            }
+        });
+        ackHoleMonitorThread.start();
+
         List<CompletableFuture<ConsumeReport>> tasks = IntStream.range(1, consumerCount + 1).mapToObj(i -> {
             String consumerName = "consumer" + i;
             return CompletableFuture.supplyAsync(() -> {
@@ -140,8 +162,16 @@ public class TestScenarioIssueKeyShared {
         int remaining = maxMessages - received;
         long maxLatencyIncreaseMillis =
                 results.stream().mapToLong(ConsumeReport::maxLatencyDifferenceMillis).max().orElse(0);
-        log.info("Done receiving. Remaining: {} duplicates: {} unique: {} max latency difference of subsequent messages: {} ms", remaining,
-                duplicates, unique, maxLatencyIncreaseMillis);
+
+        ackHoleMonitorThread.interrupt();
+        ackHoleMonitorThread.join();
+
+        log.info("Done receiving. Remaining: {} duplicates: {} unique: {}\n"
+                        + "max latency difference of subsequent messages: {} ms\n"
+                        + "max ack holes: {}",
+                remaining, duplicates, unique,
+                maxLatencyIncreaseMillis,
+                maxAckHoles.get());
         if (remaining > 0) {
             log.error("Not all messages received. Remaining: " + remaining);
         }
