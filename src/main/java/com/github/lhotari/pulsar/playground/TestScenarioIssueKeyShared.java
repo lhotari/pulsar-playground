@@ -291,7 +291,7 @@ public class TestScenarioIssueKeyShared {
                 }
                 log.info("Received value: {} duplicate: {} unique: {} duplicates: {}", msgNum, !added, uniqueMessages,
                         duplicates);
-                consumer.acknowledgeAsync(msg);
+                consumer.acknowledge(msg);
                 messagesInFlight.decrementAndGet();
             }
         }
