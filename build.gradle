@@ -44,6 +44,13 @@ dependencies {
     implementation 'com.beust:jcommander:1.82'
 
     implementation 'org.roaringbitmap:RoaringBitmap:1.2.1'
+
+    implementation 'eu.rekawek.toxiproxy:toxiproxy-java:2.1.7'
+
+    def jettyVersion = '9.4.55.v20240627'
+    implementation "org.eclipse.jetty:jetty-server:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-servlet:${jettyVersion}"
+    implementation "org.eclipse.jetty:jetty-proxy:${jettyVersion}"
 }
 
 // Workaround for invalid metadata for Bookkeeper dependencies which contain <packaging>nar</packaging> in pom.xml
