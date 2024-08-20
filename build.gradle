@@ -14,10 +14,10 @@ application {
     mainClass = 'com.github.lhotari.pulsar.playground.TestScenarioCreateTopics'
 }
 
-def pulsarGroup = 'org.apache.pulsar'
-def defaultPulsarVersion = '3.3.1'
-//def pulsarGroup = 'io.streamnative'
-//def defaultPulsarVersion = '3.2.3.1'
+//def pulsarGroup = 'org.apache.pulsar'
+//def defaultPulsarVersion = '3.3.1'
+def pulsarGroup = 'io.streamnative'
+def defaultPulsarVersion = '3.2.3.1'
 def pulsarVersion = System.getenv('PULSAR_VERSION') ?: defaultPulsarVersion
 
 dependencies {
@@ -36,8 +36,8 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-api"
     implementation "org.apache.logging.log4j:log4j-core"
     // use log4j-slf4j2-impl with Pulsar 3.3.0 and newer, for older versions use log4j-slf4j-impl
-    implementation "org.apache.logging.log4j:log4j-slf4j2-impl"
-    //implementation "org.apache.logging.log4j:log4j-slf4j-impl"
+    //implementation "org.apache.logging.log4j:log4j-slf4j2-impl"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl"
 
     implementation 'io.github.resilience4j:resilience4j-retry:2.2.0'
 
@@ -58,7 +58,6 @@ configurations.all {
     }
 }
 
-/*
 // needed with io.streamnative client for some reason
 configurations.all {
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
@@ -67,7 +66,6 @@ configurations.all {
         }
     }
 }
- */
 
 tasks.named('test') {
     useJUnitPlatform()
