@@ -60,6 +60,22 @@ import org.roaringbitmap.RoaringBitmap;
 /**
  * You need to have toxiproxy-server running on localhost:8474 to run this test.
  * Install instructions: https://github.com/Shopify/toxiproxy#1-installing-toxiproxy
+ *
+ * Running Pulsar in Docker connecting to localstack S3:
+ * docker run --name pulsar-standalone --net=host --rm -it -e PULSAR_STANDALONE_USE_ZOOKEEPER=1 apachepulsar/pulsar-all:3.2.3 sh -c "managedLedgerMaxEntriesPerLedger=10000 managedLedgerMinLedgerRolloverTimeMinutes=0 PULSAR_PREFIX_managedLedgerOffloadDriver=aws-s3 PULSAR_PREFIX_s3ManagedLedgerOffloadRegion=us-east-1 PULSAR_PREFIX_s3ManagedLedgerOffloadBucket=pulsar PULSAR_PREFIX_s3ManagedLedgerOffloadServiceEndpoint=http://localhost:4566 PULSAR_PREFIX_s3ManagedLedgerOffloadCredentialId=test PULSAR_PREFIX_s3ManagedLedgerOffloadCredentialSecret=test bin/apply-config-from-env.py conf/standalone.conf && bin/pulsar standalone -nss -nfw" 2>&1 | tee standalone.log
+ *
+ * Docker Host network driver notes:
+ * https://docs.docker.com/engine/network/drivers/host/#docker-desktop
+ *
+ * Creating the bucket in localstack s3:
+ * AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 aws --endpoint-url=http://localhost:4566 s3 mb s3://pulsar
+ *
+ * Running toxiproxy-server installed from brew:
+ * /opt/homebrew/opt/toxiproxy/bin/toxiproxy-server
+ *
+ * Running the test:
+ * java -cp build/libs/pulsar-playground-all.jar com.github.lhotari.pulsar.playground.TestScenarioKeySharedStuck 2>&1 | tee test.log
+ *
  */
 @Slf4j
 public class TestScenarioKeySharedStuck {
