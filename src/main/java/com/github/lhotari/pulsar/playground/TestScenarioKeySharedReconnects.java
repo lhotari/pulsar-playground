@@ -56,8 +56,8 @@ public class TestScenarioKeySharedReconnects {
     public static final int RECEIVE_TIMEOUT_SECONDS = 15;
     private final String namespace;
     private int consumerCount = 4;
-    private int maxMessages = 1000000;
-    private int keySpaceSize = 16; // when 0 or negative, the key space is the same as the maxMessages
+    private int maxMessages = 1_000_000;
+    private int keySpaceSize = 100; // when 0 or negative, the key space is the same as the maxMessages
     private int messageSize = 4;
     private boolean allowOutOfOrderDelivery = false;
 
@@ -72,7 +72,7 @@ public class TestScenarioKeySharedReconnects {
     private int targetMessagesInFlight = maxMessages / 20;
     private AtomicInteger maxAckHoles = new AtomicInteger();
     private volatile AckHoleReport ackHoleReport;
-    private long minimumConnectTimeMillis = 15000;
+    private long minimumConnectTimeMillis = 2000;
 
     public TestScenarioKeySharedReconnects(String namespace) {
         this.namespace = namespace;
@@ -163,24 +163,30 @@ public class TestScenarioKeySharedReconnects {
         ackHoleMonitorThread.start();
 
         Function<Integer, Long> delayBeforeStartingNextConsumer = consumerIndex -> {
-            if (consumerIndex == 1) {
-                // run for 60 seconds with a single consumer
-                return 60000L;
+            if (consumerIndex == -1) {
+                // run for 15 seconds with a single consumer
+                return 15000L;
             }
             return 5000L;
         };
-        AtomicInteger totalConnectCount = new AtomicInteger();
+        AtomicInteger currentRestartingConsumerIndex = new AtomicInteger();
+        // skip restarting the first one
+        currentRestartingConsumerIndex.set(2);
         List<CompletableFuture<ConsumeReport>> tasks = IntStream.range(1, consumerCount + 1).mapToObj(consumerIndex -> {
             String consumerName = "consumer" + consumerIndex;
             log.info("Starting consumer {}", consumerName);
             CompletableFuture<ConsumeReport> consumeMessagesTask = CompletableFuture.supplyAsync(() -> {
                 try {
                     Supplier<Boolean> shouldReconnectFunc =
-                            () -> consumerIndex != 1 // don't reconnect for the first consumer
-                                    // reconnect other consumers in a rolling restart fashion
-                                    && totalConnectCount.getAndIncrement() % consumerCount + 1 == consumerIndex;
-                    return consumeMessages(topicName, consumerName,
-                            shouldReconnectFunc);
+                            () -> currentRestartingConsumerIndex.get() == consumerIndex;
+                    return consumeMessages(topicName, consumerName, consumerIndex,
+                            shouldReconnectFunc, () -> {
+                                currentRestartingConsumerIndex.set(consumerIndex + 1);
+                                if (currentRestartingConsumerIndex.get() > consumerCount) {
+                                    // skip first one
+                                    currentRestartingConsumerIndex.set(2);
+                                }
+                            });
                 } catch (PulsarClientException e) {
                     log.error("Failed to consume messages", e);
                     return null;
@@ -327,7 +333,9 @@ public class TestScenarioKeySharedReconnects {
         }
     }
 
-    private ConsumeReport consumeMessages(String topicName, String consumerName, Supplier<Boolean> shouldReconnectFunc)
+    private ConsumeReport consumeMessages(String topicName, String consumerName, int consumerIndex,
+                                          Supplier<Boolean> shouldReconnectFunc,
+                                          Runnable beforeReconnectingFunc)
             throws PulsarClientException {
 
         HandlingState state = new HandlingState();
@@ -350,7 +358,6 @@ public class TestScenarioKeySharedReconnects {
 
                 AtomicBoolean handlerRunning = new AtomicBoolean(true);
 
-                boolean shouldReconnect = shouldReconnectFunc.get();
                 try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                         .consumerName(consumerName)
                         .messageListener((c, msg) -> handleMessage(c, msg, state, handlerRunning))
@@ -360,6 +367,7 @@ public class TestScenarioKeySharedReconnects {
 
                     while (!Thread.currentThread().isInterrupted()) {
                         long currentNanos = System.nanoTime();
+                        boolean shouldReconnect = shouldReconnectFunc.get();
                         if (shouldReconnect
                                 && currentNanos - startConnectTimeNanos > minimumConnectTimeNanosWithJitter) {
                             // disconnect and reconnect
@@ -392,6 +400,7 @@ public class TestScenarioKeySharedReconnects {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
+                beforeReconnectingFunc.run();
             }
         }
 
