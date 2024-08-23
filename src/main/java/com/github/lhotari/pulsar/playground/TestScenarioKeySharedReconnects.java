@@ -53,6 +53,27 @@ import org.apache.pulsar.common.util.FutureUtil;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
 import org.roaringbitmap.RoaringBitmap;
 
+/**
+ * Attempt to reproduce Key_Shared issue where consumers get stuck and don't receive messages after reconnects.
+ *
+ * Running Pulsar in Docker connecting to localstack S3 for offloading:
+ * docker run --name pulsar-standalone --net=host --rm -it -e PULSAR_STANDALONE_USE_ZOOKEEPER=1 apachepulsar/pulsar-all:3.2.3 sh -c "managedLedgerMaxEntriesPerLedger=10000 managedLedgerMinLedgerRolloverTimeMinutes=0 PULSAR_PREFIX_managedLedgerOffloadDriver=aws-s3 PULSAR_PREFIX_s3ManagedLedgerOffloadRegion=us-east-1 PULSAR_PREFIX_s3ManagedLedgerOffloadBucket=pulsar PULSAR_PREFIX_s3ManagedLedgerOffloadServiceEndpoint=http://localhost:4566 PULSAR_PREFIX_s3ManagedLedgerOffloadCredentialId=test PULSAR_PREFIX_s3ManagedLedgerOffloadCredentialSecret=test bin/apply-config-from-env.py conf/standalone.conf && bin/pulsar standalone -nss -nfw" 2>&1 | tee standalone.log
+ *   Docker Host network driver notes:
+ *   https://docs.docker.com/engine/network/drivers/host/#docker-desktop
+ *   Creating the bucket in localstack s3:
+ *   AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 aws --endpoint-url=http://localhost:4566 s3 mb s3://pulsar
+ *   Running localstack, check localstack docs
+ *
+ * Alternatively running without offloading:
+ * docker run --name pulsar-standalone --rm -it -e PULSAR_STANDALONE_USE_ZOOKEEPER=1 apachepulsar/pulsar-all:3.2.3 sh -c "managedLedgerMaxEntriesPerLedger=10000 managedLedgerMinLedgerRolloverTimeMinutes=0 bin/apply-config-from-env.py conf/standalone.conf && bin/pulsar standalone -nss -nfw" 2>&1 | tee standalone.log
+ *
+ * Running the test:
+ * java -cp build/libs/pulsar-playground-all.jar com.github.lhotari.pulsar.playground.TestScenarioKeySharedReconnects 2>&1 | tee test.log
+ *
+ * Tailing the log for connection stuck logging:
+ * tail -f test.log|grep "might"
+ *
+ */
 @Slf4j
 public class TestScenarioKeySharedReconnects {
     public static final int RECEIVE_TIMEOUT_SECONDS = 15;
