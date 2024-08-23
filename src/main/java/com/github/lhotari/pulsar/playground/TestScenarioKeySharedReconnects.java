@@ -364,7 +364,7 @@ public class TestScenarioKeySharedReconnects {
 
                 try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                         .consumerName(consumerName)
-                        .messageListener((c, msg) -> handleMessage(c, msg, state, handlerRunning))
+                        .messageListener((c, msg) -> handleMessage(c, consumerName, consumerIndex, msg, state, handlerRunning))
                         .subscribe()) {
                     connectCount++;
                     long startConnectTimeNanos = System.nanoTime();
@@ -455,8 +455,8 @@ public class TestScenarioKeySharedReconnects {
         volatile int duplicates = 0;
     }
 
-    private void handleMessage(Consumer<byte[]> consumer, Message<byte[]> msg, HandlingState state,
-                               AtomicBoolean handlerRunning) {
+    private void handleMessage(Consumer<byte[]> consumer, String consumerName, int consumerIndex,
+                               Message<byte[]> msg, HandlingState state, AtomicBoolean handlerRunning) {
         state.handlingLock.lock();
         try {
             if (!handlerRunning.get()) {
@@ -481,12 +481,23 @@ public class TestScenarioKeySharedReconnects {
 
             int msgNum = bytesToInt(msg.getData());
 
-            // sleep for a random time with 3% probability
-            if (random.nextInt(100) < 3) {
-                try {
-                    Thread.sleep(random.nextInt(100) + 1);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+            if (consumerIndex != 1) {
+                // sleep for a random time with probability
+                if (random.nextInt(100) < 3) {
+                    try {
+                        Thread.sleep(random.nextInt(100) + 1);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            } else {
+                // for the first consumer, sleep with a higher probability for a short time
+                if (random.nextInt(100) < 50) {
+                    try {
+                        Thread.sleep(random.nextInt(2) + 1);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
                 }
             }
 
