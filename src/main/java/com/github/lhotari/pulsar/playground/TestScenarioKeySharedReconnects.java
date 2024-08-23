@@ -57,6 +57,8 @@ public class TestScenarioKeySharedReconnects {
     private int maxMessages = 1000000;
     private int keySpaceSize = 100; // when 0 or negative, the key space is the same as the maxMessages
     private int messageSize = 4;
+    private boolean allowOutOfOrderDelivery = false;
+
     enum GeneratedKeyType {
         MESSAGE_SEQUENCE_NUMBER_BASED,
         RANDOM,
@@ -468,7 +470,7 @@ public class TestScenarioKeySharedReconnects {
                 .subscriptionName("sub")
                 .subscriptionInitialPosition(SubscriptionInitialPosition.Earliest)
                 .subscriptionType(SubscriptionType.Key_Shared)
-                .keySharedPolicy(KeySharedPolicy.autoSplitHashRange().setAllowOutOfOrderDelivery(true))
+                .keySharedPolicy(KeySharedPolicy.autoSplitHashRange().setAllowOutOfOrderDelivery(allowOutOfOrderDelivery))
                 .topic(topicName);
     }
 
