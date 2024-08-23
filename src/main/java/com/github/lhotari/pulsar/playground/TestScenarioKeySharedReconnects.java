@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -46,6 +47,7 @@ import org.apache.pulsar.common.policies.data.DelayedDeliveryPolicies;
 import org.apache.pulsar.common.policies.data.PersistentTopicInternalStats;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.policies.data.RetentionPolicies;
+import org.apache.pulsar.common.policies.data.SubscriptionStats;
 import org.apache.pulsar.common.policies.data.TopicStats;
 import org.apache.pulsar.common.util.FutureUtil;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
@@ -73,6 +75,7 @@ public class TestScenarioKeySharedReconnects {
     private AtomicInteger maxAckHoles = new AtomicInteger();
     private volatile AckHoleReport ackHoleReport;
     private long minimumConnectTimeMillis = 2000;
+    private volatile TopicStats topicStats;
 
     public TestScenarioKeySharedReconnects(String namespace) {
         this.namespace = namespace;
@@ -141,6 +144,7 @@ public class TestScenarioKeySharedReconnects {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     TopicStats stats = pulsarAdmin.topics().getStats(topicName);
+                    topicStats = stats;
                     int ackHoles = stats.getSubscriptions().values().stream()
                             .mapToInt(subscriptionStats -> subscriptionStats.getNonContiguousDeletedMessagesRanges())
                             .max().orElse(0);
@@ -370,16 +374,23 @@ public class TestScenarioKeySharedReconnects {
                         boolean shouldReconnect = shouldReconnectFunc.get();
                         if (shouldReconnect
                                 && currentNanos - startConnectTimeNanos > minimumConnectTimeNanosWithJitter) {
-                            // disconnect and reconnect
-                            state.handlingLock.lock();
-                            try {
-                                handlerRunning.set(false);
-                                keepConnected = true;
-                            } finally {
-                                state.handlingLock.unlock();
+                            TopicStats stats = topicStats;
+                            boolean skipReconnecting = false;
+                            if (stats != null && mightBeBlocked(topicStats, consumerName)) {
+                                skipReconnecting = true;
                             }
-                            log.info("Closing and reconnecting consumer {}", consumerName);
-                            break;
+                            if (!skipReconnecting) {
+                                // disconnect and reconnect
+                                state.handlingLock.lock();
+                                try {
+                                    handlerRunning.set(false);
+                                    keepConnected = true;
+                                } finally {
+                                    state.handlingLock.unlock();
+                                }
+                                log.info("Closing and reconnecting consumer {}", consumerName);
+                                break;
+                            }
                         }
                         Thread.sleep(1000);
                         long lastReceivedNanos = state.lastReceivedMessageNanos.get();
@@ -407,6 +418,22 @@ public class TestScenarioKeySharedReconnects {
         long durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNanos);
         return new ConsumeReport(consumerName, state.uniqueMessages, state.duplicates, state.receivedMessages(), durationMillis,
                 TimeUnit.NANOSECONDS.toMillis(state.maxLatencyDifferenceNanos), connectCount);
+    }
+
+    private boolean mightBeBlocked(TopicStats topicStats, String consumerName) {
+        SubscriptionStats subscriptionStats = topicStats.getSubscriptions().get("sub");
+        if (subscriptionStats != null) {
+            Map<String, String> consumersAfterMarkDeletePosition =
+                    subscriptionStats.getConsumersAfterMarkDeletePosition();
+            boolean result = consumersAfterMarkDeletePosition.size() > 1
+                    && consumersAfterMarkDeletePosition.containsKey(consumerName);
+            if (result) {
+                log.info("Consumer {} might be blocked. {}", consumerName, consumersAfterMarkDeletePosition);
+            }
+            return result;
+        } else {
+            return false;
+        }
     }
 
     private class HandlingState {
