@@ -55,8 +55,14 @@ public class TestScenarioKeySharedReconnects {
     private final String namespace;
     private int consumerCount = 4;
     private int maxMessages = 1000000;
+    private int keySpaceSize = 100; // when 0 or negative, the key space is the same as the maxMessages
     private int messageSize = 4;
-
+    enum GeneratedKeyType {
+        MESSAGE_SEQUENCE_NUMBER_BASED,
+        RANDOM,
+        GAUSSIAN_RANDOM
+    }
+    private GeneratedKeyType generatedKeyType = GeneratedKeyType.GAUSSIAN_RANDOM;
     private boolean enableBatching = false;
     private AtomicInteger messagesInFlight = new AtomicInteger();
     private int targetMessagesInFlight = maxMessages / 20;
@@ -248,14 +254,9 @@ public class TestScenarioKeySharedReconnects {
                 .blockIfQueueFull(true)
                 .create()) {
             AtomicReference<Throwable> sendFailure = new AtomicReference<>();
-            for (int i = 1; i <= maxMessages; i++) {
-                byte[] value = intToBytes(i, messageSize);
-                byte[] key;
-                if (messageSize == 4) {
-                    key = value;
-                } else {
-                    key = intToBytes(i, 4);
-                }
+            for (int messageSeqNumber = 1; messageSeqNumber <= maxMessages; messageSeqNumber++) {
+                byte[] value = intToBytes(messageSeqNumber, messageSize);
+                byte[] key = intToBytes(generateKey(messageSeqNumber));
                 producer.newMessage().orderingKey(key).value(value)
                         // set System.nanoTime() as event time
                         .eventTime(System.nanoTime())
@@ -271,8 +272,8 @@ public class TestScenarioKeySharedReconnects {
                     Thread.sleep(100);
                     currentMessagesInFlight = messagesInFlight.get();
                 }
-                if (i % 1000 == 0) {
-                    log.info("Sent {} msgs", i);
+                if (messageSeqNumber % 1000 == 0) {
+                    log.info("Sent {} msgs", messageSeqNumber);
                 }
                 Throwable throwable = sendFailure.get();
                 if (throwable != null) {
@@ -283,6 +284,22 @@ public class TestScenarioKeySharedReconnects {
             producer.flush();
         }
         log.info("Done sending.");
+    }
+
+    private int generateKey(int messageSeqNumber) {
+        switch (generatedKeyType) {
+            case MESSAGE_SEQUENCE_NUMBER_BASED:
+                return keySpaceSize <= 0 ? messageSeqNumber : (messageSeqNumber % keySpaceSize + 1);
+            case RANDOM:
+                return ThreadLocalRandom.current().nextInt(keySpaceSize) + 1;
+            case GAUSSIAN_RANDOM:
+                int stdDev = keySpaceSize / 3;
+                int mean = keySpaceSize / 2;
+                return (Math.abs((int) (ThreadLocalRandom.current().nextGaussian() * stdDev + mean)) % keySpaceSize)
+                        + 1;
+            default:
+                throw new IllegalArgumentException("Unknown key type: " + generatedKeyType);
+        }
     }
 
     private ConsumeReport consumeMessages(String topicName, String consumerName, boolean simulateReconnecting)
@@ -436,6 +453,10 @@ public class TestScenarioKeySharedReconnects {
 
     private int bytesToInt(byte[] bytes) {
         return ByteBuffer.wrap(bytes).getInt();
+    }
+
+    byte[] intToBytes(final int i) {
+        return intToBytes(i, 4);
     }
 
     byte[] intToBytes(final int i, int messageSize) {
