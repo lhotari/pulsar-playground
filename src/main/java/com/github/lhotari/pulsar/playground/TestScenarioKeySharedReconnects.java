@@ -428,7 +428,13 @@ public class TestScenarioKeySharedReconnects {
             boolean result = consumersAfterMarkDeletePosition.size() > 1
                     && consumersAfterMarkDeletePosition.containsKey(consumerName);
             if (result) {
-                log.info("Consumer {} might be blocked. {}", consumerName, consumersAfterMarkDeletePosition);
+                long now = System.currentTimeMillis();
+                Function<Long, Long> formatAgoValue = value -> value > 0 ? now - value : -1;
+                log.info("Consumer {} might be blocked. {} ackholes:{} unacked:{} msgBacklog:{} msgOutCounter:{} lastAcked:{} ms ago lastConsumed:{} ms ago lastConsumedFlow:{} ms ago lastMarkDeleteAdvanced:{} ms ago",
+                        consumerName, consumersAfterMarkDeletePosition, subscriptionStats.getNonContiguousDeletedMessagesRanges(),
+                        subscriptionStats.getUnackedMessages(), subscriptionStats.getMsgBacklog(), subscriptionStats.getMsgOutCounter(),
+                        formatAgoValue.apply(subscriptionStats.getLastAckedTimestamp()), formatAgoValue.apply(subscriptionStats.getLastConsumedTimestamp()),
+                        formatAgoValue.apply(subscriptionStats.getLastConsumedFlowTimestamp()), formatAgoValue.apply(subscriptionStats.getLastMarkDeleteAdvancedTimestamp()));
             }
             return result;
         } else {
