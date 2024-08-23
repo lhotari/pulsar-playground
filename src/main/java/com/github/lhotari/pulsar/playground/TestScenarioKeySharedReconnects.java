@@ -57,7 +57,7 @@ public class TestScenarioKeySharedReconnects {
     private final String namespace;
     private int consumerCount = 4;
     private int maxMessages = 1000000;
-    private int keySpaceSize = 1000; // when 0 or negative, the key space is the same as the maxMessages
+    private int keySpaceSize = 16; // when 0 or negative, the key space is the same as the maxMessages
     private int messageSize = 4;
     private boolean allowOutOfOrderDelivery = false;
 
@@ -487,12 +487,16 @@ public class TestScenarioKeySharedReconnects {
     }
 
     private ConsumerBuilder<byte[]> createConsumerBuilder(PulsarClient pulsarClient, String topicName) {
-        return pulsarClient.newConsumer()
+        ConsumerBuilder<byte[]> sub = pulsarClient.newConsumer()
                 .subscriptionName("sub")
                 .subscriptionInitialPosition(SubscriptionInitialPosition.Earliest)
                 .subscriptionType(SubscriptionType.Key_Shared)
-                .keySharedPolicy(KeySharedPolicy.autoSplitHashRange().setAllowOutOfOrderDelivery(allowOutOfOrderDelivery))
                 .topic(topicName);
+        if (allowOutOfOrderDelivery) {
+            sub.keySharedPolicy(
+                    KeySharedPolicy.autoSplitHashRange().setAllowOutOfOrderDelivery(allowOutOfOrderDelivery));
+        }
+        return sub;
     }
 
     public static void main(String[] args) throws Throwable {
