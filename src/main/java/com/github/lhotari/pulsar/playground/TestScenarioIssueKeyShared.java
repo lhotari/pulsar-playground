@@ -53,6 +53,7 @@ public class TestScenarioIssueKeyShared {
     private int consumerCount = 4;
     private int maxMessages = 1000000;
     private int messageSize = 4;
+    private int keySpaceSize = -1; // use message sequence number if negative
 
     private boolean enableBatching = false;
     private AtomicInteger messagesInFlight = new AtomicInteger();
@@ -227,12 +228,7 @@ public class TestScenarioIssueKeyShared {
             AtomicReference<Throwable> sendFailure = new AtomicReference<>();
             for (int i = 1; i <= maxMessages; i++) {
                 byte[] value = intToBytes(i, messageSize);
-                byte[] key;
-                if (messageSize == 4) {
-                    key = value;
-                } else {
-                    key = intToBytes(i, 4);
-                }
+                byte[] key = intToBytes(keySpaceSize > 0 ? i % keySpaceSize : i);
                 producer.newMessage().orderingKey(key).value(value)
                         // set System.nanoTime() as event time
                         .eventTime(System.nanoTime())
@@ -336,6 +332,10 @@ public class TestScenarioIssueKeyShared {
 
     private int bytesToInt(byte[] bytes) {
         return ByteBuffer.wrap(bytes).getInt();
+    }
+
+    byte[] intToBytes(final int i) {
+        return intToBytes(i, 4);
     }
 
     byte[] intToBytes(final int i, int messageSize) {
