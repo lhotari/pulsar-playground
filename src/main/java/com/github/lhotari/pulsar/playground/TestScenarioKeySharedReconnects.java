@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -71,7 +72,7 @@ public class TestScenarioKeySharedReconnects {
     private int targetMessagesInFlight = maxMessages / 20;
     private AtomicInteger maxAckHoles = new AtomicInteger();
     private volatile AckHoleReport ackHoleReport;
-    private long minimumConnectTimeMillis = 2000;
+    private long minimumConnectTimeMillis = 15000;
 
     public TestScenarioKeySharedReconnects(String namespace) {
         this.namespace = namespace;
@@ -134,6 +135,8 @@ public class TestScenarioKeySharedReconnects {
             log.info("Attempting to consume remaining messages...");
         }
 
+        Thread.sleep(5000L);
+
         Thread ackHoleMonitorThread = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
@@ -159,6 +162,13 @@ public class TestScenarioKeySharedReconnects {
         });
         ackHoleMonitorThread.start();
 
+        Function<Integer, Long> delayBeforeStartingNextConsumer = consumerIndex -> {
+            if (consumerIndex == 1) {
+                // run for 60 seconds with a single consumer
+                return 60000L;
+            }
+            return 5000L;
+        };
         AtomicInteger totalConnectCount = new AtomicInteger();
         List<CompletableFuture<ConsumeReport>> tasks = IntStream.range(1, consumerCount + 1).mapToObj(consumerIndex -> {
             String consumerName = "consumer" + consumerIndex;
@@ -177,7 +187,7 @@ public class TestScenarioKeySharedReconnects {
                 thread.start();
             });
             try {
-                Thread.sleep(5000L);
+                Thread.sleep(delayBeforeStartingNextConsumer.apply(consumerIndex));
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
