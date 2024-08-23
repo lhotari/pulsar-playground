@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.Cleanup;
@@ -158,12 +159,14 @@ public class TestScenarioKeySharedReconnects {
         });
         ackHoleMonitorThread.start();
 
-        List<CompletableFuture<ConsumeReport>> tasks = IntStream.range(1, consumerCount + 1).mapToObj(i -> {
-            String consumerName = "consumer" + i;
-            return CompletableFuture.supplyAsync(() -> {
+        AtomicInteger totalConnectCount = new AtomicInteger();
+        List<CompletableFuture<ConsumeReport>> tasks = IntStream.range(1, consumerCount + 1).mapToObj(consumerIndex -> {
+            String consumerName = "consumer" + consumerIndex;
+            log.info("Starting consumer {}", consumerName);
+            CompletableFuture<ConsumeReport> consumeMessagesTask = CompletableFuture.supplyAsync(() -> {
                 try {
-                    boolean simulateReconnecting = i % consumerCount == 0;
-                    return consumeMessages(topicName, consumerName, simulateReconnecting);
+                    return consumeMessages(topicName, consumerName,
+                            () -> totalConnectCount.getAndIncrement() % consumerCount + 1 == consumerIndex);
                 } catch (PulsarClientException e) {
                     log.error("Failed to consume messages", e);
                     return null;
@@ -173,6 +176,12 @@ public class TestScenarioKeySharedReconnects {
                 thread.setName(consumerName);
                 thread.start();
             });
+            try {
+                Thread.sleep(5000L);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return consumeMessagesTask;
         }).collect(Collectors.toUnmodifiableList());
 
         producerThread.join();
@@ -304,7 +313,7 @@ public class TestScenarioKeySharedReconnects {
         }
     }
 
-    private ConsumeReport consumeMessages(String topicName, String consumerName, boolean simulateReconnecting)
+    private ConsumeReport consumeMessages(String topicName, String consumerName, Supplier<Boolean> shouldReconnectFunc)
             throws PulsarClientException {
 
         HandlingState state = new HandlingState();
@@ -327,6 +336,7 @@ public class TestScenarioKeySharedReconnects {
 
                 AtomicBoolean handlerRunning = new AtomicBoolean(true);
 
+                boolean shouldReconnect = shouldReconnectFunc.get();
                 try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName)
                         .consumerName(consumerName)
                         .messageListener((c, msg) -> handleMessage(c, msg, state, handlerRunning))
@@ -336,7 +346,7 @@ public class TestScenarioKeySharedReconnects {
 
                     while (!Thread.currentThread().isInterrupted()) {
                         long currentNanos = System.nanoTime();
-                        if (simulateReconnecting
+                        if (shouldReconnect
                                 && currentNanos - startConnectTimeNanos > minimumConnectTimeNanosWithJitter) {
                             // disconnect and reconnect
                             state.handlingLock.lock();
@@ -346,6 +356,7 @@ public class TestScenarioKeySharedReconnects {
                             } finally {
                                 state.handlingLock.unlock();
                             }
+                            log.info("Closing and reconnecting consumer {}", consumerName);
                             break;
                         }
                         Thread.sleep(1000);
