@@ -175,8 +175,12 @@ public class TestScenarioKeySharedReconnects {
             log.info("Starting consumer {}", consumerName);
             CompletableFuture<ConsumeReport> consumeMessagesTask = CompletableFuture.supplyAsync(() -> {
                 try {
+                    Supplier<Boolean> shouldReconnectFunc =
+                            () -> consumerIndex != 1 // don't reconnect for the first consumer
+                                    // reconnect other consumers in a rolling restart fashion
+                                    && totalConnectCount.getAndIncrement() % consumerCount + 1 == consumerIndex;
                     return consumeMessages(topicName, consumerName,
-                            () -> totalConnectCount.getAndIncrement() % consumerCount + 1 == consumerIndex);
+                            shouldReconnectFunc);
                 } catch (PulsarClientException e) {
                     log.error("Failed to consume messages", e);
                     return null;
