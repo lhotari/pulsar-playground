@@ -129,6 +129,13 @@ public class TestScenarioKeySharedReconnects {
         boolean newTopic = false;
         try {
             Policies policies = new Policies();
+            // Configure offload to S3 emulated with localstack s3 service on port 4566
+            // bucket name is "pulsar", created with "AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1 aws --endpoint-url=http://localhost:4566 s3 mb s3://pulsar"
+            // modifying conf/standalone.conf to use offload to s3:
+            // managedLedgerMaxEntriesPerLedger=10000 managedLedgerMinLedgerRolloverTimeMinutes=0 PULSAR_PREFIX_managedLedgerOffloadDriver=aws-s3 PULSAR_PREFIX_s3ManagedLedgerOffloadRegion=us-east-1 PULSAR_PREFIX_s3ManagedLedgerOffloadBucket=pulsar PULSAR_PREFIX_s3ManagedLedgerOffloadServiceEndpoint=http://localhost:4566 PULSAR_PREFIX_s3ManagedLedgerOffloadCredentialId=test PULSAR_PREFIX_s3ManagedLedgerOffloadCredentialSecret=test docker/pulsar/scripts/apply-config-from-env.py conf/standalone.conf
+            policies.offload_threshold = 0;
+            policies.offload_deletion_lag_ms = 0L;
+            policies.offload_threshold_in_seconds = 0;
             // no retention
             policies.retention_policies = new RetentionPolicies(0, 0);
             policies.delayed_delivery_policies = DelayedDeliveryPolicies.builder()
