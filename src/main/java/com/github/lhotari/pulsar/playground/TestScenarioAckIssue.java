@@ -4,14 +4,15 @@ import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_BROKER
 import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_SERVICE_URL;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Phaser;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -67,7 +68,8 @@ public class TestScenarioAckIssue {
     private int consumerCount = 4;
     private int maxMessages = 250000;
     private int messageSize = 4;
-    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(consumerCount);
+    private int ackConcurrency = 16;
+    private Executor executorService = Executors.newCachedThreadPool();
 
     private boolean enableBatching = false;
 
@@ -137,13 +139,11 @@ public class TestScenarioAckIssue {
         }
         producerThread.join();
 
-        Phaser ackPhaser = new Phaser(consumerCount / 2);
-
         List<CompletableFuture<ConsumeReport>> tasks = IntStream.range(1, consumerCount + 1).mapToObj(i -> {
             String consumerName = "consumer" + i;
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    return consumeMessages(topicName, consumerName, "sub" + i, i % 2 == 0, ackPhaser, pulsarAdmin);
+                    return consumeMessages(topicName, consumerName, "sub" + i, i % 2 == 0, pulsarAdmin);
                 } catch (PulsarClientException e) {
                     log.error("Failed to consume messages", e);
                     return null;
@@ -226,7 +226,7 @@ public class TestScenarioAckIssue {
     }
 
     private ConsumeReport consumeMessages(String topicName, String consumerName, String subscriptionName, boolean ackAsync,
-                                          Phaser ackPhaser, PulsarAdmin pulsarAdmin)
+                                          PulsarAdmin pulsarAdmin)
             throws PulsarClientException {
         @Cleanup
         PulsarClient pulsarClient = PulsarClient.builder()
@@ -246,6 +246,8 @@ public class TestScenarioAckIssue {
         AtomicInteger ackSent = new AtomicInteger();
         AtomicInteger ackSuccess = new AtomicInteger();
         AtomicInteger ackFailed = new AtomicInteger();
+        List<Runnable> pendingAckAsyncTasks = new ArrayList<>();
+        Phaser ackPhaser = new Phaser(ackConcurrency);
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName, subscriptionName)
                 .consumerName(consumerName)
@@ -284,29 +286,32 @@ public class TestScenarioAckIssue {
                         duplicates);
                 ackInProgress.incrementAndGet();
                 if (ackAsync) {
-                    executorService.schedule(() -> {
-                        CompletableFuture.runAsync(() -> {
-                            // increase chances for race condition
-                            waitForOtherThreadsToTestRaceConditions(ackPhaser);
-                            try {
-                                ackSent.incrementAndGet();
-                                consumer.acknowledgeAsync(msg).handle((result, throwable) -> {
-                                    if (throwable == null) {
-                                        ackSuccess.incrementAndGet();
-                                    } else {
-                                        log.error("Failed to acknowledge message", throwable);
-                                        ackFailed.incrementAndGet();
-                                    }
-                                    return null;
-                                });
-                            } catch (Throwable t) {
-                                log.error("Failed to acknowledge message", t);
-                                ackFailed.incrementAndGet();
-                            } finally {
-                                ackInProgress.decrementAndGet();
-                            }
-                        });
-                    }, randomGaussian(random, 1000, 500), TimeUnit.MILLISECONDS);
+                    Runnable ackTask = () -> {
+                        // increase chances for race condition
+                        waitForOtherThreadsToTestRaceConditions(ackPhaser);
+                        try {
+                            ackSent.incrementAndGet();
+                            consumer.acknowledgeAsync(msg).handle((result, throwable) -> {
+                                if (throwable == null) {
+                                    ackSuccess.incrementAndGet();
+                                } else {
+                                    log.error("Failed to acknowledge message", throwable);
+                                    ackFailed.incrementAndGet();
+                                }
+                                return null;
+                            });
+                        } catch (Throwable t) {
+                            log.error("Failed to acknowledge message", t);
+                            ackFailed.incrementAndGet();
+                        } finally {
+                            ackInProgress.decrementAndGet();
+                        }
+                    };
+                    pendingAckAsyncTasks.add(ackTask);
+                    if (pendingAckAsyncTasks.size() == ackConcurrency) {
+                        pendingAckAsyncTasks.forEach(executorService::execute);
+                        pendingAckAsyncTasks.clear();
+                    }
                 } else {
                     ackSent.incrementAndGet();
                     consumer.acknowledge(msg);
@@ -314,6 +319,10 @@ public class TestScenarioAckIssue {
                     ackInProgress.decrementAndGet();
                 }
             }
+
+            // complete the remaining acks
+            pendingAckAsyncTasks.forEach(Runnable::run);
+            pendingAckAsyncTasks.clear();
 
             try {
                 subscriptionStats =
