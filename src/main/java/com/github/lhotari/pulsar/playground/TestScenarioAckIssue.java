@@ -338,11 +338,17 @@ public class TestScenarioAckIssue {
       */
     private static void waitForOtherThreadsToTestRaceConditions(Phaser ackPhaser) {
         int phase;
-        try {
-            phase = ackPhaser.arrive();
-        } catch (IllegalStateException e) {
-            log.warn("Failed to arrive at phaser, ignoring error.", e);
-            return;
+        int retryCount = 0;
+        while (true) {
+            try {
+                phase = ackPhaser.arrive();
+                break;
+            } catch (IllegalStateException e) {
+                // ignore error, retry again if we haven't reached the retry limit
+                if (retryCount++ > 10) {
+                    return;
+                }
+            }
         }
         try {
             // wait for other consumers to arrive at most 100 ms
