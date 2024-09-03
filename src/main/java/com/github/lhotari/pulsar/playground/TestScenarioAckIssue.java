@@ -15,6 +15,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -168,7 +169,9 @@ public class TestScenarioAckIssue {
                                         + "difference of subsequent messages {} ms\n"
                                         + "Using async ack in random order: {}\n"
                                         + "Unacknowledged messages: {}{}\n"
-                                        + "Backlog: {}{}",
+                                        + "Backlog: {}{}\n"
+                                        + "Acknowledgements:\n"
+                                        + "\tSent:{}{}\n\tSuccess: {}{}\n\tFailed: {}{}",
                                 report.consumerName(), report.uniqueMessages(), report.duplicates(),
                                 TimeUnit.MILLISECONDS.toSeconds(report.durationMillis()),
                                 report.maxLatencyDifferenceMillis(),
@@ -177,7 +180,13 @@ public class TestScenarioAckIssue {
                                 report.subscriptionStats().getUnackedMessages() != 0 ? " <-- Acknowledgements lost!" :
                                         "",
                                 report.subscriptionStats().getMsgBacklog(),
-                                report.subscriptionStats().getMsgBacklog() != 0 ? " <-- Should be 0!" : ""));
+                                report.subscriptionStats().getMsgBacklog() != 0 ? " <-- Should be 0!" : "",
+                                report.ackSent(),
+                                report.ackSent() != maxMessages ? " <-- Should be " + maxMessages : "",
+                                report.ackSuccess(),
+                                report.ackSuccess() != maxMessages ? " <-- Should be " + maxMessages : "",
+                                report.ackFailed(),
+                                report.ackFailed() != 0 ? " <-- Should be 0" : ""));
     }
 
     private void produceMessages(PulsarClient pulsarClient, String topicName) throws Throwable {
@@ -232,6 +241,9 @@ public class TestScenarioAckIssue {
         long startTimeNanos = System.nanoTime();
         long maxLatencyDifferenceNanos = 0;
         SubscriptionStats subscriptionStats = null;
+        AtomicInteger ackSent = new AtomicInteger();
+        AtomicInteger ackSuccess = new AtomicInteger();
+        AtomicInteger ackFailed = new AtomicInteger();
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName, subscriptionName)
                 .consumerName(consumerName)
@@ -268,19 +280,31 @@ public class TestScenarioAckIssue {
                 }
                 log.info("Received value: {} duplicate: {} unique: {} duplicates: {}", msgNum, !added, uniqueMessages,
                         duplicates);
+                ackSent.incrementAndGet();
                 if (ackAsync) {
                     executorService.schedule(() -> {
                         CompletableFuture.runAsync(() -> {
                             // increase chances for race condition
                             waitForOtherThreadsToTestRaceConditions(ackPhaser);
-                            consumer.acknowledgeAsync(msg).exceptionally(throwable -> {
-                                log.error("Failed to acknowledge message", throwable);
-                                return null;
-                            });
+                            try {
+                                consumer.acknowledgeAsync(msg).handle((result, throwable) -> {
+                                    if (throwable == null) {
+                                        ackSuccess.incrementAndGet();
+                                    } else {
+                                        log.error("Failed to acknowledge message", throwable);
+                                        ackFailed.incrementAndGet();
+                                    }
+                                    return null;
+                                });
+                            } catch (Throwable t) {
+                                log.error("Failed to acknowledge message", t);
+                                ackFailed.incrementAndGet();
+                            }
                         });
                     }, random.nextInt(100) + 1, TimeUnit.MILLISECONDS);
                 } else {
                     consumer.acknowledge(msg);
+                    ackSuccess.incrementAndGet();
                 }
             }
 
@@ -293,7 +317,8 @@ public class TestScenarioAckIssue {
         }
         long durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNanos);
         return new ConsumeReport(consumerName, uniqueMessages, duplicates, receivedMessages, durationMillis,
-                TimeUnit.NANOSECONDS.toMillis(maxLatencyDifferenceNanos), ackAsync, subscriptionStats);
+                TimeUnit.NANOSECONDS.toMillis(maxLatencyDifferenceNanos), ackAsync, subscriptionStats,
+                ackSent.get(), ackSuccess.get(), ackFailed.get());
     }
 
     /**
@@ -313,7 +338,7 @@ public class TestScenarioAckIssue {
     }
 
     private record ConsumeReport(String consumerName, int uniqueMessages, int duplicates, RoaringBitmap receivedMessages,
-                                 long durationMillis, long maxLatencyDifferenceMillis, boolean ackAsync, SubscriptionStats subscriptionStats) {
+                                 long durationMillis, long maxLatencyDifferenceMillis, boolean ackAsync, SubscriptionStats subscriptionStats, int ackSent, int ackSuccess, int ackFailed) {
     }
 
     private int bytesToInt(byte[] bytes) {
