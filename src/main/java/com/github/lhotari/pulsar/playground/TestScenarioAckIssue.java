@@ -282,22 +282,26 @@ public class TestScenarioAckIssue {
                         duplicates);
                 ackSent.incrementAndGet();
                 if (ackAsync) {
-                    // increase chances for race condition
-                    waitForOtherThreadsToTestRaceConditions(ackPhaser);
-                    try {
-                        consumer.acknowledgeAsync(msg).handle((result, throwable) -> {
-                            if (throwable == null) {
-                                ackSuccess.incrementAndGet();
-                            } else {
-                                log.error("Failed to acknowledge message", throwable);
+                    executorService.schedule(() -> {
+                        CompletableFuture.runAsync(() -> {
+                            // increase chances for race condition
+                            waitForOtherThreadsToTestRaceConditions(ackPhaser);
+                            try {
+                                consumer.acknowledgeAsync(msg).handle((result, throwable) -> {
+                                    if (throwable == null) {
+                                        ackSuccess.incrementAndGet();
+                                    } else {
+                                        log.error("Failed to acknowledge message", throwable);
+                                        ackFailed.incrementAndGet();
+                                    }
+                                    return null;
+                                });
+                            } catch (Throwable t) {
+                                log.error("Failed to acknowledge message", t);
                                 ackFailed.incrementAndGet();
                             }
-                            return null;
                         });
-                    } catch (Throwable t) {
-                        log.error("Failed to acknowledge message", t);
-                        ackFailed.incrementAndGet();
-                    }
+                    }, random.nextInt(100) + 1, TimeUnit.MILLISECONDS);
                 } else {
                     consumer.acknowledge(msg);
                     ackSuccess.incrementAndGet();
