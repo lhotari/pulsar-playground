@@ -306,7 +306,7 @@ public class TestScenarioAckIssue {
                                 ackInProgress.decrementAndGet();
                             }
                         });
-                    }, random.nextInt(100) + 1, TimeUnit.MILLISECONDS);
+                    }, randomGaussian(random, 1000, 500), TimeUnit.MILLISECONDS);
                 } else {
                     ackSent.incrementAndGet();
                     consumer.acknowledge(msg);
@@ -326,6 +326,10 @@ public class TestScenarioAckIssue {
         return new ConsumeReport(consumerName, uniqueMessages, duplicates, receivedMessages, durationMillis,
                 TimeUnit.NANOSECONDS.toMillis(maxLatencyDifferenceNanos), ackAsync, subscriptionStats,
                 ackInProgress.get(), ackSent.get(), ackSuccess.get(), ackFailed.get());
+    }
+
+    private static int randomGaussian(Random random, int mean, int stdDev) {
+        return Math.abs((int) (random.nextGaussian() * stdDev + mean)) + 1;
     }
 
     /**
