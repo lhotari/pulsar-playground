@@ -171,7 +171,7 @@ public class TestScenarioAckIssue {
                                         + "Unacknowledged messages: {}{}\n"
                                         + "Backlog: {}{}\n"
                                         + "Acknowledgements:\n"
-                                        + "\tSent:{}{}\n\tSuccess: {}{}\n\tFailed: {}{}",
+                                        + "\tIn Progress:{}{}\n\tSent:{}{}\n\tSuccess: {}{}\n\tFailed: {}{}",
                                 report.consumerName(), report.uniqueMessages(), report.duplicates(),
                                 TimeUnit.MILLISECONDS.toSeconds(report.durationMillis()),
                                 report.maxLatencyDifferenceMillis(),
@@ -181,6 +181,8 @@ public class TestScenarioAckIssue {
                                         "",
                                 report.subscriptionStats().getMsgBacklog(),
                                 report.subscriptionStats().getMsgBacklog() != 0 ? " <-- Should be 0!" : "",
+                                report.ackInProgress(),
+                                report.ackInProgress() != 0 ? " <-- Should be 0!" : "",
                                 report.ackSent(),
                                 report.ackSent() != maxMessages ? " <-- Should be " + maxMessages : "",
                                 report.ackSuccess(),
@@ -241,6 +243,7 @@ public class TestScenarioAckIssue {
         long startTimeNanos = System.nanoTime();
         long maxLatencyDifferenceNanos = 0;
         SubscriptionStats subscriptionStats = null;
+        AtomicInteger ackInProgress = new AtomicInteger();
         AtomicInteger ackSent = new AtomicInteger();
         AtomicInteger ackSuccess = new AtomicInteger();
         AtomicInteger ackFailed = new AtomicInteger();
@@ -280,13 +283,14 @@ public class TestScenarioAckIssue {
                 }
                 log.info("Received value: {} duplicate: {} unique: {} duplicates: {}", msgNum, !added, uniqueMessages,
                         duplicates);
-                ackSent.incrementAndGet();
+                ackInProgress.incrementAndGet();
                 if (ackAsync) {
                     executorService.schedule(() -> {
                         CompletableFuture.runAsync(() -> {
                             // increase chances for race condition
                             waitForOtherThreadsToTestRaceConditions(ackPhaser);
                             try {
+                                ackSent.incrementAndGet();
                                 consumer.acknowledgeAsync(msg).handle((result, throwable) -> {
                                     if (throwable == null) {
                                         ackSuccess.incrementAndGet();
@@ -299,12 +303,16 @@ public class TestScenarioAckIssue {
                             } catch (Throwable t) {
                                 log.error("Failed to acknowledge message", t);
                                 ackFailed.incrementAndGet();
+                            } finally {
+                                ackInProgress.decrementAndGet();
                             }
                         });
                     }, random.nextInt(100) + 1, TimeUnit.MILLISECONDS);
                 } else {
+                    ackSent.incrementAndGet();
                     consumer.acknowledge(msg);
                     ackSuccess.incrementAndGet();
+                    ackInProgress.decrementAndGet();
                 }
             }
 
@@ -318,7 +326,7 @@ public class TestScenarioAckIssue {
         long durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNanos);
         return new ConsumeReport(consumerName, uniqueMessages, duplicates, receivedMessages, durationMillis,
                 TimeUnit.NANOSECONDS.toMillis(maxLatencyDifferenceNanos), ackAsync, subscriptionStats,
-                ackSent.get(), ackSuccess.get(), ackFailed.get());
+                ackInProgress.get(), ackSent.get(), ackSuccess.get(), ackFailed.get());
     }
 
     /**
@@ -338,7 +346,7 @@ public class TestScenarioAckIssue {
     }
 
     private record ConsumeReport(String consumerName, int uniqueMessages, int duplicates, RoaringBitmap receivedMessages,
-                                 long durationMillis, long maxLatencyDifferenceMillis, boolean ackAsync, SubscriptionStats subscriptionStats, int ackSent, int ackSuccess, int ackFailed) {
+                                 long durationMillis, long maxLatencyDifferenceMillis, boolean ackAsync, SubscriptionStats subscriptionStats, int ackInProgress, int ackSent, int ackSuccess, int ackFailed) {
     }
 
     private int bytesToInt(byte[] bytes) {
