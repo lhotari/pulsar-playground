@@ -25,6 +25,7 @@ import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.BatcherBuilder;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.ConsumerBuilder;
+import org.apache.pulsar.client.api.KeySharedPolicy;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
@@ -36,12 +37,27 @@ import org.apache.pulsar.common.naming.NamespaceName;
 import org.apache.pulsar.common.policies.data.DelayedDeliveryPolicies;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.policies.data.RetentionPolicies;
+import org.apache.pulsar.common.policies.data.SubscriptionStats;
 import org.apache.pulsar.common.util.FutureUtil;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
- * Attempt to reproduce https://github.com/apache/pulsar/issues/21958
- * Status: Does not reproduce the issue.
+ * Reproduce the issue https://github.com/apache/pulsar/issues/21958
+ * Msg backlog & unack msg remains when using acknowledgeAsync
+ * This reproduces when using the Key_Shared subscription type.
+ *
+ * Instructions for running this test scenario:
+ *
+ * Start a standalone Pulsar broker with the following command in a separate terminal:
+ * docker run --name pulsar-standalone --rm -it -e PULSAR_STANDALONE_USE_ZOOKEEPER=1 -p 8080:8080 -p 6650:6650 apachepulsar/pulsar:3.2.3 /pulsar/bin/pulsar standalone -nss -nfw  2>&1 | tee standalone.log
+ *
+ * Build the test applications with the following command:
+ * ./gradlew build
+ *
+ * Run the test scenario with the following command:
+ * java -cp build/libs/pulsar-playground-all.jar com.github.lhotari.pulsar.playground.TestScenarioAckIssue 2>&1 | tee test.log
+ *
+ * At the end, there will be a 15 second waiting period to allow the consumers to finish processing messages.
  */
 @Slf4j
 public class TestScenarioAckIssue {
@@ -126,7 +142,7 @@ public class TestScenarioAckIssue {
             String consumerName = "consumer" + i;
             return CompletableFuture.supplyAsync(() -> {
                 try {
-                    return consumeMessages(topicName, consumerName, "sub" + i, i % 2 == 0, ackPhaser);
+                    return consumeMessages(topicName, consumerName, "sub" + i, i % 2 == 0, ackPhaser, pulsarAdmin);
                 } catch (PulsarClientException e) {
                     log.error("Failed to consume messages", e);
                     return null;
@@ -146,9 +162,21 @@ public class TestScenarioAckIssue {
 
         results.stream().sorted(Comparator.comparing(ConsumeReport::consumerName))
                 .forEach(report ->
-                        log.info("Consumer {} received {} unique messages {} duplicates in {} s, max latency difference of subsequent messages {} ms",
+                        log.info(
+                                "Consumer {} received {} unique messages {} duplicates in {} s, max latency "
+                                        + "difference of subsequent messages {} ms\n"
+                                        + "Using async ack in random order: {}\n"
+                                        + "Unacknowledged messages: {}{}\n"
+                                        + "Backlog: {}{}",
                                 report.consumerName(), report.uniqueMessages(), report.duplicates(),
-                                TimeUnit.MILLISECONDS.toSeconds(report.durationMillis()), report.maxLatencyDifferenceMillis()));
+                                TimeUnit.MILLISECONDS.toSeconds(report.durationMillis()),
+                                report.maxLatencyDifferenceMillis(),
+                                report.ackAsync() ? "yes" : "no",
+                                report.subscriptionStats().getUnackedMessages(),
+                                report.subscriptionStats().getUnackedMessages() != 0 ? " <-- Acknowledgements lost!" :
+                                        "",
+                                report.subscriptionStats().getMsgBacklog(),
+                                report.subscriptionStats().getMsgBacklog() != 0 ? " <-- Should be 0!" : ""));
     }
 
     private void produceMessages(PulsarClient pulsarClient, String topicName) throws Throwable {
@@ -163,6 +191,7 @@ public class TestScenarioAckIssue {
             for (int i = 1; i <= maxMessages; i++) {
                 byte[] value = intToBytes(i, messageSize);
                 producer.newMessage().value(value)
+                        .keyBytes(value)
                         // set System.nanoTime() as event time
                         .eventTime(System.nanoTime())
                         .sendAsync().whenComplete((messageId, throwable) -> {
@@ -186,7 +215,7 @@ public class TestScenarioAckIssue {
     }
 
     private ConsumeReport consumeMessages(String topicName, String consumerName, String subscriptionName, boolean ackAsync,
-                                          Phaser ackPhaser)
+                                          Phaser ackPhaser, PulsarAdmin pulsarAdmin)
             throws PulsarClientException {
         @Cleanup
         PulsarClient pulsarClient = PulsarClient.builder()
@@ -201,6 +230,7 @@ public class TestScenarioAckIssue {
         Random random = ThreadLocalRandom.current();
         long startTimeNanos = System.nanoTime();
         long maxLatencyDifferenceNanos = 0;
+        SubscriptionStats subscriptionStats = null;
 
         try (Consumer<byte[]> consumer = createConsumerBuilder(pulsarClient, topicName, subscriptionName)
                 .consumerName(consumerName)
@@ -252,13 +282,20 @@ public class TestScenarioAckIssue {
                     consumer.acknowledge(msg);
                 }
             }
+
+            try {
+                subscriptionStats =
+                        pulsarAdmin.topics().getStats(topicName).getSubscriptions().get(subscriptionName);
+            } catch (PulsarAdminException e) {
+                log.error("Failed to get unack messages", e);
+            }
         }
         long durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTimeNanos);
         return new ConsumeReport(consumerName, uniqueMessages, duplicates, receivedMessages, durationMillis,
-                TimeUnit.NANOSECONDS.toMillis(maxLatencyDifferenceNanos));
+                TimeUnit.NANOSECONDS.toMillis(maxLatencyDifferenceNanos), ackAsync, subscriptionStats);
     }
     private record ConsumeReport(String consumerName, int uniqueMessages, int duplicates, RoaringBitmap receivedMessages,
-                                 long durationMillis, long maxLatencyDifferenceMillis) {
+                                 long durationMillis, long maxLatencyDifferenceMillis, boolean ackAsync, SubscriptionStats subscriptionStats) {
     }
 
     private int bytesToInt(byte[] bytes) {
@@ -278,7 +315,8 @@ public class TestScenarioAckIssue {
         return pulsarClient.newConsumer()
                 .subscriptionName(subscriptionName)
                 .subscriptionInitialPosition(SubscriptionInitialPosition.Earliest)
-                .subscriptionType(SubscriptionType.Shared)
+                .subscriptionType(SubscriptionType.Key_Shared)
+                .keySharedPolicy(KeySharedPolicy.autoSplitHashRange())
                 .topic(topicName);
     }
 
