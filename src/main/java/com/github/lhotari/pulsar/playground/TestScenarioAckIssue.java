@@ -14,6 +14,7 @@ import java.util.concurrent.Phaser;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -271,7 +272,7 @@ public class TestScenarioAckIssue {
                     executorService.schedule(() -> {
                         CompletableFuture.runAsync(() -> {
                             // increase chances for race condition
-                            ackPhaser.arriveAndAwaitAdvance();
+                            waitForOtherThreadsToTestRaceConditions(ackPhaser);
                             consumer.acknowledgeAsync(msg).exceptionally(throwable -> {
                                 log.error("Failed to acknowledge message", throwable);
                                 return null;
@@ -294,6 +295,23 @@ public class TestScenarioAckIssue {
         return new ConsumeReport(consumerName, uniqueMessages, duplicates, receivedMessages, durationMillis,
                 TimeUnit.NANOSECONDS.toMillis(maxLatencyDifferenceNanos), ackAsync, subscriptionStats);
     }
+
+    /**
+     * Uses JDK's {@link Phaser} to synchronize the acks of the messages with other consumers.
+     * The purpose of this is to increase the chances of race condition bugs of appearing.
+      */
+    private static void waitForOtherThreadsToTestRaceConditions(Phaser ackPhaser) {
+        int phase = ackPhaser.arrive();
+        try {
+            // wait for other consumers to arrive at most 100 ms
+            ackPhaser.awaitAdvanceInterruptibly(phase, 100, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (TimeoutException e) {
+            log.info("Proceeding with ack after timeout");
+        }
+    }
+
     private record ConsumeReport(String consumerName, int uniqueMessages, int duplicates, RoaringBitmap receivedMessages,
                                  long durationMillis, long maxLatencyDifferenceMillis, boolean ackAsync, SubscriptionStats subscriptionStats) {
     }
