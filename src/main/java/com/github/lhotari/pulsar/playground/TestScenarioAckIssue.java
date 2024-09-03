@@ -44,9 +44,8 @@ import org.apache.pulsar.common.util.FutureUtil;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
- * Reproduce the issue https://github.com/apache/pulsar/issues/21958
- * Msg backlog & unack msg remains when using acknowledgeAsync
- * This reproduces when using the Key_Shared subscription type.
+ * Attempt to reproduce https://github.com/apache/pulsar/issues/21958
+ * Status: Does not reproduce the issue.
  *
  * Instructions for running this test scenario:
  *
@@ -66,7 +65,7 @@ public class TestScenarioAckIssue {
     public static final int RECEIVE_TIMEOUT_SECONDS = 15;
     private final String namespace;
     private int consumerCount = 4;
-    private int maxMessages = 1000000;
+    private int maxMessages = 250000;
     private int messageSize = 4;
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(consumerCount);
 
@@ -334,7 +333,13 @@ public class TestScenarioAckIssue {
      * The purpose of this is to increase the chances of race condition bugs of appearing.
       */
     private static void waitForOtherThreadsToTestRaceConditions(Phaser ackPhaser) {
-        int phase = ackPhaser.arrive();
+        int phase;
+        try {
+            phase = ackPhaser.arrive();
+        } catch (IllegalStateException e) {
+            log.warn("Failed to arrive at phaser, ignoring error.", e);
+            return;
+        }
         try {
             // wait for other consumers to arrive at most 100 ms
             ackPhaser.awaitAdvanceInterruptibly(phase, 100, TimeUnit.MILLISECONDS);
