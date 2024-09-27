@@ -8,6 +8,9 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        url 'https://repository.apache.org/content/repositories/orgapachepulsar-1306'
+    }
 }
 
 application {
@@ -15,7 +18,7 @@ application {
 }
 
 def pulsarGroup = 'org.apache.pulsar'
-def defaultPulsarVersion = '3.3.1'
+def defaultPulsarVersion = '4.0.0-preview.1'
 //def pulsarGroup = 'io.streamnative'
 //def defaultPulsarVersion = '3.2.3.1'
 def pulsarVersion = System.getenv('PULSAR_VERSION') ?: defaultPulsarVersion
