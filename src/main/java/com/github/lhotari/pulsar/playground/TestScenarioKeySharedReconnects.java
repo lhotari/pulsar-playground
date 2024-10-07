@@ -2,7 +2,6 @@ package com.github.lhotari.pulsar.playground;
 
 import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_BROKER_URL;
 import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_SERVICE_URL;
-
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -47,7 +45,6 @@ import org.apache.pulsar.common.policies.data.DelayedDeliveryPolicies;
 import org.apache.pulsar.common.policies.data.PersistentTopicInternalStats;
 import org.apache.pulsar.common.policies.data.Policies;
 import org.apache.pulsar.common.policies.data.RetentionPolicies;
-import org.apache.pulsar.common.policies.data.SubscriptionStats;
 import org.apache.pulsar.common.policies.data.TopicStats;
 import org.apache.pulsar.common.util.FutureUtil;
 import org.apache.pulsar.common.util.ObjectMapperFactory;
@@ -449,6 +446,8 @@ public class TestScenarioKeySharedReconnects {
     }
 
     private boolean mightBeBlocked(TopicStats topicStats, String consumerName) {
+        return false;
+        /*
         SubscriptionStats subscriptionStats = topicStats.getSubscriptions().get("sub");
         if (subscriptionStats != null) {
             Map<String, String> consumersAfterMarkDeletePosition =
@@ -468,6 +467,7 @@ public class TestScenarioKeySharedReconnects {
         } else {
             return false;
         }
+         */
     }
 
     private class HandlingState {
