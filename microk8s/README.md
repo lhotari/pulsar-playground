@@ -65,6 +65,30 @@ yq -i '.affinity.anti_affinity=false' pulsar-values.yaml
 helm upgrade --install --namespace pulsar --create-namespace pulsar apache-pulsar/pulsar --values pulsar-values.yaml
 ```
 
+### Enabling DNS from local environment to k8s DNS
+
+Originally based on instructions in
+https://carlos-algms.medium.com/how-to-configure-a-linux-host-to-resolve-and-access-kubernetes-services-by-name-e1741e1247bd
+
+```shell
+sudo mkdir -p /etc/systemd/resolved.conf.d
+sudo tee /etc/systemd/resolved.conf.d/00-k8s-dns-resolver.conf <<EOF
+[Resolve]
+Cache=yes
+CacheFromLocalhost=yes
+DNS=$(kubectl get pods -l k8s-app=kube-dns -n kube-system -o jsonpath='{.items[0].status.podIP}')
+Domains=~default.svc.cluster.local ~svc.cluster.local ~cluster.local
+DNSOverTLS=false
+EOF
+sudo service systemd-resolved restart
+```
+
+validate DNS resolution from local environment to k8s DNS:
+
+```shell
+nslookup pulsar-broker.pulsar.svc.cluster.local
+```
+
 ### Installing Pulsar Resources Operator
 
 ```shell
