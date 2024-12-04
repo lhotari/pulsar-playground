@@ -89,6 +89,8 @@ validate DNS resolution from local environment to k8s DNS:
 nslookup pulsar-broker.pulsar.svc.cluster.local
 ```
 
+## Optional configurations (not required for running Pulsar)
+
 ### Installing Pulsar Resources Operator
 
 ```shell
