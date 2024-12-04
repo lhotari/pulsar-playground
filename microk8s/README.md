@@ -37,7 +37,7 @@ sudo microk8s enable metallb:192.168.140.43-192.168.140.49
 Assuming https://brew.sh/ is used to install the tooling. Please check prerequisites for installing [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux#requirements).
 
 ```shell
-brew install kubernetes-cli helm yq jq
+brew install kubernetes-cli helm yq jq k9s kubectx
 ```
 
 ### Adding microk8s context to kubectl (~/.kube/config)
