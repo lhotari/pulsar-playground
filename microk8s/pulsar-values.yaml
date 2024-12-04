@@ -112,7 +112,7 @@ components:
   # functions
   # WARNING! Before enabling functions, make sure that all of your users are trusted since functions run user code
   # and the current security sandbox is not sufficient to protect against malicious code.
-  functions: false
+  functions: true
   # proxy
   proxy: true
   # toolset
