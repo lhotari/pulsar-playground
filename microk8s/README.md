@@ -64,3 +64,33 @@ yq -i '.affinity.anti_affinity=false' pulsar-values.yaml
 # install pulsar
 helm upgrade --install --namespace pulsar --create-namespace pulsar apache-pulsar/pulsar --values pulsar-values.yaml
 ```
+
+### Installing Pulsar Resources Operator
+
+```shell
+helm repo add streamnative https://charts.streamnative.io
+helm repo update
+helm upgrade --install --namespace pulsar --version 0.6.2 pulsar-resources-operator streamnative/pulsar-resources-operator
+```
+
+```shell
+cat <<EOF | kubectl apply -n pulsar -f -
+apiVersion: resource.streamnative.io/v1alpha1
+kind: PulsarConnection
+metadata:
+  name: pulsar-connection
+spec:
+  adminServiceURL: http://pulsar-broker.pulsar.svc.cluster.local:8080
+  brokerServiceURL: pulsar://pulsar-broker.pulsar.svc.cluster.local:6650
+  clusterName: pulsar-cluster
+EOF
+```
+
+### Installing Function Mesh
+
+```shell
+helm repo add function-mesh http://charts.functionmesh.io/
+helm repo update
+# check https://charts.functionmesh.io/index.yaml for versions
+helm upgrade --install --namespace pulsar --version 0.2.29 function-mesh function-mesh/function-mesh-operator
+```
