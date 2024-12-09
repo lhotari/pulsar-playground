@@ -63,6 +63,8 @@ helm show values apache-pulsar/pulsar > pulsar-values.yaml
 yq -i '.affinity.anti_affinity=false' pulsar-values.yaml
 # enable Pulsar Functions support
 yq -i ".components.functions=true" pulsar-values.yaml
+# set Pulsar image tag (== version)
+yq -i '.defaultPulsarImageTag="4.0.1"' pulsar-values.yaml
 # install pulsar
 helm upgrade --install --namespace pulsar --create-namespace pulsar apache-pulsar/pulsar --values pulsar-values.yaml
 ```

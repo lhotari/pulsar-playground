@@ -123,7 +123,7 @@ components:
 defaultPulsarImageRepository: apachepulsar/pulsar-all
 # default image tag for pulsar images
 # uses chart's appVersion when unspecified
-defaultPulsarImageTag:
+defaultPulsarImageTag: 4.0.1
 # default pull policy for all images
 defaultPullPolicy: IfNotPresent
 ## Images
