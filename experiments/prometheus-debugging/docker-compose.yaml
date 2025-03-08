@@ -12,6 +12,7 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--web.enable-lifecycle'
       - '--web.listen-address=0.0.0.0:9091'
+      - '--log.level=debug'
     restart: unless-stopped
 volumes:
   prometheus_data:
