@@ -1,7 +1,7 @@
 services:
   prometheus:
     #image: prom/prometheus:v3.2.1
-    image: prom/prometheus:v2.55.1
+    image: prom/prometheus:v2.40.0
     network_mode: host
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml

@@ -1,5 +1,4 @@
 global:
-  scrape_failure_log_file: /dev/stdout
 
 # Scrape configurations
 scrape_configs:
