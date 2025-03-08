@@ -1,11 +1,15 @@
 services:
   prometheus:
     #image: prom/prometheus:v3.2.1
-    image: prom/prometheus:v2.40.0
+    image: prom/prometheus:v2.20.0
     network_mode: host
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
+      - type: tmpfs
+        target: /prometheus
+        tmpfs:
+          size: 512M
+          mode: 1777
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -14,7 +18,4 @@ services:
       - '--web.enable-lifecycle'
       - '--web.listen-address=0.0.0.0:9091'
       - '--log.level=debug'
-      - '--enable-feature=created-timestamp-zero-ingestion'
     restart: unless-stopped
-volumes:
-  prometheus_data:
