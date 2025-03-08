@@ -5,11 +5,6 @@ services:
     network_mode: host
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - type: tmpfs
-        target: /prometheus
-        tmpfs:
-          size: 512M
-          mode: 1777
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
