@@ -1,0 +1,4 @@
+text/plain;version=0.0.4
+text/plain;version=1.0.0
+application/openmetrics-text;version=0.0.1
+application/openmetrics-text;version=1.0.0

@@ -1,0 +1,928 @@
+# TYPE pulsar_version_info gauge
+pulsar_version_info{cluster="pulsar",version="4.0.3",commit="e5aa85f0afb65ca002881efd6f6f52f63b17db15"} 1.0
+# TYPE jvm_gc_collection_seconds summary
+jvm_gc_collection_seconds_count{cluster="pulsar",gc="G1 Young Generation"} 13.0
+jvm_gc_collection_seconds_sum{cluster="pulsar",gc="G1 Young Generation"} 0.151
+jvm_gc_collection_seconds_count{cluster="pulsar",gc="G1 Concurrent GC"} 8.0
+jvm_gc_collection_seconds_sum{cluster="pulsar",gc="G1 Concurrent GC"} 0.016
+jvm_gc_collection_seconds_count{cluster="pulsar",gc="G1 Old Generation"} 0.0
+jvm_gc_collection_seconds_sum{cluster="pulsar",gc="G1 Old Generation"} 0.0
+# TYPE pulsar_ml_cache_pendingreads_matched_overlapping_miss_both counter
+pulsar_ml_cache_pendingreads_matched_overlapping_miss_both_total{cluster="pulsar"} 0.0
+pulsar_ml_cache_pendingreads_matched_overlapping_miss_both_created{cluster="pulsar"} 1.741424422239E9
+# TYPE pulsar_ml_cache_pendingreads_entries_notread counter
+pulsar_ml_cache_pendingreads_entries_notread_total{cluster="pulsar"} 0.0
+pulsar_ml_cache_pendingreads_entries_notread_created{cluster="pulsar"} 1.741424422239E9
+# TYPE pulsar_metadata_store_ops_latency_ms histogram
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="1.0"} 6.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="3.0"} 26.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="5.0"} 47.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="10.0"} 57.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="20.0"} 62.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="50.0"} 62.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="100.0"} 62.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="200.0"} 64.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="500.0"} 64.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="1000.0"} 64.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="2000.0"} 64.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="5000.0"} 64.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="success",le="+Inf"} 64.0
+pulsar_metadata_store_ops_latency_ms_count{cluster="pulsar",name="metadata-store",type="get",status="success"} 64.0
+pulsar_metadata_store_ops_latency_ms_sum{cluster="pulsar",name="metadata-store",type="get",status="success"} 596.0
+pulsar_metadata_store_ops_latency_ms_created{cluster="pulsar",name="metadata-store",type="get",status="success"} 1.741424147172E9
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="1.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="3.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="5.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="10.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="20.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="50.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="100.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="200.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="500.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="1000.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="2000.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="5000.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="get",status="fail",le="+Inf"} 0.0
+pulsar_metadata_store_ops_latency_ms_count{cluster="pulsar",name="metadata-store",type="get",status="fail"} 0.0
+pulsar_metadata_store_ops_latency_ms_sum{cluster="pulsar",name="metadata-store",type="get",status="fail"} 0.0
+pulsar_metadata_store_ops_latency_ms_created{cluster="pulsar",name="metadata-store",type="get",status="fail"} 1.741424147172E9
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="1.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="3.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="5.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="10.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="20.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="50.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="100.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="200.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="500.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="1000.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="2000.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="5000.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="fail",le="+Inf"} 0.0
+pulsar_metadata_store_ops_latency_ms_count{cluster="pulsar",name="metadata-store",type="del",status="fail"} 0.0
+pulsar_metadata_store_ops_latency_ms_sum{cluster="pulsar",name="metadata-store",type="del",status="fail"} 0.0
+pulsar_metadata_store_ops_latency_ms_created{cluster="pulsar",name="metadata-store",type="del",status="fail"} 1.741424147172E9
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="1.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="3.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="5.0"} 2.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="10.0"} 8.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="20.0"} 12.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="50.0"} 15.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="100.0"} 15.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="200.0"} 15.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="500.0"} 15.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="1000.0"} 15.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="2000.0"} 15.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="5000.0"} 15.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="success",le="+Inf"} 15.0
+pulsar_metadata_store_ops_latency_ms_count{cluster="pulsar",name="metadata-store",type="put",status="success"} 15.0
+pulsar_metadata_store_ops_latency_ms_sum{cluster="pulsar",name="metadata-store",type="put",status="success"} 210.0
+pulsar_metadata_store_ops_latency_ms_created{cluster="pulsar",name="metadata-store",type="put",status="success"} 1.741424147172E9
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="1.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="3.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="5.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="10.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="20.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="50.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="100.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="200.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="500.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="1000.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="2000.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="5000.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="del",status="success",le="+Inf"} 0.0
+pulsar_metadata_store_ops_latency_ms_count{cluster="pulsar",name="metadata-store",type="del",status="success"} 0.0
+pulsar_metadata_store_ops_latency_ms_sum{cluster="pulsar",name="metadata-store",type="del",status="success"} 0.0
+pulsar_metadata_store_ops_latency_ms_created{cluster="pulsar",name="metadata-store",type="del",status="success"} 1.741424147172E9
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="1.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="3.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="5.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="10.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="20.0"} 0.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="50.0"} 1.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="100.0"} 1.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="200.0"} 1.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="500.0"} 1.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="1000.0"} 1.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="2000.0"} 1.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="5000.0"} 1.0
+pulsar_metadata_store_ops_latency_ms_bucket{cluster="pulsar",name="metadata-store",type="put",status="fail",le="+Inf"} 1.0
+pulsar_metadata_store_ops_latency_ms_count{cluster="pulsar",name="metadata-store",type="put",status="fail"} 1.0
+pulsar_metadata_store_ops_latency_ms_sum{cluster="pulsar",name="metadata-store",type="put",status="fail"} 41.0
+pulsar_metadata_store_ops_latency_ms_created{cluster="pulsar",name="metadata-store",type="put",status="fail"} 1.741424147172E9
+# TYPE brk_ledgeroffloader_read_bytes counter
+# TYPE pulsar_resource_group_tenant_unregisters counter
+# TYPE pulsar_broker_publish_latency summary
+pulsar_broker_publish_latency{cluster="pulsar",quantile="0.0"} NaN
+pulsar_broker_publish_latency{cluster="pulsar",quantile="0.5"} NaN
+pulsar_broker_publish_latency{cluster="pulsar",quantile="0.95"} NaN
+pulsar_broker_publish_latency{cluster="pulsar",quantile="0.99"} NaN
+pulsar_broker_publish_latency{cluster="pulsar",quantile="0.999"} NaN
+pulsar_broker_publish_latency{cluster="pulsar",quantile="0.9999"} NaN
+pulsar_broker_publish_latency{cluster="pulsar",quantile="1.0"} NaN
+pulsar_broker_publish_latency_count{cluster="pulsar"} 0.0
+pulsar_broker_publish_latency_sum{cluster="pulsar"} 0.0
+# TYPE pulsar_broker_load_manager_bundle_assigment summary
+pulsar_broker_load_manager_bundle_assigment{cluster="pulsar",quantile="0.5"} NaN
+pulsar_broker_load_manager_bundle_assigment{cluster="pulsar",quantile="0.99"} NaN
+pulsar_broker_load_manager_bundle_assigment{cluster="pulsar",quantile="0.999"} NaN
+pulsar_broker_load_manager_bundle_assigment{cluster="pulsar",quantile="1.0"} NaN
+pulsar_broker_load_manager_bundle_assigment_count{cluster="pulsar"} 0.0
+pulsar_broker_load_manager_bundle_assigment_sum{cluster="pulsar"} 0.0
+# TYPE brk_ledgeroffloader_delete_offload_ops counter
+# TYPE pulsar_resource_group_aggregate_usage_secs summary
+pulsar_resource_group_aggregate_usage_secs{cluster="pulsar",quantile="0.5"} 2.17131E-4
+pulsar_resource_group_aggregate_usage_secs{cluster="pulsar",quantile="0.9"} 4.25534E-4
+pulsar_resource_group_aggregate_usage_secs_count{cluster="pulsar"} 28.0
+pulsar_resource_group_aggregate_usage_secs_sum{cluster="pulsar"} 0.009452018999999997
+pulsar_resource_group_aggregate_usage_secs_created{cluster="pulsar"} 1.741424151541E9
+# TYPE pulsar_batch_metadata_store_batch_execute_time_ms histogram
+pulsar_batch_metadata_store_batch_execute_time_ms_bucket{cluster="pulsar",name="metadata-store",le="1.0"} 71.0
+pulsar_batch_metadata_store_batch_execute_time_ms_bucket{cluster="pulsar",name="metadata-store",le="5.0"} 72.0
+pulsar_batch_metadata_store_batch_execute_time_ms_bucket{cluster="pulsar",name="metadata-store",le="10.0"} 72.0
+pulsar_batch_metadata_store_batch_execute_time_ms_bucket{cluster="pulsar",name="metadata-store",le="20.0"} 72.0
+pulsar_batch_metadata_store_batch_execute_time_ms_bucket{cluster="pulsar",name="metadata-store",le="50.0"} 72.0
+pulsar_batch_metadata_store_batch_execute_time_ms_bucket{cluster="pulsar",name="metadata-store",le="100.0"} 72.0
+pulsar_batch_metadata_store_batch_execute_time_ms_bucket{cluster="pulsar",name="metadata-store",le="200.0"} 72.0
+pulsar_batch_metadata_store_batch_execute_time_ms_bucket{cluster="pulsar",name="metadata-store",le="500.0"} 72.0
+pulsar_batch_metadata_store_batch_execute_time_ms_bucket{cluster="pulsar",name="metadata-store",le="1000.0"} 72.0
+pulsar_batch_metadata_store_batch_execute_time_ms_bucket{cluster="pulsar",name="metadata-store",le="+Inf"} 72.0
+pulsar_batch_metadata_store_batch_execute_time_ms_count{cluster="pulsar",name="metadata-store"} 72.0
+pulsar_batch_metadata_store_batch_execute_time_ms_sum{cluster="pulsar",name="metadata-store"} 5.0
+pulsar_batch_metadata_store_batch_execute_time_ms_created{cluster="pulsar",name="metadata-store"} 1.741424147178E9
+# TYPE pulsar_ml_cache_pendingreads_matched counter
+pulsar_ml_cache_pendingreads_matched_total{cluster="pulsar"} 0.0
+pulsar_ml_cache_pendingreads_matched_created{cluster="pulsar"} 1.741424422239E9
+# TYPE process_cpu_seconds counter
+process_cpu_seconds_total{cluster="pulsar"} 47.97
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds{cluster="pulsar"} 1.741424145427E9
+# TYPE process_open_fds gauge
+process_open_fds{cluster="pulsar"} 485.0
+# TYPE process_max_fds gauge
+process_max_fds{cluster="pulsar"} 65536.0
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes{cluster="pulsar"} 2.189467648E9
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes{cluster="pulsar"} 3.84495616E8
+# TYPE jvm_memory_objects_pending_finalization gauge
+jvm_memory_objects_pending_finalization{cluster="pulsar"} 0.0
+# TYPE jvm_memory_bytes_used gauge
+jvm_memory_bytes_used{cluster="pulsar",area="heap"} 1.04563568E8
+jvm_memory_bytes_used{cluster="pulsar",area="nonheap"} 1.20960528E8
+# TYPE jvm_memory_bytes_committed gauge
+jvm_memory_bytes_committed{cluster="pulsar",area="heap"} 1.34217728E8
+jvm_memory_bytes_committed{cluster="pulsar",area="nonheap"} 1.28253952E8
+# TYPE jvm_memory_bytes_max gauge
+jvm_memory_bytes_max{cluster="pulsar",area="heap"} 2.68435456E8
+jvm_memory_bytes_max{cluster="pulsar",area="nonheap"} -1.0
+# TYPE jvm_memory_bytes_init gauge
+jvm_memory_bytes_init{cluster="pulsar",area="heap"} 1.34217728E8
+jvm_memory_bytes_init{cluster="pulsar",area="nonheap"} 7667712.0
+# TYPE jvm_memory_pool_bytes_used gauge
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 2710400.0
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="Metaspace"} 8.0746848E7
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 2.1416064E7
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="Compressed Class Space"} 9063344.0
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="G1 Eden Space"} 3.670016E7
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="G1 Old Gen"} 6.4586608E7
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="G1 Survivor Space"} 3276800.0
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 7023872.0
+# TYPE jvm_memory_pool_bytes_committed gauge
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 4784128.0
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="Metaspace"} 8.3951616E7
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 2.2085632E7
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="Compressed Class Space"} 1.0354688E7
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="G1 Eden Space"} 5.767168E7
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="G1 Old Gen"} 7.2351744E7
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="G1 Survivor Space"} 4194304.0
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 7077888.0
+# TYPE jvm_memory_pool_bytes_max gauge
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 7606272.0
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="Metaspace"} -1.0
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 1.22023936E8
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="Compressed Class Space"} 1.073741824E9
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="G1 Eden Space"} -1.0
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="G1 Old Gen"} 2.68435456E8
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="G1 Survivor Space"} -1.0
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 1.22028032E8
+# TYPE jvm_memory_pool_bytes_init gauge
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 2555904.0
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="Metaspace"} 0.0
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 2555904.0
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="Compressed Class Space"} 0.0
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="G1 Eden Space"} 6.7108864E7
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="G1 Old Gen"} 6.7108864E7
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="G1 Survivor Space"} 0.0
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 2555904.0
+# TYPE jvm_memory_pool_collection_used_bytes gauge
+jvm_memory_pool_collection_used_bytes{cluster="pulsar",pool="G1 Eden Space"} 0.0
+jvm_memory_pool_collection_used_bytes{cluster="pulsar",pool="G1 Old Gen"} 6.4586608E7
+jvm_memory_pool_collection_used_bytes{cluster="pulsar",pool="G1 Survivor Space"} 3276800.0
+# TYPE jvm_memory_pool_collection_committed_bytes gauge
+jvm_memory_pool_collection_committed_bytes{cluster="pulsar",pool="G1 Eden Space"} 5.767168E7
+jvm_memory_pool_collection_committed_bytes{cluster="pulsar",pool="G1 Old Gen"} 7.2351744E7
+jvm_memory_pool_collection_committed_bytes{cluster="pulsar",pool="G1 Survivor Space"} 4194304.0
+# TYPE jvm_memory_pool_collection_max_bytes gauge
+jvm_memory_pool_collection_max_bytes{cluster="pulsar",pool="G1 Eden Space"} -1.0
+jvm_memory_pool_collection_max_bytes{cluster="pulsar",pool="G1 Old Gen"} 2.68435456E8
+jvm_memory_pool_collection_max_bytes{cluster="pulsar",pool="G1 Survivor Space"} -1.0
+# TYPE jvm_memory_pool_collection_init_bytes gauge
+jvm_memory_pool_collection_init_bytes{cluster="pulsar",pool="G1 Eden Space"} 6.7108864E7
+jvm_memory_pool_collection_init_bytes{cluster="pulsar",pool="G1 Old Gen"} 6.7108864E7
+jvm_memory_pool_collection_init_bytes{cluster="pulsar",pool="G1 Survivor Space"} 0.0
+# TYPE pulsar_metadata_store_put_bytes counter
+pulsar_metadata_store_put_bytes_total{cluster="pulsar",name="metadata-store"} 4400.0
+pulsar_metadata_store_put_bytes_created{cluster="pulsar",name="metadata-store"} 1.741424147172E9
+# TYPE pulsar_ml_reads_inflight_bytes gauge
+pulsar_ml_reads_inflight_bytes{cluster="pulsar"} -1.0
+# TYPE brk_ledgeroffloader_read_offload_error counter
+# TYPE pulsar_schema_compatible counter
+# TYPE pulsar_resource_group_updates counter
+# TYPE brk_ledgeroffloader_write_storage_error counter
+# TYPE pulsar_storage_backlog_quota_check_duration_seconds histogram
+pulsar_storage_backlog_quota_check_duration_seconds_bucket{cluster="pulsar",le="5.0"} 24.0
+pulsar_storage_backlog_quota_check_duration_seconds_bucket{cluster="pulsar",le="10.0"} 24.0
+pulsar_storage_backlog_quota_check_duration_seconds_bucket{cluster="pulsar",le="30.0"} 24.0
+pulsar_storage_backlog_quota_check_duration_seconds_bucket{cluster="pulsar",le="60.0"} 24.0
+pulsar_storage_backlog_quota_check_duration_seconds_bucket{cluster="pulsar",le="300.0"} 24.0
+pulsar_storage_backlog_quota_check_duration_seconds_bucket{cluster="pulsar",le="+Inf"} 24.0
+pulsar_storage_backlog_quota_check_duration_seconds_count{cluster="pulsar"} 24.0
+pulsar_storage_backlog_quota_check_duration_seconds_sum{cluster="pulsar"} 0.0
+pulsar_storage_backlog_quota_check_duration_seconds_created{cluster="pulsar"} 1.741424147832E9
+# TYPE brk_ledgeroffloader_read_offload_index_latency summary
+# TYPE pulsar_broker_lookup summary
+pulsar_broker_lookup{cluster="pulsar",quantile="0.5"} NaN
+pulsar_broker_lookup{cluster="pulsar",quantile="0.99"} NaN
+pulsar_broker_lookup{cluster="pulsar",quantile="0.999"} NaN
+pulsar_broker_lookup{cluster="pulsar",quantile="1.0"} NaN
+pulsar_broker_lookup_count{cluster="pulsar"} 2.0
+pulsar_broker_lookup_sum{cluster="pulsar"} 174.0
+# TYPE brk_ledgeroffloader_offload_rate gauge
+# TYPE pulsar_schema_del_ops_failed counter
+# TYPE pulsar_batch_metadata_store_queue_wait_time_ms histogram
+pulsar_batch_metadata_store_queue_wait_time_ms_bucket{cluster="pulsar",name="metadata-store",le="1.0"} 34.0
+pulsar_batch_metadata_store_queue_wait_time_ms_bucket{cluster="pulsar",name="metadata-store",le="5.0"} 98.0
+pulsar_batch_metadata_store_queue_wait_time_ms_bucket{cluster="pulsar",name="metadata-store",le="10.0"} 101.0
+pulsar_batch_metadata_store_queue_wait_time_ms_bucket{cluster="pulsar",name="metadata-store",le="20.0"} 103.0
+pulsar_batch_metadata_store_queue_wait_time_ms_bucket{cluster="pulsar",name="metadata-store",le="50.0"} 103.0
+pulsar_batch_metadata_store_queue_wait_time_ms_bucket{cluster="pulsar",name="metadata-store",le="100.0"} 103.0
+pulsar_batch_metadata_store_queue_wait_time_ms_bucket{cluster="pulsar",name="metadata-store",le="200.0"} 105.0
+pulsar_batch_metadata_store_queue_wait_time_ms_bucket{cluster="pulsar",name="metadata-store",le="500.0"} 105.0
+pulsar_batch_metadata_store_queue_wait_time_ms_bucket{cluster="pulsar",name="metadata-store",le="1000.0"} 105.0
+pulsar_batch_metadata_store_queue_wait_time_ms_bucket{cluster="pulsar",name="metadata-store",le="+Inf"} 105.0
+pulsar_batch_metadata_store_queue_wait_time_ms_count{cluster="pulsar",name="metadata-store"} 105.0
+pulsar_batch_metadata_store_queue_wait_time_ms_sum{cluster="pulsar",name="metadata-store"} 606.0
+pulsar_batch_metadata_store_queue_wait_time_ms_created{cluster="pulsar",name="metadata-store"} 1.741424147178E9
+# TYPE brk_ledgeroffloader_read_offload_data_latency summary
+# TYPE pulsar_schema_put_ops_latency summary
+# TYPE pulsar_resource_group_namespace_unregisters counter
+# TYPE pulsar_resource_group_bytes_used counter
+# TYPE topic_load_failed counter
+topic_load_failed_total{cluster="pulsar"} 0.0
+topic_load_failed_created{cluster="pulsar"} 1.741424147846E9
+# TYPE pulsar_schema_incompatible counter
+# TYPE pulsar_web_executor_active_threads gauge
+pulsar_web_executor_active_threads{cluster="pulsar"} 4.0
+# TYPE pulsar_broker_throttled_connections gauge
+pulsar_broker_throttled_connections{cluster="pulsar"} 0.0
+# TYPE brk_ledgeroffloader_offload_error counter
+# TYPE pulsar_resource_group_tenant_registers counter
+# TYPE pulsar_web_executor_current_threads gauge
+pulsar_web_executor_current_threads{cluster="pulsar"} 8.0
+# TYPE pulsar_web_executor_min_threads gauge
+pulsar_web_executor_min_threads{cluster="pulsar"} 8.0
+# TYPE brk_ledgeroffloader_read_ledger_latency summary
+# TYPE pulsar_schema_get_ops_failed counter
+# TYPE jvm_info gauge
+jvm_info{cluster="pulsar",runtime="OpenJDK Runtime Environment",vendor="Amazon.com Inc.",version="21.0.6+7-LTS"} 1.0
+# TYPE pulsar_ml_cache_pendingreads_matched_included counter
+pulsar_ml_cache_pendingreads_matched_included_total{cluster="pulsar"} 0.0
+pulsar_ml_cache_pendingreads_matched_included_created{cluster="pulsar"} 1.741424422239E9
+# TYPE jvm_memory_pool_allocated_bytes counter
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 2.2569344E7
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 1.741424149164E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="G1 Old Gen"} 6.4586608E7
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="G1 Old Gen"} 1.741424149173E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="G1 Eden Space"} 5.48405248E8
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="G1 Eden Space"} 1.741424149173E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 6995200.0
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 1.741424149173E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="G1 Survivor Space"} 1.8002736E7
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="G1 Survivor Space"} 1.741424149173E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="Compressed Class Space"} 9316856.0
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="Compressed Class Space"} 1.741424149173E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="Metaspace"} 8.1666168E7
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="Metaspace"} 1.741424149173E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 4016896.0
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 1.741424149173E9
+# TYPE pulsar_resource_group_calculate_quota_secs summary
+pulsar_resource_group_calculate_quota_secs{cluster="pulsar",quantile="0.5"} 5.492E-6
+pulsar_resource_group_calculate_quota_secs{cluster="pulsar",quantile="0.9"} 1.3786E-5
+pulsar_resource_group_calculate_quota_secs_count{cluster="pulsar"} 28.0
+pulsar_resource_group_calculate_quota_secs_sum{cluster="pulsar"} 0.0035042939999999994
+pulsar_resource_group_calculate_quota_secs_created{cluster="pulsar"} 1.741424151541E9
+# TYPE jvm_classes_currently_loaded gauge
+jvm_classes_currently_loaded{cluster="pulsar"} 13165.0
+# TYPE jvm_classes_loaded counter
+jvm_classes_loaded_total{cluster="pulsar"} 13686.0
+# TYPE jvm_classes_unloaded counter
+jvm_classes_unloaded_total{cluster="pulsar"} 521.0
+# TYPE jvm_memory_direct_bytes_max gauge
+jvm_memory_direct_bytes_max{cluster="pulsar"} 2.68435456E8
+# TYPE pulsar_resource_group_namespace_registers counter
+# TYPE pulsar_schema_put_ops_failed counter
+# TYPE jvm_threads_current gauge
+jvm_threads_current{cluster="pulsar"} 168.0
+# TYPE jvm_threads_daemon gauge
+jvm_threads_daemon{cluster="pulsar"} 13.0
+# TYPE jvm_threads_peak gauge
+jvm_threads_peak{cluster="pulsar"} 170.0
+# TYPE jvm_threads_started counter
+jvm_threads_started_total{cluster="pulsar"} 178.0
+# TYPE jvm_threads_deadlocked gauge
+jvm_threads_deadlocked{cluster="pulsar"} 0.0
+# TYPE jvm_threads_deadlocked_monitor gauge
+jvm_threads_deadlocked_monitor{cluster="pulsar"} 0.0
+# TYPE jvm_threads_state gauge
+jvm_threads_state{cluster="pulsar",state="NEW"} 0.0
+jvm_threads_state{cluster="pulsar",state="TERMINATED"} 0.0
+jvm_threads_state{cluster="pulsar",state="RUNNABLE"} 42.0
+jvm_threads_state{cluster="pulsar",state="BLOCKED"} 0.0
+jvm_threads_state{cluster="pulsar",state="WAITING"} 102.0
+jvm_threads_state{cluster="pulsar",state="TIMED_WAITING"} 24.0
+jvm_threads_state{cluster="pulsar",state="UNKNOWN"} 0.0
+# TYPE pulsar_schema_del_ops_latency summary
+# TYPE pulsar_resource_group_calculated_bytes_quota counter
+# TYPE pulsar_batch_metadata_store_batch_size histogram
+pulsar_batch_metadata_store_batch_size_bucket{cluster="pulsar",name="metadata-store",le="1.0"} 52.0
+pulsar_batch_metadata_store_batch_size_bucket{cluster="pulsar",name="metadata-store",le="5.0"} 72.0
+pulsar_batch_metadata_store_batch_size_bucket{cluster="pulsar",name="metadata-store",le="10.0"} 72.0
+pulsar_batch_metadata_store_batch_size_bucket{cluster="pulsar",name="metadata-store",le="20.0"} 72.0
+pulsar_batch_metadata_store_batch_size_bucket{cluster="pulsar",name="metadata-store",le="50.0"} 72.0
+pulsar_batch_metadata_store_batch_size_bucket{cluster="pulsar",name="metadata-store",le="100.0"} 72.0
+pulsar_batch_metadata_store_batch_size_bucket{cluster="pulsar",name="metadata-store",le="200.0"} 72.0
+pulsar_batch_metadata_store_batch_size_bucket{cluster="pulsar",name="metadata-store",le="500.0"} 72.0
+pulsar_batch_metadata_store_batch_size_bucket{cluster="pulsar",name="metadata-store",le="1000.0"} 72.0
+pulsar_batch_metadata_store_batch_size_bucket{cluster="pulsar",name="metadata-store",le="+Inf"} 72.0
+pulsar_batch_metadata_store_batch_size_count{cluster="pulsar",name="metadata-store"} 72.0
+pulsar_batch_metadata_store_batch_size_sum{cluster="pulsar",name="metadata-store"} 105.0
+pulsar_batch_metadata_store_batch_size_created{cluster="pulsar",name="metadata-store"} 1.741424147178E9
+# TYPE pulsar_broker_lookup_redirects counter
+pulsar_broker_lookup_redirects_total{cluster="pulsar"} 0.0
+pulsar_broker_lookup_redirects_created{cluster="pulsar"} 1.741424147983E9
+# TYPE pulsar_broker_lookup_answers counter
+pulsar_broker_lookup_answers_total{cluster="pulsar"} 2.0
+pulsar_broker_lookup_answers_created{cluster="pulsar"} 1.741424147983E9
+# TYPE pulsar_batch_metadata_store_executor_queue_size gauge
+pulsar_batch_metadata_store_executor_queue_size{cluster="pulsar",name="metadata-store"} 1.0
+# TYPE pulsar_broker_lookup_pending_requests gauge
+pulsar_broker_lookup_pending_requests{cluster="pulsar"} 0.0
+# TYPE pulsar_schema_get_ops_latency summary
+# TYPE pulsar_topic_load_times summary
+pulsar_topic_load_times{cluster="pulsar",quantile="0.5"} NaN
+pulsar_topic_load_times{cluster="pulsar",quantile="0.75"} NaN
+pulsar_topic_load_times{cluster="pulsar",quantile="0.95"} NaN
+pulsar_topic_load_times{cluster="pulsar",quantile="0.99"} NaN
+pulsar_topic_load_times{cluster="pulsar",quantile="0.999"} NaN
+pulsar_topic_load_times{cluster="pulsar",quantile="0.9999"} NaN
+pulsar_topic_load_times_count{cluster="pulsar"} 0.0
+pulsar_topic_load_times_sum{cluster="pulsar"} 0.0
+pulsar_topic_load_times_created{cluster="pulsar"} 1.741425859597E9
+# TYPE pulsar_ml_cache_pendingreads_missed counter
+pulsar_ml_cache_pendingreads_missed_total{cluster="pulsar"} 0.0
+pulsar_ml_cache_pendingreads_missed_created{cluster="pulsar"} 1.741424422239E9
+# TYPE pulsar_ml_reads_available_inflight_bytes gauge
+pulsar_ml_reads_available_inflight_bytes{cluster="pulsar"} -1.0
+# TYPE pulsar_resource_group_messages_used counter
+# TYPE pulsar_broker_pending_bytes_to_dispatch gauge
+pulsar_broker_pending_bytes_to_dispatch{cluster="pulsar"} 0.0
+# TYPE jvm_buffer_pool_used_bytes gauge
+jvm_buffer_pool_used_bytes{cluster="pulsar",pool="mapped"} 0.0
+jvm_buffer_pool_used_bytes{cluster="pulsar",pool="direct"} 1816456.0
+jvm_buffer_pool_used_bytes{cluster="pulsar",pool="mapped - 'non-volatile memory'"} 0.0
+# TYPE jvm_buffer_pool_capacity_bytes gauge
+jvm_buffer_pool_capacity_bytes{cluster="pulsar",pool="mapped"} 0.0
+jvm_buffer_pool_capacity_bytes{cluster="pulsar",pool="direct"} 1816455.0
+jvm_buffer_pool_capacity_bytes{cluster="pulsar",pool="mapped - 'non-volatile memory'"} 0.0
+# TYPE jvm_buffer_pool_used_buffers gauge
+jvm_buffer_pool_used_buffers{cluster="pulsar",pool="mapped"} 0.0
+jvm_buffer_pool_used_buffers{cluster="pulsar",pool="direct"} 65.0
+jvm_buffer_pool_used_buffers{cluster="pulsar",pool="mapped - 'non-volatile memory'"} 0.0
+# TYPE pulsar_web_executor_idle_threads gauge
+pulsar_web_executor_idle_threads{cluster="pulsar"} 4.0
+# TYPE brk_ledgeroffloader_read_offload_rate gauge
+# TYPE pulsar_web_executor_max_threads gauge
+pulsar_web_executor_max_threads{cluster="pulsar"} 8.0
+# TYPE pulsar_ml_cache_pendingreads_matched_overlapping_miss_left counter
+pulsar_ml_cache_pendingreads_matched_overlapping_miss_left_total{cluster="pulsar"} 0.0
+pulsar_ml_cache_pendingreads_matched_overlapping_miss_left_created{cluster="pulsar"} 1.741424422239E9
+# TYPE log4j2_appender counter
+log4j2_appender_total{cluster="pulsar",level="debug"} 0.0
+log4j2_appender_created{cluster="pulsar",level="debug"} 1.741424146314E9
+log4j2_appender_total{cluster="pulsar",level="warn"} 13.0
+log4j2_appender_created{cluster="pulsar",level="warn"} 1.741424146314E9
+log4j2_appender_total{cluster="pulsar",level="trace"} 0.0
+log4j2_appender_created{cluster="pulsar",level="trace"} 1.741424146314E9
+log4j2_appender_total{cluster="pulsar",level="error"} 0.0
+log4j2_appender_created{cluster="pulsar",level="error"} 1.741424146314E9
+log4j2_appender_total{cluster="pulsar",level="fatal"} 0.0
+log4j2_appender_created{cluster="pulsar",level="fatal"} 1.741424146314E9
+log4j2_appender_total{cluster="pulsar",level="info"} 955.0
+log4j2_appender_created{cluster="pulsar",level="info"} 1.741424146314E9
+# TYPE pulsar_broker_lookup_failures counter
+pulsar_broker_lookup_failures_total{cluster="pulsar"} 0.0
+pulsar_broker_lookup_failures_created{cluster="pulsar"} 1.741424147983E9
+# TYPE jvm_memory_direct_bytes_used gauge
+jvm_memory_direct_bytes_used{cluster="pulsar"} 4.194304E7
+# TYPE pulsar_ml_cache_pendingreads_matched_overlapping_miss_right counter
+pulsar_ml_cache_pendingreads_matched_overlapping_miss_right_total{cluster="pulsar"} 0.0
+pulsar_ml_cache_pendingreads_matched_overlapping_miss_right_created{cluster="pulsar"} 1.741424422239E9
+# TYPE pulsar_broker_topic_load_pending_requests gauge
+pulsar_broker_topic_load_pending_requests{cluster="pulsar"} 0.0
+# TYPE pulsar_resource_group_calculated_messages_quota counter
+# TYPE caffeine_cache_hit counter
+caffeine_cache_hit_total{cluster="pulsar",cache="owned-bundles"} 5.0
+caffeine_cache_hit_total{cluster="pulsar",cache="bundles"} 6.0
+# TYPE caffeine_cache_miss counter
+caffeine_cache_miss_total{cluster="pulsar",cache="owned-bundles"} 4.0
+caffeine_cache_miss_total{cluster="pulsar",cache="bundles"} 3.0
+# TYPE caffeine_cache_requests counter
+caffeine_cache_requests_total{cluster="pulsar",cache="owned-bundles"} 9.0
+caffeine_cache_requests_total{cluster="pulsar",cache="bundles"} 9.0
+# TYPE caffeine_cache_eviction counter
+caffeine_cache_eviction_total{cluster="pulsar",cache="owned-bundles"} 0.0
+caffeine_cache_eviction_total{cluster="pulsar",cache="bundles"} 0.0
+# TYPE caffeine_cache_eviction_weight gauge
+caffeine_cache_eviction_weight{cluster="pulsar",cache="owned-bundles"} 0.0
+caffeine_cache_eviction_weight{cluster="pulsar",cache="bundles"} 0.0
+# TYPE caffeine_cache_load_failure counter
+caffeine_cache_load_failure_total{cluster="pulsar",cache="owned-bundles"} 0.0
+caffeine_cache_load_failure_total{cluster="pulsar",cache="bundles"} 0.0
+# TYPE caffeine_cache_loads counter
+caffeine_cache_loads_total{cluster="pulsar",cache="owned-bundles"} 3.0
+caffeine_cache_loads_total{cluster="pulsar",cache="bundles"} 3.0
+# TYPE caffeine_cache_estimated_size gauge
+caffeine_cache_estimated_size{cluster="pulsar",cache="owned-bundles"} 3.0
+caffeine_cache_estimated_size{cluster="pulsar",cache="bundles"} 3.0
+# TYPE caffeine_cache_load_duration_seconds summary
+caffeine_cache_load_duration_seconds_count{cluster="pulsar",cache="owned-bundles"} 3.0
+caffeine_cache_load_duration_seconds_sum{cluster="pulsar",cache="owned-bundles"} 0.049182271
+caffeine_cache_load_duration_seconds_count{cluster="pulsar",cache="bundles"} 3.0
+caffeine_cache_load_duration_seconds_sum{cluster="pulsar",cache="bundles"} 0.035283787
+# TYPE jetty_requests counter
+jetty_requests_total{cluster="pulsar"} 699.0
+# TYPE jetty_requests_active gauge
+jetty_requests_active{cluster="pulsar"} 1.0
+# TYPE jetty_requests_active_max gauge
+jetty_requests_active_max{cluster="pulsar"} 1.0
+# TYPE jetty_request_time_max_seconds gauge
+jetty_request_time_max_seconds{cluster="pulsar"} 0.061
+# TYPE jetty_request_time_seconds counter
+jetty_request_time_seconds_total{cluster="pulsar"} 1.575
+# TYPE jetty_dispatched counter
+jetty_dispatched_total{cluster="pulsar"} 699.0
+# TYPE jetty_dispatched_active gauge
+jetty_dispatched_active{cluster="pulsar"} 0.0
+# TYPE jetty_dispatched_active_max gauge
+jetty_dispatched_active_max{cluster="pulsar"} 1.0
+# TYPE jetty_dispatched_time_max gauge
+jetty_dispatched_time_max{cluster="pulsar"} 44.0
+# TYPE jetty_dispatched_time_seconds counter
+jetty_dispatched_time_seconds_total{cluster="pulsar"} 1.205
+# TYPE jetty_async_requests counter
+jetty_async_requests_total{cluster="pulsar"} 358.0
+# TYPE jetty_async_requests_waiting gauge
+jetty_async_requests_waiting{cluster="pulsar"} 1.0
+# TYPE jetty_async_requests_waiting_max gauge
+jetty_async_requests_waiting_max{cluster="pulsar"} 1.0
+# TYPE jetty_async_dispatches counter
+jetty_async_dispatches_total{cluster="pulsar"} 0.0
+# TYPE jetty_expires counter
+jetty_expires_total{cluster="pulsar"} 0.0
+# TYPE jetty_responses counter
+jetty_responses_total{cluster="pulsar",code="1xx"} 0.0
+jetty_responses_total{cluster="pulsar",code="2xx"} 695.0
+jetty_responses_total{cluster="pulsar",code="3xx"} 3.0
+jetty_responses_total{cluster="pulsar",code="4xx"} 0.0
+jetty_responses_total{cluster="pulsar",code="5xx"} 0.0
+# TYPE jetty_stats_seconds gauge
+jetty_stats_seconds{cluster="pulsar"} 1712.008
+# TYPE jetty_responses_bytes counter
+jetty_responses_bytes_total{cluster="pulsar"} 4272138.0
+# TYPE pulsar_ml_cache_pendingreads_entries_read counter
+pulsar_ml_cache_pendingreads_entries_read_total{cluster="pulsar"} 0.0
+pulsar_ml_cache_pendingreads_entries_read_created{cluster="pulsar"} 1.741424422239E9
+# TYPE pulsar_storage_logical_size gauge
+pulsar_storage_logical_size{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_broker_storage_read_rate gauge
+pulsar_broker_storage_read_rate{cluster="pulsar"} 0.0
+# TYPE pulsar_subscription_filter_rejected_msg_count gauge
+pulsar_subscription_filter_rejected_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_filter_rejected_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_filter_rejected_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_entry_size_le_1_mb gauge
+pulsar_entry_size_le_1_mb{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_broker_rate_in gauge
+pulsar_broker_rate_in{cluster="pulsar"} 0.0
+# TYPE pulsar_broker_throughput_out gauge
+pulsar_broker_throughput_out{cluster="pulsar"} 0.0
+# TYPE pulsar_producers_count gauge
+pulsar_producers_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_ledger_write_latency_sum gauge
+pulsar_storage_ledger_write_latency_sum{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_broker_storage_backlog_quota_exceeded_evictions_total gauge
+pulsar_broker_storage_backlog_quota_exceeded_evictions_total{cluster="pulsar",quota_type="size"} 0
+pulsar_broker_storage_backlog_quota_exceeded_evictions_total{cluster="pulsar",quota_type="time"} 0
+# TYPE pulsar_broker_storage_logical_size gauge
+pulsar_broker_storage_logical_size{cluster="pulsar"} 0
+# TYPE pulsar_broker_producers_count gauge
+pulsar_broker_producers_count{cluster="pulsar"} 0
+# TYPE pulsar_subscription_filter_processed_msg_count gauge
+pulsar_subscription_filter_processed_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_filter_processed_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_filter_processed_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_backlog_quota_limit_time gauge
+pulsar_storage_backlog_quota_limit_time{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} -1
+# TYPE pulsar_broker_storage_size gauge
+pulsar_broker_storage_size{cluster="pulsar"} 0
+# TYPE pulsar_storage_ledger_write_latency_le_1000 gauge
+pulsar_storage_ledger_write_latency_le_1000{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_msg_throughput_out gauge
+pulsar_subscription_msg_throughput_out{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0.0
+pulsar_subscription_msg_throughput_out{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0.0
+pulsar_subscription_msg_throughput_out{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0.0
+# TYPE pulsar_entry_size_le_2_kb gauge
+pulsar_entry_size_le_2_kb{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_blocked_on_unacked_messages gauge
+pulsar_subscription_blocked_on_unacked_messages{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_blocked_on_unacked_messages{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_blocked_on_unacked_messages{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_delayed_message_index_size_bytes gauge
+pulsar_delayed_message_index_size_bytes{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_last_acked_timestamp gauge
+pulsar_subscription_last_acked_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_last_acked_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_last_acked_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_write_latency_le_10 gauge
+pulsar_storage_write_latency_le_10{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_throughput_in gauge
+pulsar_throughput_in{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0.0
+# TYPE pulsar_in_bytes_total gauge
+pulsar_in_bytes_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_rate_in gauge
+pulsar_rate_in{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0.0
+# TYPE pulsar_broker_consumers_count gauge
+pulsar_broker_consumers_count{cluster="pulsar"} 2
+# TYPE pulsar_subscription_last_mark_delete_advanced_timestamp gauge
+pulsar_subscription_last_mark_delete_advanced_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_last_mark_delete_advanced_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_last_mark_delete_advanced_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_txn_tb_aborted_total gauge
+pulsar_txn_tb_aborted_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_entry_size_le_100_kb gauge
+pulsar_entry_size_le_100_kb{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_throughput_out gauge
+pulsar_throughput_out{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0.0
+# TYPE pulsar_in_messages_total gauge
+pulsar_in_messages_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_write_latency_count gauge
+pulsar_storage_write_latency_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_back_log_no_delayed gauge
+pulsar_subscription_back_log_no_delayed{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_back_log_no_delayed{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_back_log_no_delayed{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_broker_in_bytes_total gauge
+pulsar_broker_in_bytes_total{cluster="pulsar",system_topic="false"} 0
+pulsar_broker_in_bytes_total{cluster="pulsar",system_topic="true"} 0
+# TYPE pulsar_entry_size_le_1_kb gauge
+pulsar_entry_size_le_1_kb{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_last_consumed_flow_timestamp gauge
+pulsar_subscription_last_consumed_flow_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 1741424422572
+pulsar_subscription_last_consumed_flow_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 1741424422598
+pulsar_subscription_last_consumed_flow_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_write_latency_le_100 gauge
+pulsar_storage_write_latency_le_100{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_ledger_write_latency_le_50 gauge
+pulsar_storage_ledger_write_latency_le_50{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_backlog_age_seconds gauge
+pulsar_storage_backlog_age_seconds{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} -1
+# TYPE pulsar_storage_write_latency_le_20 gauge
+pulsar_storage_write_latency_le_20{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_write_latency_le_0_5 gauge
+pulsar_storage_write_latency_le_0_5{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_msg_ack_rate gauge
+pulsar_subscription_msg_ack_rate{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0.0
+pulsar_subscription_msg_ack_rate{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0.0
+pulsar_subscription_msg_ack_rate{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0.0
+# TYPE pulsar_broker_out_bytes_total gauge
+pulsar_broker_out_bytes_total{cluster="pulsar",system_subscription="false"} 0
+pulsar_broker_out_bytes_total{cluster="pulsar",system_subscription="true"} 0
+# TYPE pulsar_entry_size_le_overflow gauge
+pulsar_entry_size_le_overflow{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_delayed gauge
+pulsar_subscription_delayed{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_delayed{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_delayed{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_ledger_write_latency_le_5 gauge
+pulsar_storage_ledger_write_latency_le_5{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_broker_storage_read_cache_misses_rate gauge
+pulsar_broker_storage_read_cache_misses_rate{cluster="pulsar"} 0.0
+# TYPE pulsar_entry_size_le_4_kb gauge
+pulsar_entry_size_le_4_kb{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_txn_tb_active_total gauge
+pulsar_txn_tb_active_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_unacked_messages gauge
+pulsar_subscription_unacked_messages{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_unacked_messages{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_unacked_messages{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_average_msg_size gauge
+pulsar_average_msg_size{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0.0
+# TYPE pulsar_consumers_count gauge
+pulsar_consumers_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 2
+# TYPE pulsar_out_bytes_total gauge
+pulsar_out_bytes_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_out_bytes_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_out_bytes_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_offloaded_size gauge
+pulsar_storage_offloaded_size{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_total_msg_expired gauge
+pulsar_subscription_total_msg_expired{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_total_msg_expired{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_total_msg_expired{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_write_latency_overflow gauge
+pulsar_storage_write_latency_overflow{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_write_latency_le_200 gauge
+pulsar_storage_write_latency_le_200{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_entry_size_le_16_kb gauge
+pulsar_entry_size_le_16_kb{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_msg_drop_rate gauge
+pulsar_subscription_msg_drop_rate{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0.0
+pulsar_subscription_msg_drop_rate{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0.0
+pulsar_subscription_msg_drop_rate{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0.0
+# TYPE pulsar_storage_backlog_quota_exceeded_evictions_total gauge
+pulsar_storage_backlog_quota_exceeded_evictions_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",quota_type="size"} 0
+pulsar_storage_backlog_quota_exceeded_evictions_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",quota_type="time"} 0
+# TYPE pulsar_subscription_filter_rescheduled_msg_count gauge
+pulsar_subscription_filter_rescheduled_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_filter_rescheduled_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_filter_rescheduled_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_rate_out gauge
+pulsar_rate_out{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0.0
+# TYPE pulsar_subscription_back_log gauge
+pulsar_subscription_back_log{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_back_log{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_back_log{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_ledger_write_latency_le_200 gauge
+pulsar_storage_ledger_write_latency_le_200{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_msg_rate_redeliver gauge
+pulsar_subscription_msg_rate_redeliver{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0.0
+pulsar_subscription_msg_rate_redeliver{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0.0
+pulsar_subscription_msg_rate_redeliver{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0.0
+# TYPE pulsar_storage_ledger_write_latency_le_1 gauge
+pulsar_storage_ledger_write_latency_le_1{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_delayed_message_index_size_bytes gauge
+pulsar_subscription_delayed_message_index_size_bytes{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_delayed_message_index_size_bytes{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_delayed_message_index_size_bytes{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_ledger_write_latency_le_20 gauge
+pulsar_storage_ledger_write_latency_le_20{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_write_latency_le_50 gauge
+pulsar_storage_write_latency_le_50{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_write_latency_le_5 gauge
+pulsar_storage_write_latency_le_5{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_size gauge
+pulsar_storage_size{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_backlog_quota_limit gauge
+pulsar_storage_backlog_quota_limit{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} -1
+# TYPE pulsar_storage_write_latency_le_1 gauge
+pulsar_storage_write_latency_le_1{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_entry_size_le_128 gauge
+pulsar_entry_size_le_128{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_topics_count gauge
+pulsar_topics_count{cluster="pulsar",namespace="public/default"} 1
+# TYPE pulsar_storage_read_rate gauge
+pulsar_storage_read_rate{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0.0
+# TYPE pulsar_subscription_last_expire_timestamp gauge
+pulsar_subscription_last_expire_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_last_expire_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_last_expire_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_read_cache_misses_rate gauge
+pulsar_storage_read_cache_misses_rate{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0.0
+# TYPE pulsar_broker_storage_write_rate gauge
+pulsar_broker_storage_write_rate{cluster="pulsar"} 0.0
+# TYPE pulsar_storage_ledger_write_latency_le_10 gauge
+pulsar_storage_ledger_write_latency_le_10{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_broker_subscriptions_count gauge
+pulsar_broker_subscriptions_count{cluster="pulsar"} 3
+# TYPE pulsar_subscription_in_replay gauge
+pulsar_subscription_in_replay{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_in_replay{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_in_replay{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_ledger_write_latency_overflow gauge
+pulsar_storage_ledger_write_latency_overflow{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_broker_topics_count gauge
+pulsar_broker_topics_count{cluster="pulsar"} 1
+# TYPE pulsar_storage_write_latency_le_1000 gauge
+pulsar_storage_write_latency_le_1000{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_broker_rate_out gauge
+pulsar_broker_rate_out{cluster="pulsar"} 0.0
+# TYPE pulsar_broker_msg_backlog gauge
+pulsar_broker_msg_backlog{cluster="pulsar"} 0
+# TYPE pulsar_storage_write_latency_sum gauge
+pulsar_storage_write_latency_sum{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_filter_accepted_msg_count gauge
+pulsar_subscription_filter_accepted_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_filter_accepted_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_filter_accepted_msg_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_ledger_write_latency_le_0_5 gauge
+pulsar_storage_ledger_write_latency_le_0_5{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_entry_size_count gauge
+pulsar_entry_size_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_msg_rate_expired gauge
+pulsar_subscription_msg_rate_expired{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0.0
+pulsar_subscription_msg_rate_expired{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0.0
+pulsar_subscription_msg_rate_expired{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0.0
+# TYPE pulsar_out_messages_total gauge
+pulsar_out_messages_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_out_messages_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_out_messages_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_ledger_write_latency_le_100 gauge
+pulsar_storage_ledger_write_latency_le_100{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_storage_write_rate gauge
+pulsar_storage_write_rate{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0.0
+# TYPE pulsar_msg_backlog gauge
+pulsar_msg_backlog{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_last_consumed_timestamp gauge
+pulsar_subscription_last_consumed_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0
+pulsar_subscription_last_consumed_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0
+pulsar_subscription_last_consumed_timestamp{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_subscriptions_count gauge
+pulsar_subscriptions_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 3
+# TYPE pulsar_storage_ledger_write_latency_count gauge
+pulsar_storage_ledger_write_latency_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_consumers_count gauge
+pulsar_subscription_consumers_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 1
+pulsar_subscription_consumers_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 1
+pulsar_subscription_consumers_count{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0
+# TYPE pulsar_storage_backlog_size gauge
+pulsar_storage_backlog_size{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_txn_tb_committed_total gauge
+pulsar_txn_tb_committed_total{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_entry_size_le_512 gauge
+pulsar_entry_size_le_512{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_publish_rate_limit_times gauge
+pulsar_publish_rate_limit_times{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_broker_throughput_in gauge
+pulsar_broker_throughput_in{cluster="pulsar"} 0.0
+# TYPE pulsar_entry_size_sum gauge
+pulsar_entry_size_sum{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events"} 0
+# TYPE pulsar_subscription_msg_rate_out gauge
+pulsar_subscription_msg_rate_out{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-f5f87002d7"} 0.0
+pulsar_subscription_msg_rate_out{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__system_reader-reader-2454cfe2e4"} 0.0
+pulsar_subscription_msg_rate_out{cluster="pulsar",namespace="public/default",topic="persistent://public/default/__change_events",subscription="__compaction"} 0.0
+# TYPE pulsar_ml_cache_entries gauge
+pulsar_ml_cache_entries{cluster="pulsar"} 0
+# TYPE pulsar_ml_cache_evicted_entries_total gauge
+pulsar_ml_cache_evicted_entries_total{cluster="pulsar"} 0
+# TYPE pulsar_ml_cache_evictions gauge
+pulsar_ml_cache_evictions{cluster="pulsar"} 0
+# TYPE pulsar_ml_cache_hits_rate gauge
+pulsar_ml_cache_hits_rate{cluster="pulsar"} 0.0
+# TYPE pulsar_ml_cache_hits_throughput gauge
+pulsar_ml_cache_hits_throughput{cluster="pulsar"} 0.0
+# TYPE pulsar_ml_cache_inserted_entries_total gauge
+pulsar_ml_cache_inserted_entries_total{cluster="pulsar"} 0
+# TYPE pulsar_ml_cache_misses_rate gauge
+pulsar_ml_cache_misses_rate{cluster="pulsar"} 0.0
+# TYPE pulsar_ml_cache_misses_throughput gauge
+pulsar_ml_cache_misses_throughput{cluster="pulsar"} 0.0
+# TYPE pulsar_ml_cache_pool_active_allocations gauge
+pulsar_ml_cache_pool_active_allocations{cluster="pulsar"} 0
+# TYPE pulsar_ml_cache_pool_active_allocations_huge gauge
+pulsar_ml_cache_pool_active_allocations_huge{cluster="pulsar"} 0
+# TYPE pulsar_ml_cache_pool_active_allocations_normal gauge
+pulsar_ml_cache_pool_active_allocations_normal{cluster="pulsar"} 0
+# TYPE pulsar_ml_cache_pool_active_allocations_small gauge
+pulsar_ml_cache_pool_active_allocations_small{cluster="pulsar"} 0
+# TYPE pulsar_ml_cache_pool_allocated gauge
+pulsar_ml_cache_pool_allocated{cluster="pulsar"} 0
+# TYPE pulsar_ml_cache_pool_used gauge
+pulsar_ml_cache_pool_used{cluster="pulsar"} 0
+# TYPE pulsar_ml_cache_used_size gauge
+pulsar_ml_cache_used_size{cluster="pulsar"} 0
+# TYPE pulsar_ml_count gauge
+pulsar_ml_count{cluster="pulsar"} 1
+# TYPE pulsar_ml_AddEntryBytesRate gauge
+pulsar_ml_AddEntryBytesRate{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_AddEntryErrors gauge
+pulsar_ml_AddEntryErrors{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_AddEntryLatencyBuckets gauge
+pulsar_ml_AddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="0.0_0.5"} 0.0
+pulsar_ml_AddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="0.5_1.0"} 0.0
+pulsar_ml_AddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="1.0_5.0"} 0.0
+pulsar_ml_AddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="10.0_20.0"} 0.0
+pulsar_ml_AddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="100.0_200.0"} 0.0
+pulsar_ml_AddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="20.0_50.0"} 0.0
+pulsar_ml_AddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="200.0_1000.0"} 0.0
+pulsar_ml_AddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="5.0_10.0"} 0.0
+pulsar_ml_AddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="50.0_100.0"} 0.0
+# TYPE pulsar_ml_AddEntryLatencyBuckets_OVERFLOW gauge
+pulsar_ml_AddEntryLatencyBuckets_OVERFLOW{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_AddEntryMessagesRate gauge
+pulsar_ml_AddEntryMessagesRate{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_AddEntrySucceed gauge
+pulsar_ml_AddEntrySucceed{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_AddEntryWithReplicasBytesRate gauge
+pulsar_ml_AddEntryWithReplicasBytesRate{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_EntrySizeBuckets gauge
+pulsar_ml_EntrySizeBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="0.0_128.0"} 0.0
+pulsar_ml_EntrySizeBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="1024.0_2048.0"} 0.0
+pulsar_ml_EntrySizeBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="102400.0_1048576.0"} 0.0
+pulsar_ml_EntrySizeBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="128.0_512.0"} 0.0
+pulsar_ml_EntrySizeBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="16384.0_102400.0"} 0.0
+pulsar_ml_EntrySizeBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="2048.0_4096.0"} 0.0
+pulsar_ml_EntrySizeBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="4096.0_16384.0"} 0.0
+pulsar_ml_EntrySizeBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="512.0_1024.0"} 0.0
+# TYPE pulsar_ml_EntrySizeBuckets_OVERFLOW gauge
+pulsar_ml_EntrySizeBuckets_OVERFLOW{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_LedgerAddEntryLatencyBuckets gauge
+pulsar_ml_LedgerAddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="0.0_0.5"} 0.0
+pulsar_ml_LedgerAddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="0.5_1.0"} 0.0
+pulsar_ml_LedgerAddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="1.0_5.0"} 0.0
+pulsar_ml_LedgerAddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="10.0_20.0"} 0.0
+pulsar_ml_LedgerAddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="100.0_200.0"} 0.0
+pulsar_ml_LedgerAddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="20.0_50.0"} 0.0
+pulsar_ml_LedgerAddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="200.0_1000.0"} 0.0
+pulsar_ml_LedgerAddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="5.0_10.0"} 0.0
+pulsar_ml_LedgerAddEntryLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="50.0_100.0"} 0.0
+# TYPE pulsar_ml_LedgerAddEntryLatencyBuckets_OVERFLOW gauge
+pulsar_ml_LedgerAddEntryLatencyBuckets_OVERFLOW{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_LedgerSwitchLatencyBuckets gauge
+pulsar_ml_LedgerSwitchLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="0.0_0.5"} 0.0
+pulsar_ml_LedgerSwitchLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="0.5_1.0"} 0.0
+pulsar_ml_LedgerSwitchLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="1.0_5.0"} 0.0
+pulsar_ml_LedgerSwitchLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="10.0_20.0"} 0.0
+pulsar_ml_LedgerSwitchLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="100.0_200.0"} 0.0
+pulsar_ml_LedgerSwitchLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="20.0_50.0"} 0.0
+pulsar_ml_LedgerSwitchLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="200.0_1000.0"} 0.0
+pulsar_ml_LedgerSwitchLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="5.0_10.0"} 0.0
+pulsar_ml_LedgerSwitchLatencyBuckets{cluster="pulsar", namespace="public/default/persistent", quantile="50.0_100.0"} 0.0
+# TYPE pulsar_ml_LedgerSwitchLatencyBuckets_OVERFLOW gauge
+pulsar_ml_LedgerSwitchLatencyBuckets_OVERFLOW{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_MarkDeleteRate gauge
+pulsar_ml_MarkDeleteRate{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_NumberOfMessagesInBacklog gauge
+pulsar_ml_NumberOfMessagesInBacklog{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_ReadEntriesBytesRate gauge
+pulsar_ml_ReadEntriesBytesRate{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_ReadEntriesErrors gauge
+pulsar_ml_ReadEntriesErrors{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_ReadEntriesOpsCacheMissesRate gauge
+pulsar_ml_ReadEntriesOpsCacheMissesRate{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_ReadEntriesRate gauge
+pulsar_ml_ReadEntriesRate{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_ReadEntriesSucceeded gauge
+pulsar_ml_ReadEntriesSucceeded{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_ml_StoredMessagesSize gauge
+pulsar_ml_StoredMessagesSize{cluster="pulsar", namespace="public/default/persistent"} 0.0
+# TYPE pulsar_topic_load_failed_count gauge
+pulsar_topic_load_failed_count{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="pulsar_topic_load_times"} 0.0
+# TYPE pulsar_topic_load_rate_s gauge
+pulsar_topic_load_rate_s{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="pulsar_topic_load_times"} 0.0
+# TYPE pulsar_topic_load_time_75percentile_ms gauge
+pulsar_topic_load_time_75percentile_ms{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="pulsar_topic_load_times"} NaN
+# TYPE pulsar_topic_load_time_95percentile_ms gauge
+pulsar_topic_load_time_95percentile_ms{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="pulsar_topic_load_times"} NaN
+# TYPE pulsar_topic_load_time_99_99_percentile_ms gauge
+pulsar_topic_load_time_99_99_percentile_ms{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="pulsar_topic_load_times"} NaN
+# TYPE pulsar_topic_load_time_99_9_percentile_ms gauge
+pulsar_topic_load_time_99_9_percentile_ms{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="pulsar_topic_load_times"} NaN
+# TYPE pulsar_topic_load_time_99_percentile_ms gauge
+pulsar_topic_load_time_99_percentile_ms{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="pulsar_topic_load_times"} NaN
+# TYPE pulsar_topic_load_time_mean_ms gauge
+pulsar_topic_load_time_mean_ms{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="pulsar_topic_load_times"} NaN
+# TYPE pulsar_topic_load_time_median_ms gauge
+pulsar_topic_load_time_median_ms{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="pulsar_topic_load_times"} NaN
+# TYPE pulsar_active_connections gauge
+pulsar_active_connections{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="broker_connection"} 2
+# TYPE pulsar_connection_closed_total_count gauge
+pulsar_connection_closed_total_count{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="broker_connection"} 0
+# TYPE pulsar_connection_create_fail_count gauge
+pulsar_connection_create_fail_count{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="broker_connection"} 0
+# TYPE pulsar_connection_create_success_count gauge
+pulsar_connection_create_success_count{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="broker_connection"} 2
+# TYPE pulsar_connection_created_total_count gauge
+pulsar_connection_created_total_count{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="broker_connection"} 2
+# TYPE pulsar_health gauge
+pulsar_health{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="broker_health"} -1
+# TYPE pulsar_lb_bandwidth_in_usage gauge
+pulsar_lb_bandwidth_in_usage{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="loadBalancing"} 1.990467E-5
+# TYPE pulsar_lb_bandwidth_out_usage gauge
+pulsar_lb_bandwidth_out_usage{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="loadBalancing"} 3.270558E-5
+# TYPE pulsar_lb_cpu_usage gauge
+pulsar_lb_cpu_usage{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="loadBalancing"} 0.10635031
+# TYPE pulsar_lb_directMemory_usage gauge
+pulsar_lb_directMemory_usage{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="loadBalancing"} 15.625
+# TYPE pulsar_lb_memory_usage gauge
+pulsar_lb_memory_usage{cluster="pulsar", broker="pulsar-broker-2.pulsar-broker.pulsar.svc.cluster.local", metric="loadBalancing"} 38.888084
