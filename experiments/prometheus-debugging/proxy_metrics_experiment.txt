@@ -1,0 +1,214 @@
+# TYPE jvm_info gauge
+jvm_info{cluster="pulsar",runtime="OpenJDK Runtime Environment",vendor="Amazon.com Inc.",version="21.0.6+7-LTS"} 1.0
+# TYPE jvm_buffer_pool_used_bytes gauge
+jvm_buffer_pool_used_bytes{cluster="pulsar",pool="mapped"} 0.0
+jvm_buffer_pool_used_bytes{cluster="pulsar",pool="direct"} 1763249.0
+jvm_buffer_pool_used_bytes{cluster="pulsar",pool="mapped - 'non-volatile memory'"} 0.0
+# TYPE jvm_buffer_pool_capacity_bytes gauge
+jvm_buffer_pool_capacity_bytes{cluster="pulsar",pool="mapped"} 0.0
+jvm_buffer_pool_capacity_bytes{cluster="pulsar",pool="direct"} 1763248.0
+jvm_buffer_pool_capacity_bytes{cluster="pulsar",pool="mapped - 'non-volatile memory'"} 0.0
+# TYPE jvm_buffer_pool_used_buffers gauge
+jvm_buffer_pool_used_buffers{cluster="pulsar",pool="mapped"} 0.0
+jvm_buffer_pool_used_buffers{cluster="pulsar",pool="direct"} 51.0
+jvm_buffer_pool_used_buffers{cluster="pulsar",pool="mapped - 'non-volatile memory'"} 0.0
+# TYPE jvm_memory_pool_allocated_bytes counter
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 1.2765184E7
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 1.741424183663E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="G1 Old Gen"} 3.7063904E7
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="G1 Old Gen"} 1.741424183663E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="G1 Eden Space"} 1.01711872E8
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="G1 Eden Space"} 1.741424183663E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 2664960.0
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 1.741424183663E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="G1 Survivor Space"} 6378712.0
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="G1 Survivor Space"} 1.741424183663E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="Compressed Class Space"} 5673968.0
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="Compressed Class Space"} 1.741424183663E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="Metaspace"} 5.0390528E7
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="Metaspace"} 1.741424183663E9
+jvm_memory_pool_allocated_bytes_total{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 3349760.0
+jvm_memory_pool_allocated_bytes_created{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 1.741424183663E9
+# TYPE jvm_memory_direct_bytes_used gauge
+jvm_memory_direct_bytes_used{cluster="pulsar"} 8388608.0
+# TYPE jvm_gc_collection_seconds summary
+jvm_gc_collection_seconds_count{cluster="pulsar",gc="G1 Young Generation"} 8.0
+jvm_gc_collection_seconds_sum{cluster="pulsar",gc="G1 Young Generation"} 0.023
+jvm_gc_collection_seconds_count{cluster="pulsar",gc="G1 Concurrent GC"} 6.0
+jvm_gc_collection_seconds_sum{cluster="pulsar",gc="G1 Concurrent GC"} 0.008
+jvm_gc_collection_seconds_count{cluster="pulsar",gc="G1 Old Generation"} 0.0
+jvm_gc_collection_seconds_sum{cluster="pulsar",gc="G1 Old Generation"} 0.0
+# TYPE pulsar_proxy_rejected_connections counter
+pulsar_proxy_rejected_connections_total{cluster="pulsar"} 0.0
+pulsar_proxy_rejected_connections_created{cluster="pulsar"} 1.741424183253E9
+# TYPE pulsar_proxy_binary_bytes counter
+pulsar_proxy_binary_bytes_total{cluster="pulsar"} 2.147486933E9
+pulsar_proxy_binary_bytes_created{cluster="pulsar"} 1.741424183253E9
+# TYPE jvm_memory_direct_bytes_max gauge
+jvm_memory_direct_bytes_max{cluster="pulsar"} 6.7108864E7
+# TYPE log4j2_appender counter
+log4j2_appender_total{cluster="pulsar",level="debug"} 0.0
+log4j2_appender_created{cluster="pulsar",level="debug"} 1.741424182952E9
+log4j2_appender_total{cluster="pulsar",level="warn"} 5.0
+log4j2_appender_created{cluster="pulsar",level="warn"} 1.741424182952E9
+log4j2_appender_total{cluster="pulsar",level="trace"} 0.0
+log4j2_appender_created{cluster="pulsar",level="trace"} 1.741424182952E9
+log4j2_appender_total{cluster="pulsar",level="error"} 0.0
+log4j2_appender_created{cluster="pulsar",level="error"} 1.741424182952E9
+log4j2_appender_total{cluster="pulsar",level="fatal"} 0.0
+log4j2_appender_created{cluster="pulsar",level="fatal"} 1.741424182952E9
+log4j2_appender_total{cluster="pulsar",level="info"} 600.0
+log4j2_appender_created{cluster="pulsar",level="info"} 1.741424182952E9
+# TYPE pulsar_proxy_active_connections gauge
+pulsar_proxy_active_connections{cluster="pulsar"} 0.0
+# TYPE jvm_memory_objects_pending_finalization gauge
+jvm_memory_objects_pending_finalization{cluster="pulsar"} 0.0
+# TYPE jvm_memory_bytes_used gauge
+jvm_memory_bytes_used{cluster="pulsar",area="heap"} 5.0826464E7
+jvm_memory_bytes_used{cluster="pulsar",area="nonheap"} 7.402676E7
+# TYPE jvm_memory_bytes_committed gauge
+jvm_memory_bytes_committed{cluster="pulsar",area="heap"} 6.7108864E7
+jvm_memory_bytes_committed{cluster="pulsar",area="nonheap"} 7.6546048E7
+# TYPE jvm_memory_bytes_max gauge
+jvm_memory_bytes_max{cluster="pulsar",area="heap"} 6.7108864E7
+jvm_memory_bytes_max{cluster="pulsar",area="nonheap"} -1.0
+# TYPE jvm_memory_bytes_init gauge
+jvm_memory_bytes_init{cluster="pulsar",area="heap"} 6.7108864E7
+jvm_memory_bytes_init{cluster="pulsar",area="nonheap"} 7667712.0
+# TYPE jvm_memory_pool_bytes_used gauge
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 1686912.0
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="Metaspace"} 5.0737712E7
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 1.3216384E7
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="Compressed Class Space"} 5657176.0
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="G1 Eden Space"} 1.3631488E7
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="G1 Old Gen"} 3.7063904E7
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="G1 Survivor Space"} 131072.0
+jvm_memory_pool_bytes_used{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 2728576.0
+# TYPE jvm_memory_pool_bytes_committed gauge
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 3473408.0
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="Metaspace"} 5.1183616E7
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 1.3238272E7
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="Compressed Class Space"} 5898240.0
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="G1 Eden Space"} 2.62144E7
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="G1 Old Gen"} 3.9845888E7
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="G1 Survivor Space"} 1048576.0
+jvm_memory_pool_bytes_committed{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 2752512.0
+# TYPE jvm_memory_pool_bytes_max gauge
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 7606272.0
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="Metaspace"} -1.0
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 1.22023936E8
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="Compressed Class Space"} 1.073741824E9
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="G1 Eden Space"} -1.0
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="G1 Old Gen"} 6.7108864E7
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="G1 Survivor Space"} -1.0
+jvm_memory_pool_bytes_max{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 1.22028032E8
+# TYPE jvm_memory_pool_bytes_init gauge
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="CodeHeap 'non-nmethods'"} 2555904.0
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="Metaspace"} 0.0
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="CodeHeap 'profiled nmethods'"} 2555904.0
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="Compressed Class Space"} 0.0
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="G1 Eden Space"} 3.3554432E7
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="G1 Old Gen"} 3.3554432E7
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="G1 Survivor Space"} 0.0
+jvm_memory_pool_bytes_init{cluster="pulsar",pool="CodeHeap 'non-profiled nmethods'"} 2555904.0
+# TYPE jvm_memory_pool_collection_used_bytes gauge
+jvm_memory_pool_collection_used_bytes{cluster="pulsar",pool="G1 Eden Space"} 0.0
+jvm_memory_pool_collection_used_bytes{cluster="pulsar",pool="G1 Old Gen"} 3.7063904E7
+jvm_memory_pool_collection_used_bytes{cluster="pulsar",pool="G1 Survivor Space"} 131072.0
+# TYPE jvm_memory_pool_collection_committed_bytes gauge
+jvm_memory_pool_collection_committed_bytes{cluster="pulsar",pool="G1 Eden Space"} 2.62144E7
+jvm_memory_pool_collection_committed_bytes{cluster="pulsar",pool="G1 Old Gen"} 3.9845888E7
+jvm_memory_pool_collection_committed_bytes{cluster="pulsar",pool="G1 Survivor Space"} 1048576.0
+# TYPE jvm_memory_pool_collection_max_bytes gauge
+jvm_memory_pool_collection_max_bytes{cluster="pulsar",pool="G1 Eden Space"} -1.0
+jvm_memory_pool_collection_max_bytes{cluster="pulsar",pool="G1 Old Gen"} 6.7108864E7
+jvm_memory_pool_collection_max_bytes{cluster="pulsar",pool="G1 Survivor Space"} -1.0
+# TYPE jvm_memory_pool_collection_init_bytes gauge
+jvm_memory_pool_collection_init_bytes{cluster="pulsar",pool="G1 Eden Space"} 3.3554432E7
+jvm_memory_pool_collection_init_bytes{cluster="pulsar",pool="G1 Old Gen"} 3.3554432E7
+jvm_memory_pool_collection_init_bytes{cluster="pulsar",pool="G1 Survivor Space"} 0.0
+# TYPE jvm_classes_currently_loaded gauge
+jvm_classes_currently_loaded{cluster="pulsar"} 7962.0
+# TYPE jvm_classes_loaded counter
+jvm_classes_loaded_total{cluster="pulsar"} 8048.0
+# TYPE jvm_classes_unloaded counter
+jvm_classes_unloaded_total{cluster="pulsar"} 86.0
+# TYPE pulsar_proxy_binary_ops counter
+pulsar_proxy_binary_ops_total{cluster="pulsar"} 5.0
+pulsar_proxy_binary_ops_created{cluster="pulsar"} 1.741424183253E9
+# TYPE pulsar_proxy_new_connections counter
+pulsar_proxy_new_connections_total{cluster="pulsar"} 1.0
+pulsar_proxy_new_connections_created{cluster="pulsar"} 1.741424183253E9
+# TYPE jetty_requests counter
+jetty_requests_total{cluster="pulsar"} 583.0
+# TYPE jetty_requests_active gauge
+jetty_requests_active{cluster="pulsar"} 1.0
+# TYPE jetty_requests_active_max gauge
+jetty_requests_active_max{cluster="pulsar"} 1.0
+# TYPE jetty_request_time_max_seconds gauge
+jetty_request_time_max_seconds{cluster="pulsar"} 0.062
+# TYPE jetty_request_time_seconds counter
+jetty_request_time_seconds_total{cluster="pulsar"} 1.418
+# TYPE jetty_dispatched counter
+jetty_dispatched_total{cluster="pulsar"} 583.0
+# TYPE jetty_dispatched_active gauge
+jetty_dispatched_active{cluster="pulsar"} 0.0
+# TYPE jetty_dispatched_active_max gauge
+jetty_dispatched_active_max{cluster="pulsar"} 1.0
+# TYPE jetty_dispatched_time_max gauge
+jetty_dispatched_time_max{cluster="pulsar"} 62.0
+# TYPE jetty_dispatched_time_seconds counter
+jetty_dispatched_time_seconds_total{cluster="pulsar"} 0.699
+# TYPE jetty_async_requests counter
+jetty_async_requests_total{cluster="pulsar"} 249.0
+# TYPE jetty_async_requests_waiting gauge
+jetty_async_requests_waiting{cluster="pulsar"} 1.0
+# TYPE jetty_async_requests_waiting_max gauge
+jetty_async_requests_waiting_max{cluster="pulsar"} 1.0
+# TYPE jetty_async_dispatches counter
+jetty_async_dispatches_total{cluster="pulsar"} 0.0
+# TYPE jetty_expires counter
+jetty_expires_total{cluster="pulsar"} 0.0
+# TYPE jetty_responses counter
+jetty_responses_total{cluster="pulsar",code="1xx"} 0.0
+jetty_responses_total{cluster="pulsar",code="2xx"} 581.0
+jetty_responses_total{cluster="pulsar",code="3xx"} 1.0
+jetty_responses_total{cluster="pulsar",code="4xx"} 0.0
+jetty_responses_total{cluster="pulsar",code="5xx"} 0.0
+# TYPE jetty_stats_seconds gauge
+jetty_stats_seconds{cluster="pulsar"} 1691.212
+# TYPE jetty_responses_bytes counter
+jetty_responses_bytes_total{cluster="pulsar"} 1105381.0
+# TYPE process_cpu_seconds counter
+process_cpu_seconds_total{cluster="pulsar"} 17.17
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds{cluster="pulsar"} 1.74142418232E9
+# TYPE process_open_fds gauge
+process_open_fds{cluster="pulsar"} 442.0
+# TYPE process_max_fds gauge
+process_max_fds{cluster="pulsar"} 65536.0
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes{cluster="pulsar"} 1.697292288E9
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes{cluster="pulsar"} 2.174976E8
+# TYPE jvm_threads_current gauge
+jvm_threads_current{cluster="pulsar"} 24.0
+# TYPE jvm_threads_daemon gauge
+jvm_threads_daemon{cluster="pulsar"} 7.0
+# TYPE jvm_threads_peak gauge
+jvm_threads_peak{cluster="pulsar"} 24.0
+# TYPE jvm_threads_started counter
+jvm_threads_started_total{cluster="pulsar"} 25.0
+# TYPE jvm_threads_deadlocked gauge
+jvm_threads_deadlocked{cluster="pulsar"} 0.0
+# TYPE jvm_threads_deadlocked_monitor gauge
+jvm_threads_deadlocked_monitor{cluster="pulsar"} 0.0
+# TYPE jvm_threads_state gauge
+jvm_threads_state{cluster="pulsar",state="NEW"} 0.0
+jvm_threads_state{cluster="pulsar",state="TERMINATED"} 0.0
+jvm_threads_state{cluster="pulsar",state="RUNNABLE"} 11.0
+jvm_threads_state{cluster="pulsar",state="BLOCKED"} 0.0
+jvm_threads_state{cluster="pulsar",state="WAITING"} 8.0
+jvm_threads_state{cluster="pulsar",state="TIMED_WAITING"} 5.0
+jvm_threads_state{cluster="pulsar",state="UNKNOWN"} 0.0
+# EOF

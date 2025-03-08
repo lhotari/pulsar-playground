@@ -1,0 +1,15 @@
+# TYPE pulsar_proxy_rejected_connections counter
+pulsar_proxy_rejected_connections_total{cluster="pulsar"} 0.0
+pulsar_proxy_rejected_connections_created{cluster="pulsar"} 1.741424183253E9
+# TYPE pulsar_proxy_binary_bytes counter
+pulsar_proxy_binary_bytes_total{cluster="pulsar"} 2.147486933E9
+pulsar_proxy_binary_bytes_created{cluster="pulsar"} 1.741424183253E9
+# TYPE pulsar_proxy_active_connections gauge
+pulsar_proxy_active_connections{cluster="pulsar"} 0.0
+# TYPE pulsar_proxy_binary_ops counter
+pulsar_proxy_binary_ops_total{cluster="pulsar"} 5.0
+pulsar_proxy_binary_ops_created{cluster="pulsar"} 1.741424183253E9
+# TYPE pulsar_proxy_new_connections counter
+pulsar_proxy_new_connections_total{cluster="pulsar"} 1.0
+pulsar_proxy_new_connections_created{cluster="pulsar"} 1.741424183253E9
+# EOF
