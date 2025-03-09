@@ -84,7 +84,7 @@ DNS=$(kubectl get pods -l k8s-app=kube-dns -n kube-system -o jsonpath='{.items[0
 Domains=~default.svc.cluster.local ~svc.cluster.local ~cluster.local
 DNSOverTLS=false
 EOF
-sudo service systemd-resolved restart
+sudo systemctl restart systemd-resolved
 ```
 
 validate DNS resolution from local environment to k8s DNS:
