@@ -33,5 +33,5 @@ windows:
   - window_name: produce
     panes:
       - shell_command:
-          - cmd: pulsar-perf produce persistent://public/default/my-topic -r 1000
+          - cmd: pulsar-perf produce persistent://public/default/my-topic -r 100
             enter: false
