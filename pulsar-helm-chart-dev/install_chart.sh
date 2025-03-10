@@ -1,6 +1,7 @@
 #!/bin/bash -xe
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # installs or upgrades chart
 helm upgrade --install --namespace pulsar --create-namespace \
   pulsar charts/pulsar \
-  --set affinity.anti_affinity=false --set proxy.replicaCount=1 --set victoria-metrics-k8s-stack.grafana.adminPassword=verysecureword123 \
+  --values "${SCRIPT_DIR}"/../../pulsar-helm-chart/examples/values-testing.yaml \
   "$@"
