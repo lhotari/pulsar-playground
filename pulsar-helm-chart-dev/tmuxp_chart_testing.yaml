@@ -1,0 +1,37 @@
+# for testing Apache Pulsar Helm chart installs
+# install tmuxp (https://tmuxp.git-pull.com/)
+# with uv https://docs.astral.sh/uv/ command
+# uv tool install tmuxp
+# copy file to ~/.tmuxp directory
+# usage (with iTerm):
+# tmux -2 -CC a || tmux -2 -CC
+# tmuxp load -a ./tmuxp_chart_testing.yaml
+session_name: chart_test
+start_directory: ${PWD}
+environment:
+  PULSAR_CLIENT_CONF: ${PWD}/client.conf
+windows:
+  - window_name: install chart
+    focus: true
+    start_directory: ${PWD}/../../pulsar-helm-chart
+  - window_name: k9s
+    panes:
+      - shell_command: k9s
+    start_directory: ${PWD}
+  - window_name: chart dir
+    start_directory: ${PWD}/../../pulsar-helm-chart
+  - window_name: clusters list
+    panes:
+      - shell_command:
+          - cmd: while [ 1 ]; do pulsar-admin clusters list; pulsar-admin topics lookup persistent://public/default/my-topic; sleep 1; done
+            enter: false
+  - window_name: consume
+    panes:
+      - shell_command:
+          - cmd: pulsar-perf consume persistent://public/default/my-topic
+            enter: false
+  - window_name: produce
+    panes:
+      - shell_command:
+          - cmd: pulsar-perf produce persistent://public/default/my-topic -r 1000
+            enter: false
