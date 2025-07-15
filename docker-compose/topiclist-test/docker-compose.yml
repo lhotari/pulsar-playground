@@ -43,14 +43,20 @@ x-broker-base: &broker-base
              bin/apply-config-from-env.py conf/pulsar_env.sh && \
              bin/watch-znode.py -z $$zookeeperServers -p /initialized-$$clusterName -w && \
              exec bin/pulsar broker"
-  environment:
+  environment: &broker-env
     clusterName: test
     zookeeperServers: zk1:2181,zk2:2181,zk3:2181
     configurationStore: zk1:2181,zk2:2181,zk3:2181
     webSocketServiceEnabled: "false"
     functionsWorkerEnabled: "false"
     PULSAR_MEM: -Xmx256m
-    OPTS: -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints -XX:FlightRecorderOptions=stackdepth=1024
+    OPTS: >
+      -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints -XX:FlightRecorderOptions=stackdepth=1024
+      -Dcom.sun.management.jmxremote
+      -Dcom.sun.management.jmxremote.authenticate=false
+      -Dcom.sun.management.jmxremote.ssl=false
+      -Djava.rmi.server.hostname=localhost
+      -Dcom.sun.management.jmxremote.local.only=false
 
 services:
 
@@ -137,6 +143,13 @@ services:
 
   broker1:
     <<: *broker-base
+    environment:
+      <<: *broker-env
+      PULSAR_EXTRA_OPTS: >
+        -Dcom.sun.management.jmxremote.port=9991
+        -Dcom.sun.management.jmxremote.rmi.port=9991
+    ports:
+      - "9991:9991"
     hostname: broker1
     container_name: broker1
     depends_on:
@@ -150,6 +163,13 @@ services:
 
   broker2:
     <<: *broker-base
+    environment:
+      <<: *broker-env
+      PULSAR_EXTRA_OPTS: >
+        -Dcom.sun.management.jmxremote.port=9992
+        -Dcom.sun.management.jmxremote.rmi.port=9992
+    ports:
+      - "9992:9992"
     hostname: broker2
     container_name: broker2
     depends_on:
@@ -164,6 +184,13 @@ services:
 
   broker3:
     <<: *broker-base
+    environment:
+      <<: *broker-env
+      PULSAR_EXTRA_OPTS: >
+        -Dcom.sun.management.jmxremote.port=9993
+        -Dcom.sun.management.jmxremote.rmi.port=9993
+    ports:
+      - "9993:9993"
     hostname: broker3
     container_name: broker3
     depends_on:
