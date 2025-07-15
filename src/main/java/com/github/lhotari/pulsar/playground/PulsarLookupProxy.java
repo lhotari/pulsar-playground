@@ -15,7 +15,8 @@ import org.eclipse.jetty.util.Callback;
 
 /**
  * A simple proxy that replaces the localhost Pulsar broker's target port in the response content.
- * This is useful for routing requests via Toxiproxy to simulate network failures for broker connections.
+ * This is useful for routing requests via Toxiproxy or another failure proxy
+ * to simulate network failures for broker connections.
  * The Pulsar client should use the http url of this proxy in the serviceUrl to achieve this.
  */
 public class PulsarLookupProxy {
@@ -23,7 +24,7 @@ public class PulsarLookupProxy {
     private final Server server;
 
     @SneakyThrows
-    public PulsarLookupProxy(int bindPort, int brokerPort, int toxiProxyPort) {
+    public PulsarLookupProxy(int bindPort, int brokerHttpPort, int brokerPulsarPort, int failureProxyPulsarPort) {
         server = new Server(bindPort);
 
         ServletContextHandler context = new ServletContextHandler();
@@ -31,7 +32,8 @@ public class PulsarLookupProxy {
         server.setHandler(context);
 
         ServletHolder proxyServlet =
-                new ServletHolder(new ReplacingProxyServlet("localhost:" + brokerPort, "localhost:" + toxiProxyPort));
+                new ServletHolder(new ReplacingProxyServlet(brokerHttpPort, "localhost:" + brokerPulsarPort,
+                        "localhost:" + failureProxyPulsarPort));
         context.addServlet(proxyServlet, "/*");
 
         server.start();
@@ -48,10 +50,12 @@ public class PulsarLookupProxy {
     }
 
     public static class ReplacingProxyServlet extends ProxyServlet {
+        private final int brokerHttpPort;
         private final String search;
         private final String replacement;
 
-        public ReplacingProxyServlet(String search, String replacement) {
+        public ReplacingProxyServlet(int brokerHttpPort, String search, String replacement) {
+            this.brokerHttpPort = brokerHttpPort;
             this.search = search;
             this.replacement = replacement;
         }
@@ -59,7 +63,7 @@ public class PulsarLookupProxy {
         @Override
         protected String rewriteTarget(HttpServletRequest clientRequest) {
             StringBuilder url = new StringBuilder();
-            url.append("http://localhost:8080");
+            url.append("http://localhost:" + brokerHttpPort);
             url.append(clientRequest.getRequestURI());
             String query = clientRequest.getQueryString();
             if (query != null) {

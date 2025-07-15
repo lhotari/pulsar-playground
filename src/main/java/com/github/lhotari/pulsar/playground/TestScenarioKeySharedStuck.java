@@ -356,7 +356,7 @@ public class TestScenarioKeySharedStuck {
             if (simulateReconnecting) {
                 port = basePort + connectCount;
                 proxy = createProxy(port);
-                lookupProxy = new PulsarLookupProxy(0, 6650, port);
+                lookupProxy = new PulsarLookupProxy(0, 8080, 6650, port);
                 serviceUrl = "http://localhost:" + lookupProxy.getBindPort();
             }
             PulsarClient pulsarClient = PulsarClient.builder()
