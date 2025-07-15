@@ -1,7 +1,7 @@
 plugins {
     id 'application'
-    id "io.freefair.lombok" version "8.13.1"
-    id 'com.gradleup.shadow' version '8.3.6'
+    id "io.freefair.lombok" version "8.14"
+    id 'com.gradleup.shadow' version '8.3.8'
     id 'com.github.ben-manes.versions' version '0.52.0'
 }
 
@@ -21,7 +21,7 @@ def defaultPulsarVersion = '4.0.5'
 def pulsarVersion = System.getenv('PULSAR_VERSION') ?: defaultPulsarVersion
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.13.0')
+    testImplementation platform('org.junit:junit-bom:5.13.3')
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
@@ -32,7 +32,7 @@ dependencies {
         exclude group: 'org.apache.logging.log4j', module:'log4j-layout-template-json'
     }
 
-    implementation platform("org.apache.logging.log4j:log4j-bom:2.24.3")
+    implementation platform("org.apache.logging.log4j:log4j-bom:2.25.1")
     implementation "org.apache.logging.log4j:log4j-api"
     implementation "org.apache.logging.log4j:log4j-core"
     // use log4j-slf4j2-impl with Pulsar 3.3.0 and newer, for older versions use log4j-slf4j-impl
@@ -78,4 +78,10 @@ configurations.all {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named("dependencyUpdates").configure {
+    rejectVersionIf {
+        it.candidate.version.contains("alpha") || it.candidate.version.contains("beta") || it.candidate.version.contains("rc") || it.candidate.version.contains("-M")
+    }
 }
