@@ -50,6 +50,7 @@ x-broker-base: &broker-base
     webSocketServiceEnabled: "false"
     functionsWorkerEnabled: "false"
     PULSAR_MEM: -Xmx256m
+    OPTS: -XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints -XX:FlightRecorderOptions=stackdepth=1024
 
 services:
 
