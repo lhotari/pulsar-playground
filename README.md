@@ -6,7 +6,7 @@ Playground for Pulsar core development with instructions for setting up a k8s te
 For many tests, it's sufficient to run a Pulsar standalone in docker. Here's an example command to run a Pulsar standalone in docker:
 ```bash
 ```
-docker run --rm -it -e PULSAR_STANDALONE_USE_ZOOKEEPER=1 -p 8080:8080 -p 6650:6650 apachepulsar/pulsar:3.3.1 /pulsar/bin/pulsar standalone -nss -nfw
+docker run --rm -it -e PULSAR_STANDALONE_USE_ZOOKEEPER=1 -p 8080:8080 -p 6650:6650 apachepulsar/pulsar:latest /pulsar/bin/pulsar standalone -nss -nfw
 ```
 
 ## Test scenarios
