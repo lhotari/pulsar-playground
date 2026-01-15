@@ -2,7 +2,6 @@ package com.github.lhotari.pulsar.playground;
 
 import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_BROKER_URL;
 import static com.github.lhotari.pulsar.playground.TestEnvironment.PULSAR_SERVICE_URL;
-import static java.lang.Thread.sleep;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -48,12 +47,14 @@ public class TestScenarioIssue25145 {
         }
 
         // Run producer and consumers concurrently in background threads.
-        startThread(() -> producerTask(client));
+        Thread producerThread = startThread(() -> producerTask(client));
         Thread consumerThread1 = startThread(() -> consumerTask(client, "sub-1"));
         Thread consumerThread2 = startThread(() -> consumerTask(client, "sub-2"));
 
-        // Let the test run for a while, then stop threads and verify.
-        sleep(90_000); // Wait for a generous amount of time.
+        // wait until all threads complete
+        producerThread.join();
+        consumerThread1.join();
+        consumerThread2.join();
 
         // --- Verification ---
         System.out.println("--- Total Acked Messages per Subscription ---");
@@ -74,10 +75,6 @@ public class TestScenarioIssue25145 {
         }
 
         System.out.println("Shutting down...");
-        consumerThread1.interrupt();
-        consumerThread2.interrupt();
-        consumerThread1.join();
-        consumerThread2.join();
         client.close();
         System.out.println("Done.");
     }
@@ -120,7 +117,10 @@ public class TestScenarioIssue25145 {
 
         try {
             while (true) { // Run until the main thread stops it.
-                Message<String> message = consumer.receive();
+                Message<String> message = consumer.receive(10, TimeUnit.SECONDS);
+                if (message == null) {
+                    break;
+                }
 
                 // Step 1: Mark as received BEFORE acknowledging.
                 Set<String> receipts =
@@ -138,5 +138,7 @@ public class TestScenarioIssue25145 {
                 throw e;
             }
         }
+        
+        System.out.println("Finished consumer task for subscription [" + subscriptionName + "].");
     }
 }
