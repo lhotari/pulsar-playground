@@ -1,3 +1,4 @@
+defaultPulsarImageTag: 4.0.8
 affinity:
   anti_affinity: false
 proxy:

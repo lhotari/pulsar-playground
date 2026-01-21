@@ -7,7 +7,7 @@ while true; do
   echo "Start time: $(date)"
   mkdir -p $WORKDIR
   current_time=$(date +%Y%m%d-%H%M%S)
-
+  # prepare this by building the jar with "PULSAR_VERSION=4.0.8 ./gradlew shadowJar"
   java -cp build/libs/pulsar-playground-all.jar com.github.lhotari.pulsar.playground.TestScenarioIssue25145 2>&1 | tee $WORKDIR/output_${current_time}.log
   rc=${PIPESTATUS[0]}
 
