@@ -25,7 +25,7 @@ import org.apache.pulsar.client.api.Schema;
  * This class is based on PulsarBatchAckPseudoDemo shared in the issue description.
  */
 public class TestScenarioIssue25145 {
-    static final String TOPIC_NAME = "partitioned_topic";
+    static final String TOPIC_NAME = "partitioned_topic" + System.currentTimeMillis();
     static Set<MessageId> sentMessageIds = ConcurrentHashMap.newKeySet();
     static Map<MessageId, Set<String>> receiptTracker = new ConcurrentHashMap<>();
     static Map<String, AtomicLong> ackCounters = Map.of("sub-1", new AtomicLong(0), "sub-2", new AtomicLong(0));
