@@ -61,10 +61,12 @@ public class TestScenarioIssue25145 {
         System.out.printf("Subscription [sub-1]: %d acks%n", ackCounters.get("sub-1").get());
         System.out.printf("Subscription [sub-2]: %d acks%n", ackCounters.get("sub-2").get());
 
+        boolean inconsistencyFound = false;
         // Find and report any message that wasn't received by BOTH subscriptions.
         for (MessageId sentId : sentMessageIds) {
             Set<String> receivedBy = receiptTracker.getOrDefault(sentId, Collections.emptySet());
             if (receivedBy.size() < 2) {
+                inconsistencyFound = true;
                 if (!receivedBy.contains("sub-1")) {
                     System.err.printf("[%s] not received from [sub-1]!%n", sentId);
                 }
@@ -77,6 +79,10 @@ public class TestScenarioIssue25145 {
         System.out.println("Shutting down...");
         client.close();
         System.out.println("Done.");
+        if (inconsistencyFound) {
+            System.err.println("Inconsistency detected!");
+            System.exit(1);
+        }
     }
 
     private static Thread startThread(Runnable runnable) {
@@ -138,7 +144,7 @@ public class TestScenarioIssue25145 {
                 throw e;
             }
         }
-        
+
         System.out.println("Finished consumer task for subscription [" + subscriptionName + "].");
     }
 }
