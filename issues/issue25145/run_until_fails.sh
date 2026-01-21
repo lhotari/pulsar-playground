@@ -13,8 +13,8 @@ while true; do
 
   if [ "${rc}" -eq 0 ]; then
     echo "====== Iteration ${iteration} completed successfully ======"
-    echo "Sleeping 10s before next iteration..."
-    sleep 10
+    echo "Sleeping 5s before next iteration..."
+    sleep 5
     continue
   else
     echo "====== Iteration ${iteration} failed with exit code ${rc} ======"
