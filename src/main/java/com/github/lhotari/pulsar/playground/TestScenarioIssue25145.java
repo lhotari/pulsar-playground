@@ -26,6 +26,7 @@ import org.apache.pulsar.client.api.Schema;
  */
 public class TestScenarioIssue25145 {
     static final String TOPIC_NAME = "partitioned_topic" + System.currentTimeMillis();
+    static final int NUMBER_OF_MESSAGES = 100_000;
     static Set<MessageId> sentMessageIds = ConcurrentHashMap.newKeySet();
     static Map<MessageId, Set<String>> receiptTracker = new ConcurrentHashMap<>();
     static Map<String, AtomicLong> ackCounters = Map.of("sub-1", new AtomicLong(0), "sub-2", new AtomicLong(0));
@@ -100,7 +101,7 @@ public class TestScenarioIssue25145 {
                 .batchingMaxMessages(1000)
                 .create();
 
-        for (int i = 0; i < 1_000_000; i++) {
+        for (int i = 0; i < NUMBER_OF_MESSAGES; i++) {
             // Asynchronously send and register the MessageId upon completion.
             producer.sendAsync("message-payload-" + i).thenAccept(messageId -> {
                 sentMessageIds.add(messageId);
