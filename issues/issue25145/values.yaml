@@ -1,0 +1,5 @@
+affinity:
+  anti_affinity: false
+proxy:
+  service:
+    type: LoadBalancer
