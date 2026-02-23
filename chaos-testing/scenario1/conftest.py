@@ -33,6 +33,7 @@ HELM_SET_VALUES = {
 # booleans/numbers, which breaks ConfigMap data fields (strings only).
 HELM_SET_STRING_VALUES = {
     "pulsar_metadata.metadataStoreAllowReadOnlyOperations": "true",
+    "pulsar_metadata.bookkeeper.usePulsarMetadataClientDriver": "true",
     "broker.waitZookeeperTimeout": "0",
     "broker.waitBookkeeperTimeout": "0",
     "bookkeeper.metadata.waitZookeeperTimeout": "0",
