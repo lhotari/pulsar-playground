@@ -56,7 +56,7 @@ def delete_subscription(
     logger.info(f"Deleting subscription '{subscription}' on '{topic}'")
     result = _run_pulsar_admin(
         namespace, pod, admin_url,
-        f"topics unsubscribe -s {subscription} {topic}",
+        f"topics unsubscribe -s {subscription} --force {topic}",
     )
     if result.returncode != 0:
         if "Subscription not found" in result.stderr:
