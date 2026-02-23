@@ -31,6 +31,18 @@ uv run pytest test_zk_quorum_loss.py -v
 uv run pytest test_zk_quorum_loss.py::TestZookeeperQuorumLoss::test_consume_after_zk_quorum_loss -v
 ```
 
+Configure short rollover to brokers and keep the cluster after the test run completes:
+
+```bash
+uv run pytest -v --short-rollover --keep-cluster 
+```
+
+Reuse existing cluster, skip deploying a new cluster
+
+```bash
+uv run pytest -v --skip-deploy
+```
+
 ## Project Structure
 
 ```
