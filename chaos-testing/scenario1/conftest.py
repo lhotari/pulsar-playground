@@ -36,6 +36,7 @@ HELM_SET_STRING_VALUES = {
     "broker.waitZookeeperTimeout": "0",
     "broker.waitBookkeeperTimeout": "0",
     "bookkeeper.metadata.waitZookeeperTimeout": "0",
+    "zookeeper.configData.OPTS": "-Dreadonlymode.enabled=true",
 }
 
 # Added only when --short-rollover is passed; forces frequent ledger rollovers.
