@@ -60,6 +60,9 @@ class TestZookeeperQuorumLoss:
         self.zk_ss_name = get_statefulset_name(
             self.apps, self.ns, label_selector="app=pulsar,component=zookeeper"
         )
+        self.broker_ss_name = get_statefulset_name(
+            self.apps, self.ns, label_selector="app=pulsar,component=broker"
+        )
         self._perf_procs = []
 
         yield
@@ -73,6 +76,11 @@ class TestZookeeperQuorumLoss:
         logger.info("Restoring ZK to 3 replicas")
         scale_statefulset(self.apps, self.zk_ss_name, self.ns, replicas=3)
         wait_for_statefulset_ready(self.apps, self.zk_ss_name, self.ns, expected_replicas=3)
+
+        # --- restore brokers to 3 replicas
+        logger.info("Restoring brokers to 3 replica")
+        scale_statefulset(self.apps, self.broker_ss_name, self.ns, replicas=3)
+        wait_for_statefulset_ready(self.apps, self.broker_ss_name, self.ns, expected_replicas=3, timeout=300)
 
         # deleting subscriptions to avoid interference between tests
         delete_subscription(
@@ -256,4 +264,79 @@ class TestZookeeperQuorumLoss:
             # This is still a valid test result — just record it.
             pytest.fail(
                 f"Consumer on sub3 could NOT consume after ZK quorum loss: {e}"
-            )            
+            )
+
+    def test_broker_restart_during_zk_quorum_loss(self):
+        """
+        Create sub1, produce to the topic for 5 seconds, then cause ZK quorum loss.
+        While ZK quorum is absent, scale brokers to 0 then back to 3.
+        After brokers are up and running, attempt to consume 150 messages from sub1.
+
+        This exercises whether brokers can rejoin the cluster and serve
+        already-written messages when ZK is still in quorum-loss (read-only) mode.
+        """
+
+        # ── Step 1: create sub1 subscription ──
+        create_subscription(
+            namespace=self.ns,
+            admin_url=self.admin_url,
+            topic=TOPIC,
+            subscription="sub1",
+        )
+        logger.info("sub1 subscription created")
+
+        # ── Step 2: produce for 5 seconds ──
+        producer = start_producer(
+            namespace=self.ns,
+            service_url=self.service_url,
+            topic=TOPIC,
+            rate=PRODUCE_RATE,
+        )
+        self._perf_procs.append(producer)
+        assert producer.is_running, "Producer failed to start"
+
+        logger.info("Producing for 5s …")
+        time.sleep(5)
+        producer.stop(log_tail=20)
+
+        # ── Step 3: cause ZK quorum loss ──
+        logger.info(">>> CHAOS: scaling ZK to 1 replica (quorum loss) <<<")
+        scale_statefulset(self.apps, self.zk_ss_name, self.ns, replicas=1)
+        wait_for_statefulset_ready(self.apps, self.zk_ss_name, self.ns, expected_replicas=1)
+
+        # ── Step 4: scale brokers to 0 then back to 3, ZK still in quorum loss ──
+        logger.info(">>> CHAOS: scaling brokers to 0 <<<")
+        scale_statefulset(self.apps, self.broker_ss_name, self.ns, replicas=0)
+        wait_for_statefulset_ready(self.apps, self.broker_ss_name, self.ns, expected_replicas=0)
+
+        logger.info(">>> RECOVERY: scaling brokers to 3 (ZK still in quorum loss) <<<")
+        scale_statefulset(self.apps, self.broker_ss_name, self.ns, replicas=3)
+        wait_for_statefulset_ready(
+            self.apps, self.broker_ss_name, self.ns, expected_replicas=3, timeout=300
+        )
+
+        # ── Step 5: consume 150 messages from sub1 ──
+        logger.info(
+            "Attempting to consume 150 messages on sub1 after broker restart "
+            "under ZK quorum loss …"
+        )
+        try:
+            output = run_consumer_and_wait(
+                namespace=self.ns,
+                service_url=self.service_url,
+                topic=TOPIC,
+                subscription="sub1",
+                num_messages=150,
+                timeout=POST_CHAOS_CONSUME_TIMEOUT,
+            )
+            messages_received = "150 records received" in output
+            logger.info(f"sub1 output:\n{output}")
+            assert messages_received, (
+                f"Consumer on sub1 ran but did not receive 150 messages.\n"
+                f"Output:\n{output}"
+            )
+        except Exception as e:
+            pytest.fail(
+                f"Consumer on sub1 could NOT consume after broker restart "
+                f"during ZK quorum loss: {e}"
+            )
