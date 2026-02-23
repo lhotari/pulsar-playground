@@ -26,6 +26,7 @@ from pulsar_perf import (
 from pulsar_admin import (
     create_subscription,
     delete_subscription,
+    unload_topic,
 )
 from k8s_chaos import (
     scale_statefulset,
@@ -96,11 +97,15 @@ class TestZookeeperQuorumLoss:
     # ------------------------------------------------------------------
     # The scenario
     # ------------------------------------------------------------------
-    def test_consume_after_zk_quorum_loss(self):
+    @pytest.mark.parametrize("unload_after_chaos", [False, True], ids=["no_unload", "with_unload"])
+    def test_consume_after_zk_quorum_loss(self, unload_after_chaos):
         """
         After losing ZK quorum the broker should still be able to serve
         messages that were already written to BookKeeper (no new ledger
         required), because ZK is configured for read-only mode.
+
+        With unload_after_chaos=True, the topic is unloaded after quorum loss,
+        forcing the broker to re-acquire it from ZK before sub2 can consume.
         """
 
         # ── Step 1: start a long-running consumer on sub1 ──
@@ -152,8 +157,18 @@ class TestZookeeperQuorumLoss:
                 )
                 pytest.fail(f"{perf_proc.description} terminated after ZK quorum loss")
 
+        # ── Step 5c (optional): unload the topic while ZK has no quorum ──
+        if unload_after_chaos:
+            logger.info("Unloading topic after ZK quorum loss …")
+            try:
+                unload_topic(namespace=self.ns, admin_url=self.admin_url, topic=TOPIC)
+                logger.info("Topic unloaded successfully despite ZK quorum loss")
+            except RuntimeError as e:
+                logger.warning(f"Topic unload failed (expected under quorum loss): {e}")
+
         # ── Step 6: can sub2 still consume? ──
-        logger.info("Attempting to consume on sub2 after ZK quorum loss …")
+        label = "ZK quorum loss" if not unload_after_chaos else "ZK quorum loss + topic unload"
+        logger.info(f"Attempting to consume on sub2 after {label} …")
         try:
             output = run_consumer_and_wait(
                 namespace=self.ns,
@@ -174,7 +189,7 @@ class TestZookeeperQuorumLoss:
             # Depending on the Pulsar version, the consumer might hang or error.
             # This is still a valid test result — just record it.
             pytest.fail(
-                f"Consumer on sub2 could NOT consume after ZK quorum loss: {e}"
+                f"Consumer on sub2 could NOT consume after {label}: {e}"
             )
         finally:
             # Cleanup background processes
