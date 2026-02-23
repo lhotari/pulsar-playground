@@ -23,7 +23,10 @@ from pulsar_perf import (
     start_consumer,
     run_consumer_and_wait,
 )
-from pulsar_admin import create_subscription
+from pulsar_admin import (
+    create_subscription,
+    delete_subscription,
+)
 from k8s_chaos import (
     scale_statefulset,
     wait_for_statefulset_ready,
@@ -69,6 +72,26 @@ class TestZookeeperQuorumLoss:
         logger.info("Restoring ZK to 3 replicas")
         scale_statefulset(self.apps, self.zk_ss_name, self.ns, replicas=3)
         wait_for_statefulset_ready(self.apps, self.zk_ss_name, self.ns, expected_replicas=3)
+
+        # deleting subscriptions to avoid interference between tests
+        delete_subscription(
+            namespace=self.ns,
+            admin_url=self.admin_url,
+            topic=TOPIC,
+            subscription="sub1",
+        )
+        delete_subscription(
+            namespace=self.ns,
+            admin_url=self.admin_url,
+            topic=TOPIC,
+            subscription="sub2",
+        )
+        delete_subscription(
+            namespace=self.ns,
+            admin_url=self.admin_url,
+            topic=TOPIC,
+            subscription="sub3",
+        )
 
     # ------------------------------------------------------------------
     # The scenario
@@ -194,3 +217,28 @@ class TestZookeeperQuorumLoss:
             "Producer died after ZK quorum loss — expected it to continue "
             "while no ledger rollover is required."
         )
+
+        # ── can a new subscriber consume? ──
+        logger.info("Attempting to consume on sub3 after ZK quorum loss …")
+        try:
+            output = run_consumer_and_wait(
+                namespace=self.ns,
+                service_url=self.service_url,
+                topic=TOPIC,
+                subscription="sub3",
+                num_messages=150,
+                timeout=POST_CHAOS_CONSUME_TIMEOUT,
+            )
+            # If we got here without a timeout, the consumer received messages
+            messages_received = "150 records received" in output
+            logger.info(f"sub3 output:\n{output}")
+            assert messages_received, (
+                f"Consumer on sub3 ran but did not appear to receive messages.\n"
+                f"Output:\n{output}"
+            )
+        except Exception as e:
+            # Depending on the Pulsar version, the consumer might hang or error.
+            # This is still a valid test result — just record it.
+            pytest.fail(
+                f"Consumer on sub3 could NOT consume after ZK quorum loss: {e}"
+            )            
