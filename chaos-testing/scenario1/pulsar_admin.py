@@ -44,6 +44,28 @@ def create_subscription(
         logger.info(f"Subscription '{subscription}' created")
 
 
+def unload_topic(
+    namespace: str,
+    admin_url: str,
+    topic: str,
+    pod: str | None = None,
+) -> None:
+    """Unload a topic via pulsar-admin running in the toolset pod."""
+    pod = pod or get_toolset_pod(namespace)
+    logger.info(f"Unloading topic '{topic}'")
+    result = _run_pulsar_admin(
+        namespace, pod, admin_url,
+        f"topics unload {topic}",
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"pulsar-admin unload topic failed (rc={result.returncode}):\n"
+            f"{result.stderr}"
+        )
+    else:
+        logger.info(f"Topic '{topic}' unloaded")
+
+
 def delete_subscription(
     namespace: str,
     admin_url: str,
