@@ -56,8 +56,14 @@ class TestZookeeperQuorumLoss:
         self.zk_ss_name = get_statefulset_name(
             self.apps, self.ns, label_selector="app=pulsar,component=zookeeper"
         )
+        self._perf_procs = []
 
         yield
+
+        # --- stop any background perf processes still running ---
+        for proc in self._perf_procs:
+            if proc.is_running:
+                proc.stop()
 
         # --- restore ZK to 3 replicas after each test ---
         logger.info("Restoring ZK to 3 replicas")
@@ -81,6 +87,7 @@ class TestZookeeperQuorumLoss:
             topic=TOPIC,
             subscription="sub1",
         )
+        self._perf_procs.append(consumer_sub1)
         assert consumer_sub1.is_running, "sub1 consumer failed to start"
 
         # ── Step 2: start a slow producer ──
@@ -90,6 +97,7 @@ class TestZookeeperQuorumLoss:
             topic=TOPIC,
             rate=PRODUCE_RATE,
         )
+        self._perf_procs.append(producer)
         assert producer.is_running, "Producer failed to start"
 
         # ── Step 3: create sub2 subscription via pulsar-admin ──
@@ -162,6 +170,7 @@ class TestZookeeperQuorumLoss:
             topic=TOPIC,
             rate=PRODUCE_RATE,
         )
+        self._perf_procs.append(producer)
 
         time.sleep(3)
         assert producer.is_running, "Producer should be running before chaos"
