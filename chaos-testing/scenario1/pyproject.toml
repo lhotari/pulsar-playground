@@ -1,0 +1,21 @@
+[project]
+name = "pulsar-chaos-tests"
+version = "0.1.0"
+description = "Chaos testing scenarios for Apache Pulsar on Kubernetes"
+requires-python = ">=3.11"
+dependencies = [
+    "pytest>=8.0",
+    "kubernetes>=29.0",
+]
+
+[tool.setuptools]
+py-modules = ["pulsar_perf", "k8s_chaos"]
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+markers = [
+    "chaos: marks tests that inject failures into the cluster",
+]
+testpaths = ["."]
