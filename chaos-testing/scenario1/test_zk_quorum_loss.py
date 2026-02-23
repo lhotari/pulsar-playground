@@ -64,10 +64,10 @@ class TestZookeeperQuorumLoss:
 
         yield
 
-        # --- stop any background perf processes still running ---
+        # --- print tail and stop any background perf processes still running ---
         for proc in self._perf_procs:
             if proc.is_running:
-                proc.stop()
+                proc.stop(log_tail=20)
 
         # --- restore ZK to 3 replicas after each test ---
         logger.info("Restoring ZK to 3 replicas")
@@ -193,8 +193,8 @@ class TestZookeeperQuorumLoss:
             )
         finally:
             # Cleanup background processes
-            producer.stop()
-            consumer_sub1.stop()
+            producer.stop(log_tail=20)
+            consumer_sub1.stop(log_tail=20)
 
     def test_producer_behavior_after_zk_quorum_loss(self):
         """
@@ -223,7 +223,7 @@ class TestZookeeperQuorumLoss:
 
         # ── Check if producer is still alive ──
         still_running = producer.is_running
-        output = producer.stop()
+        output = producer.stop(log_tail=20)
 
         logger.info(f"Producer still running after quorum loss: {still_running}")
         logger.info(f"Producer output:\n{output}")

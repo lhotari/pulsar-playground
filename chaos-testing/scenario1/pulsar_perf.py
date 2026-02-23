@@ -19,10 +19,11 @@ class PerfProcess:
     _collected: bool = field(default=False, init=False, repr=False)
     _output_cache: str = field(default="", init=False, repr=False)
 
-    def stop(self, timeout: int = 15) -> str:
+    def stop(self, timeout: int = 15, log_tail: int = 0) -> str:
         """Terminate the process group and return combined stdout + stderr.
 
         Idempotent: subsequent calls return the cached output from the first call.
+        If log_tail > 0, the last *log_tail* lines of output are logged at INFO level.
         """
         if self._collected:
             return self._output_cache
@@ -41,6 +42,10 @@ class PerfProcess:
             stdout, stderr = self.proc.communicate()
         self._output_cache = (stdout or "") + (stderr or "")
         logger.info(f"[{self.description}] exited rc={self.proc.returncode}")
+        if log_tail > 0:
+            lines = self._output_cache.splitlines()
+            tail = "\n".join(lines[-log_tail:]) if lines else "(no output)"
+            logger.info(f"[{self.description}] last {log_tail} lines of output:\n{tail}")
         return self._output_cache
 
     @property
