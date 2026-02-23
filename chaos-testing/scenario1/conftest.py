@@ -124,6 +124,12 @@ def pytest_addoption(parser):
         "(managedLedgerMaxEntriesPerLedger=50, rollover times 0/2 min). "
         "Useful for tests that need many ledger segments quickly.",
     )
+    parser.addoption(
+        "--helm-chart",
+        default=HELM_CHART,
+        help="Helm chart path or repo reference (default: apache/pulsar). "
+        "Can be a local directory path for modified charts.",
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -151,6 +157,7 @@ def pulsar_cluster(request, k8s_clients):
     """
     keep_cluster = request.config.getoption("--keep-cluster")
     skip_deploy = request.config.getoption("--skip-deploy")
+    helm_chart = request.config.getoption("--helm-chart")
     v1: client.CoreV1Api = k8s_clients["core"]
 
     if skip_deploy:
@@ -171,7 +178,7 @@ def pulsar_cluster(request, k8s_clients):
 
         # --- install (or upgrade if already present) ---
         run(
-            f"helm upgrade --install {HELM_RELEASE} {HELM_CHART} "
+            f"helm upgrade --install {HELM_RELEASE} {helm_chart} "
             f"--namespace {NAMESPACE} "
             f"--create-namespace "
             f"--timeout {HELM_INSTALL_TIMEOUT} "
