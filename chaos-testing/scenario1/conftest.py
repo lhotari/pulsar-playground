@@ -32,10 +32,12 @@ HELM_SET_VALUES = {
 # Values that must be passed as --set-string to avoid Helm coercing them to
 # booleans/numbers, which breaks ConfigMap data fields (strings only).
 HELM_SET_STRING_VALUES = {
-    "broker.configData.PULSAR_PREFIX_metadataStoreAllowReadOnlyOperations": "true",
+    "pulsar_metadata.metadataStoreAllowReadOnlyOperations": "true",
     "broker.waitZookeeperTimeout": "0",
     "broker.waitBookkeeperTimeout": "0",
     "bookkeeper.metadata.waitZookeeperTimeout": "0",
+    # The following ones aren't required after 4.6.0 release of Apache Pulsar Helm chart
+    "broker.configData.PULSAR_PREFIX_metadataStoreAllowReadOnlyOperations": "true",
     "zookeeper.configData.OPTS": "-Dreadonlymode.enabled=true",
 }
 
