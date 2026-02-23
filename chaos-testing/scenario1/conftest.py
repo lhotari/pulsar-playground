@@ -26,12 +26,16 @@ HELM_SET_VALUES = {
     "affinity.anti_affinity": "false",
     "defaultPulsarImageRepository": PULSAR_IMAGE_REPO,
     "defaultPulsarImageTag": "4.0.9",
+    "components.proxy": "false",
 }
 
 # Values that must be passed as --set-string to avoid Helm coercing them to
 # booleans/numbers, which breaks ConfigMap data fields (strings only).
 HELM_SET_STRING_VALUES = {
     "broker.configData.PULSAR_PREFIX_metadataStoreAllowReadOnlyOperations": "true",
+    "broker.waitZookeeperTimeout": "0",
+    "broker.waitBookkeeperTimeout": "0",
+    "bookkeeper.metadata.waitZookeeperTimeout": "0",
 }
 
 # Added only when --short-rollover is passed; forces frequent ledger rollovers.
