@@ -25,7 +25,7 @@ PULSAR_IMAGE_REPO = "apachepulsar/pulsar"
 HELM_SET_VALUES = {
     "affinity.anti_affinity": "false",
     "defaultPulsarImageRepository": PULSAR_IMAGE_REPO,
-    "defaultPulsarImageTag": "4.0.9",
+    "defaultPulsarImageTag": "4.1.3",
     "components.proxy": "false",
 }
 
