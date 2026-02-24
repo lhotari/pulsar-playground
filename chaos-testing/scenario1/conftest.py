@@ -22,10 +22,17 @@ HELM_CHART = "apache/pulsar"
 HELM_REPO_URL = "https://pulsar.apache.org/charts"
 PULSAR_IMAGE_REPO = "apachepulsar/pulsar"
 
+
+# Helm values to override for testing purposes. Notably, anti-affinity is disabled
+
+# custom Pulsar image can be built locally with:
+# mvn clean install -am -pl docker/pulsar -DskipTests -Pmain,docker -Ddocker.skip.tag=false
+# and then setting the tag to defaultPulsarImageTag value below, e.g. "4.2.0-SNAPSHOT-<7 chars of git-sha>"
+
 HELM_SET_VALUES = {
     "affinity.anti_affinity": "false",
     "defaultPulsarImageRepository": PULSAR_IMAGE_REPO,
-    "defaultPulsarImageTag": "4.1.3",
+    "defaultPulsarImageTag": "4.2.0-SNAPSHOT-215733a",
     "components.proxy": "false",
 }
 
@@ -41,6 +48,7 @@ HELM_SET_STRING_VALUES = {
     # The following ones aren't required after 4.6.0 release of Apache Pulsar Helm chart
     "broker.configData.PULSAR_PREFIX_metadataStoreAllowReadOnlyOperations": "true",
     "zookeeper.configData.OPTS": "-Dreadonlymode.enabled=true",
+    "bookkeeper.configData.statsProviderClass": "org.apache.pulsar.metrics.prometheus.bookkeeper.PrometheusMetricsProvider",
 }
 
 # Added only when --short-rollover is passed; forces frequent ledger rollovers.
