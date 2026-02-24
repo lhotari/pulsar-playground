@@ -42,9 +42,9 @@ HELM_SET_STRING_VALUES = {
     "pulsar_metadata.metadataStoreAllowReadOnlyOperations": "true",
     "pulsar_metadata.bookkeeper.usePulsarMetadataClientDriver": "true",
     "pulsar_metadata.metadataStoreBatchingEnabled": "false",
-    "broker.waitZookeeperTimeout": "0",
-    "broker.waitBookkeeperTimeout": "0",
-    "bookkeeper.metadata.waitZookeeperTimeout": "0",
+    #"broker.waitZookeeperTimeout": "0",
+    #"broker.waitBookkeeperTimeout": "0",
+    #"bookkeeper.metadata.waitZookeeperTimeout": "0",
     # The following ones aren't required after 4.6.0 release of Apache Pulsar Helm chart
     "broker.configData.PULSAR_PREFIX_metadataStoreAllowReadOnlyOperations": "true",
     "zookeeper.configData.OPTS": "-Dreadonlymode.enabled=true",
