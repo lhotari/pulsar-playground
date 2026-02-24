@@ -34,6 +34,7 @@ HELM_SET_VALUES = {
 HELM_SET_STRING_VALUES = {
     "pulsar_metadata.metadataStoreAllowReadOnlyOperations": "true",
     "pulsar_metadata.bookkeeper.usePulsarMetadataClientDriver": "true",
+    "pulsar_metadata.metadataStoreBatchingEnabled": "false",
     "broker.waitZookeeperTimeout": "0",
     "broker.waitBookkeeperTimeout": "0",
     "bookkeeper.metadata.waitZookeeperTimeout": "0",
