@@ -81,7 +81,7 @@ def delete_subscription(
         f"topics unsubscribe -s {subscription} --force {topic}",
     )
     if result.returncode != 0:
-        if "Subscription not found" in result.stderr:
+        if f"Subscription {subscription} not found" in result.stderr:
             logger.info(f"Subscription '{subscription}' does not exist")
         else:
             raise RuntimeError(
