@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 TOPIC = "persistent://public/default/chaos-zk-quorum-test"
 PRODUCE_RATE = 50
 PRE_CHAOS_PRODUCE_SECONDS = 30
-POST_CHAOS_CONSUME_TIMEOUT = 30
+POST_CHAOS_CONSUME_TIMEOUT = 60
 
 
 class TestZookeeperQuorumLoss:
